@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPay.API", "QPAY_Web_API\QPay.API.csproj", "{84F93BF0-47E2-4305-A361-A4CDA8F51AF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPay.BAL", "QPAY_Web_Service\QPay.BAL.csproj", "{737CCB7A-DBFA-4FDA-BBEE-9696216FE75F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPay.UI", "QPAY_Web_Domain\QPay.UI.csproj", "{F7CAC5FA-0E02-427E-B28A-E8C4C4823268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPay.DAL", "QPay_Web_Data\QPay.DAL.csproj", "{AD3F47B7-33E4-4C64-819F-F946D55A0D59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84F93BF0-47E2-4305-A361-A4CDA8F51AF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84F93BF0-47E2-4305-A361-A4CDA8F51AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84F93BF0-47E2-4305-A361-A4CDA8F51AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84F93BF0-47E2-4305-A361-A4CDA8F51AF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737CCB7A-DBFA-4FDA-BBEE-9696216FE75F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737CCB7A-DBFA-4FDA-BBEE-9696216FE75F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737CCB7A-DBFA-4FDA-BBEE-9696216FE75F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737CCB7A-DBFA-4FDA-BBEE-9696216FE75F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7CAC5FA-0E02-427E-B28A-E8C4C4823268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7CAC5FA-0E02-427E-B28A-E8C4C4823268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7CAC5FA-0E02-427E-B28A-E8C4C4823268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CAC5FA-0E02-427E-B28A-E8C4C4823268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD3F47B7-33E4-4C64-819F-F946D55A0D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3F47B7-33E4-4C64-819F-F946D55A0D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3F47B7-33E4-4C64-819F-F946D55A0D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3F47B7-33E4-4C64-819F-F946D55A0D59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {990E9D21-67C8-4668-8E4B-5C2EE3C2FFD4}
+	EndGlobalSection
+EndGlobal

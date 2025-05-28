@@ -1,0 +1,11 @@
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Debug\net7.0\QPAY_Web_Domain.deps.json
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Debug\net7.0\QPAY_Web_Domain.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Debug\net7.0\QPAY_Web_Domain.pdb
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.AssemblyInfoInputs.cache
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.AssemblyInfo.cs
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.csproj.CoreCompileInputs.cache
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\refint\QPAY_Web_Domain.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\QPAY_Web_Domain.pdb
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Debug\net7.0\ref\QPAY_Web_Domain.dll

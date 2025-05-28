@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "IFfzhT2QU0fmrQjswzvN0BnhcMr38ljbDmM/qYEJfFw=",
+  "Source": "QPay.API",
+  "BasePath": "_content/QPay.API",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

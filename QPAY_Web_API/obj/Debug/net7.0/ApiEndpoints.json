@@ -1,0 +1,96 @@
+[
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "GetAllotment",
+    "RelativePath": "api/Assignment/GetAllotment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "allotment",
+        "Type": "QPay.API.Models.AllotmentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "GetAssignmentLot",
+    "RelativePath": "api/Assignment/GetAssignmentLot",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetsheetName",
+    "RelativePath": "api/Authendicate",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "i",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetData",
+    "RelativePath": "api/Authendicate/GetData",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "UserLogin",
+    "RelativePath": "api/Authendicate/UserLogin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginDetailsModel",
+        "Type": "QPAY_Web_API.Models.LoginDetailsModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.PayRegisterController",
+    "Method": "PayRegister",
+    "RelativePath": "api/PayRegister/GetPayRegister",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerRequest",
+        "Type": "QPay.API.Models.PayRegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

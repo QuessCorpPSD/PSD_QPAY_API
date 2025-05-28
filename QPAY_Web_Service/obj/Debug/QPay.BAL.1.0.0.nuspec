@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>QPay.BAL</id>
+    <version>1.0.0</version>
+    <authors>QPay.BAL</authors>
+    <description>Package Description</description>
+    <repository type="git" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="QPay.DAL" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="QPay.UI" version="1.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\Solution\QPAY_Web_API\QPAY_Web_Service\bin\Debug\net8.0\QPay.BAL.dll" target="lib\net8.0\QPay.BAL.dll" />
+  </files>
+</package>

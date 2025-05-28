@@ -1,0 +1,11 @@
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Release\net7.0\QPay.UI.deps.json
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Release\net7.0\QPay.UI.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\bin\Release\net7.0\QPay.UI.pdb
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.GeneratedMSBuildEditorConfig.editorconfig
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.AssemblyInfoInputs.cache
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.AssemblyInfo.cs
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.csproj.CoreCompileInputs.cache
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\refint\QPay.UI.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\QPay.UI.pdb
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net7.0\ref\QPay.UI.dll

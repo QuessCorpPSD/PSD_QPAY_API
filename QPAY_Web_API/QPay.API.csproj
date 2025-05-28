@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QPay_Web_Data\QPay.DAL.csproj" />
+    <ProjectReference Include="..\QPAY_Web_Domain\QPay.UI.csproj" />
+    <ProjectReference Include="..\QPAY_Web_Service\QPay.BAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PayRegister\Processed\" />
+    <Folder Include="PayRegister\Unprocessed\" />
+  </ItemGroup>
+
+</Project>
