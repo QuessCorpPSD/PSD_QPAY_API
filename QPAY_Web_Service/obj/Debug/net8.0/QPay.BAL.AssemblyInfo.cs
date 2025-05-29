@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QPay.BAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+088ae92065d415403a58be824f276631463f2e55")]
 [assembly: System.Reflection.AssemblyProductAttribute("QPay.BAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QPay.BAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

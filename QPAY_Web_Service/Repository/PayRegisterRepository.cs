@@ -334,14 +334,14 @@ namespace QPay.BAL.Repository
                             var service = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>("SERCG"));
                             var comayName = CompanyNameByCode(companyCode);
                             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-                            ws.Style.Border.TopBorder= XLBorderStyleValues.Thick;
-                            ws.Style.Border.LeftBorder= XLBorderStyleValues.Thick;
-                            ws.Style.Border.RightBorder= XLBorderStyleValues.Thick;
-                            ws.Style.Border.BottomBorder= XLBorderStyleValues.Thick;
-                            ws.Style.Border.RightBorderColor = XLColor.Black;
-                            ws.Style.Border.LeftBorderColor = XLColor.Black;
-                            ws.Style.Border.TopBorderColor = XLColor.Black;
-                            ws.Style.Border.BottomBorderColor = XLColor.Black;
+                            //ws.Style.Border.TopBorder= XLBorderStyleValues.Thick;
+                            //ws.Style.Border.LeftBorder= XLBorderStyleValues.Thick;
+                            //ws.Style.Border.RightBorder= XLBorderStyleValues.Thick;
+                            //ws.Style.Border.BottomBorder= XLBorderStyleValues.Thick;
+                            //ws.Style.Border.RightBorderColor = XLColor.Black;
+                            //ws.Style.Border.LeftBorderColor = XLColor.Black;
+                            //ws.Style.Border.TopBorderColor = XLColor.Black;
+                            //ws.Style.Border.BottomBorderColor = XLColor.Black;
                             //ws.Range("A1:B1").Merge();
                             //ws.Range("A1:C1").Merge();
                             ws.Range("A1:Z1").Merge();
@@ -358,18 +358,19 @@ namespace QPay.BAL.Repository
                             var headerRange = ws.Range("A1:D1");
                             headerRange.Style.Font.Bold = true;
 
-                          
+
                             //headerRange.Style.Font.Underline=XLFontUnderlineValues.Single;
-                            
-                            //headerRange.Style.Border.TopBorder= XLBorderStyleValues.None;
-                            //headerRange.Style.Border.LeftBorder= XLBorderStyleValues.None;
-                            //headerRange.Style.Border.RightBorder= XLBorderStyleValues.None;
-                            //headerRange.Style.Border.BottomBorder= XLBorderStyleValues.None;
+
+                            headerRange.Style.Border.TopBorder= XLBorderStyleValues.None;
+                            headerRange.Style.Border.LeftBorder= XLBorderStyleValues.None;
+                            headerRange.Style.Border.RightBorder= XLBorderStyleValues.None;
+                            headerRange.Style.Border.BottomBorder= XLBorderStyleValues.None;
                             //  ws.FirstRowUsed();
                             var lastrow = ws.LastRowUsed().RowNumber();
                             ws.Style.Font.Bold = true;
-                            ws.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
-                            ws.Style.Border.OutsideBorderColor = XLColor.Black;
+                            //ws.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                            //ws.Style.Border.OutsideBorderColor = XLColor.Black;
+                           
                             if (ctc!=null && service!=null)
                             {
                                 var Total = ctc+service;
@@ -389,11 +390,13 @@ namespace QPay.BAL.Repository
                                 //clinet_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //clinet_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //clinet_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 clinet_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 clinet_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
                                 ws.Cell(lastrow + 3, 5).Value = ctc;
                                 var ctc_cell = ws.Cell(lastrow + 3, 5);
+
                                 //ctc_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
                                 //ctc_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
                                 //ctc_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
@@ -402,11 +405,13 @@ namespace QPay.BAL.Repository
                                 //ctc_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //ctc_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //ctc_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 ctc_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 ctc_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
                                 ws.Cell(lastrow + 4, 4).Value = "Service Charge:";
                                 var Service_cell = ws.Cell(lastrow + 4, 4);
+
                                 //Service_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
                                 //Service_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
                                 //Service_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
@@ -414,11 +419,13 @@ namespace QPay.BAL.Repository
                                 //Service_cell.Style.Border.TopBorderColor = XLColor.Black;
                                 //Service_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //Service_cell.Style.Border.LeftBorderColor = XLColor.Black;
+
                                 Service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
                                 Service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
                                 ws.Cell(lastrow + 4, 5).Value = service;
                                 var service_cell = ws.Cell(lastrow + 4, 5);
+
                                 //service_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
                                 //service_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
                                 //service_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
@@ -432,8 +439,9 @@ namespace QPay.BAL.Repository
                                 service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
 
-                                ws.Cell(lastrow + 5, 4).Value = "Total";
+                                ws.Cell(lastrow + 5, 4).Value = "Sub Total";
                                 var empty_cell = ws.Cell(lastrow + 5, 4);
+
                                 //empty_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
                                 //empty_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
                                 //empty_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
@@ -442,6 +450,7 @@ namespace QPay.BAL.Repository
                                 //empty_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //empty_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //empty_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 empty_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 empty_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
@@ -455,11 +464,12 @@ namespace QPay.BAL.Repository
                                 //Total_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //Total_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //Total_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 Total_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 Total_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
 
-                                ws.Cell(lastrow + 6, 4).Value = "Total GST";
+                                ws.Cell(lastrow + 6, 4).Value = "GST";
                                 var Total1_cell = ws.Cell(lastrow + 6, 4);
                                 //Total1_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
                                 //Total1_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
@@ -469,6 +479,7 @@ namespace QPay.BAL.Repository
                                 //Total1_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //Total1_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //Total1_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 Total1_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 Total1_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
@@ -482,31 +493,38 @@ namespace QPay.BAL.Repository
                                 //toal_GST_cell.Style.Border.BottomBorderColor = XLColor.Black;
                                 //toal_GST_cell.Style.Border.LeftBorderColor = XLColor.Black;
                                 //toal_GST_cell.Style.Border.RightBorderColor = XLColor.Black;
+
                                 toal_GST_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 toal_GST_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
+                                ws.Cell(lastrow + 7, 4).Value = "Total";
+                                ws.Cell(lastrow + 7, 5).Value = Total+toal_GST;
+
+                                ws.Cell(lastrow + 7, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                                ws.Cell(lastrow + 7, 5).Style.Border.OutsideBorderColor = XLColor.Black;
 
                             }
-                            var usedRange = ws.RangeUsed();
+                            //var usedRange = ws.RangeUsed();
 
-                            if (usedRange != null)
-                            {
-                                // Apply medium border to all sides of each cell
-                                usedRange.Style.Border.TopBorder = XLBorderStyleValues.Medium;
-                                usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
-                                usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Medium;
-                                usedRange.Style.Border.RightBorder = XLBorderStyleValues.Medium;
+                            //if (usedRange != null)
+                            //{
+                            //    // Apply medium border to all sides of each cell
+                            //    usedRange.Style.Border.TopBorder = XLBorderStyleValues.Medium;
+                            //    usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                            //    usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Medium;
+                            //    usedRange.Style.Border.RightBorder = XLBorderStyleValues.Medium;
 
-                                // Optional: set color
-                                usedRange.Style.Border.TopBorderColor = XLColor.Black;
-                                usedRange.Style.Border.BottomBorderColor = XLColor.Black;
-                                usedRange.Style.Border.LeftBorderColor = XLColor.Black;
-                                usedRange.Style.Border.RightBorderColor = XLColor.Black;
-                            }
+                            //    // Optional: set color
+                            //    usedRange.Style.Border.TopBorderColor = XLColor.RichBlack;
+                            //    usedRange.Style.Border.BottomBorderColor = XLColor.RichBlack;
+                            //    usedRange.Style.Border.LeftBorderColor = XLColor.RichBlack;
+                            //    usedRange.Style.Border.RightBorderColor = XLColor.RichBlack;
+                            //}
 
                             using (MemoryStream stream = new MemoryStream())
                             {
                                 workbook.SaveAs(stream);
+                                stream.Seek(0, SeekOrigin.Begin);
                                 var bytes = Convert.ToBase64String(stream.ToArray());
                                 //  FileResponse fileResponse = new FileResponse();
                                 fileResponse.FileName="Other Income.xlsx";
@@ -650,8 +668,9 @@ namespace QPay.BAL.Repository
                                             ws.SheetView.FreezeRows(2);
                                             ws.SheetView.FreezeColumns(2);
 
-                                            ws.Row(1).InsertRowsAbove(1);
-                                            ws.Range("A1:B1").Merge();
+                                            ws.Row(1).InsertRowsAbove(1);                                            
+                                            ws.Range("A1:Z1").Merge();
+                                            
                                             ws.Cell(1, 1).Value = comapny.Client_Name;
                                             ws.Cell(1, 1).Style.Font.Bold=true;
                                             var lastrow = ws.LastRowUsed().RowNumber();
@@ -695,7 +714,7 @@ namespace QPay.BAL.Repository
                                                 service_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                                                 service_cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                ws.Cell(lastrow + 5, 4).Value = "";
+                                                ws.Cell(lastrow + 5, 4).Value = "Sub Total";
                                                 var empty_cell = ws.Cell(lastrow + 5, 4);
                                                 empty_cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
                                                 empty_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
@@ -709,7 +728,7 @@ namespace QPay.BAL.Repository
                                                 Total_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                                                 Total_cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                ws.Cell(lastrow + 6, 4).Value = "Total";
+                                                ws.Cell(lastrow + 6, 4).Value = "GST";
                                                 var Total1_cell = ws.Cell(lastrow + 6, 4);
                                                 Total1_cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
                                                 Total1_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
@@ -723,6 +742,15 @@ namespace QPay.BAL.Repository
                                                 toal_GST_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                                                 toal_GST_cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
+                                                ws.Cell(lastrow + 7, 4).Value = "Total";
+                                                ws.Cell(lastrow + 7, 5).Value = Total+toal_GST;
+
+                                                ws.Cell(lastrow + 7, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                                                ws.Cell(lastrow + 7, 4).Style.Border.OutsideBorderColor = XLColor.Black;
+                                                
+
+                                                ws.Cell(lastrow + 7, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                                                ws.Cell(lastrow + 7, 5).Style.Border.OutsideBorderColor = XLColor.Black;
 
                                             }
 

@@ -27,3 +27,10 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_API/bin/Debug/net8.0/QPay.API.exe
 /QPAY_Web_API/bin/Debug/net8.0/QPay.API.dll
 /QPAY_Web_Service/obj/Debug/net8.0
+/QPAY_Web_Service/obj/Release/net8.0/QPay.BAL.AssemblyInfo.cs
+/QPAY_Web_Service/obj/Release/net8.0/QPay.BAL.AssemblyInfoInputs.cache
+/QPAY_Web_Service/obj/Release/net8.0/QPay.BAL.csproj.AssemblyReference.cache
+/QPAY_Web_Service/obj/Release/net8.0/QPay.BAL.csproj.FileListAbsolute.txt
+/QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfoInputs.cache
+/QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.csproj.FileListAbsolute.txt
+/QPAY_Web_Service/obj/Release/net8.0/QPay.BAL.sourcelink.json
