@@ -2,4 +2,27 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+
+
 /.vs
+QPay.API/obj
+QPay.API/bin/Debug/net6.0
+/QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfo.cs
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.AssemblyInfo.cs
+/QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.AssemblyInfo.cs
+/QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.AssemblyInfo.cs
+/QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.AssemblyInfoInputs.cache
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.sourcelink.json
+/QPAY_Web_API/obj/Debug/net8.0/ref/QPay.API.dll
+/QPAY_Web_API/obj/Debug/net8.0/refint/QPay.API.dll
+/QPAY_Web_API/obj/Debug/net8.0/apphost.exe
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.AssemblyInfoInputs.cache
+/QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfoInputs.cache
+/QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.AssemblyInfoInputs.cache
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.csproj.AssemblyReference.cache
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.csproj.FileListAbsolute.txt
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.dll
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.pdb
+/QPAY_Web_API/bin/Debug/net8.0/QPay.API.pdb
+/QPAY_Web_API/bin/Debug/net8.0/QPay.API.exe
+/QPAY_Web_API/bin/Debug/net8.0/QPay.API.dll
