@@ -17,4 +17,8 @@
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QPAY_Web_Domain\QPay.UI.csproj" />
+  </ItemGroup>
+
 </Project>
