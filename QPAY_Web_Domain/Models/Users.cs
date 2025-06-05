@@ -27,6 +27,16 @@ namespace QPay.UI.Models
         public int PasswordExpire { get; set; }
         public int isFirstlogin { get; set; }
         public int EmployeeID { get; set; }
+
+        public int TeamLeadUserId { get; set; }
+        public string TeamLeadEmailId { get; set; }
+        public int ManagerId { get; set; }
+        public string ManagerEmailId { get; set; }
+
+        public string Fun_Manager_User_Id { get; set; }
+
+        public string Fun_Manager_Email_Id { get; set; }
+
         //public string Contact_Number { get; set; }
         // public string MacAddress { get; set; }
     }

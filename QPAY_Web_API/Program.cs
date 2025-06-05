@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapGet("/", () => Results.Ok("Api is Working"));
+//app.MapGet("/", () => Results.Ok("Api is Working"));
 app.UseMiddleware<WrapperResponse>();
 app.UseCors("CorsPolicy");
 app.UseStaticFiles();

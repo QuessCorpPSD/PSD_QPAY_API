@@ -22,7 +22,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace QPay.BAL.Repository
 {
-    public class PayRegisterRepository : IPayRegisterRepository
+    public class PayRegisterRepository : IPayRegisterRepository 
     {
         private readonly DbRepository _dbRepository;
 

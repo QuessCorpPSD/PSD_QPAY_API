@@ -19,6 +19,8 @@ namespace QPay.API
             services.AddTransient<IPayRegisterRepository, PayRegisterRepository>();
             services.AddSingleton<IAssignmentRepository, AssignmentRepository>();
             services.AddSingleton<IQARepository, QARepository>();
+            services.AddSingleton<IDashboardRepository, DashboardRepository>();
+            services.AddSingleton<ICheckInCheckOutRepository, CheckInCheckOutRepository>();
         }
     }
 

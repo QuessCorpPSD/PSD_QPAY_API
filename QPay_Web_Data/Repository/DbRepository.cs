@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using QPay.UI.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,8 +15,9 @@ using System.Threading.Tasks;
 
 namespace QPay.DAL.Repository
 {
-    public class DbRepository 
+    public class DbRepository
     {
+        //DbRepository<T> 
         private readonly string _connectionString;
         private readonly string _connectionReconString;
 
@@ -45,8 +47,8 @@ namespace QPay.DAL.Repository
             {
                 string sql = query;
                 dbConnection.Open();
-                var TEST = await dbConnection.QueryFirstOrDefaultAsync<string>(sql);
-
+                var result = await dbConnection.QueryAsync(sql, null, null, 100, CommandType.Text).ConfigureAwait(false);
+                var TEST = JsonConvert.SerializeObject(result);
                 return TEST??"";
             }
         }
@@ -112,16 +114,42 @@ namespace QPay.DAL.Repository
             }
         }
 
-        public async Task<string> GetItemsAsync(string storeProcedureName,object param)
+        //public async Task<IEnumerable<T>> GetItemsAsync<T>(string storedProcedureName, object param)
+        //{
+        //    using var dbConnection = Connection;
+        //    dbConnection.Open();
+        //    var result = await dbConnection.QueryAsync<T>(storedProcedureName, param, commandTimeout: 1000, commandType: CommandType.StoredProcedure);
+        //    return result;
+        //}
+
+        public async Task<IEnumerable<T>> GetItemsAsync<T>(string storeProcedureName, object param)
         {
             try
             {
                 using (var dbConnection = Connection)
-                {                    
-                   
+                {
+                    dbConnection.Open();
+                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param, commandType: CommandType.StoredProcedure);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log exception if needed
+                throw new Exception("Database operation failed: " + ex.Message);
+            }
+        }
+
+        public async Task<string> GetItemsAsync(string storeProcedureName, object param)
+        {
+            try
+            {
+                using (var dbConnection = Connection)
+                {
+
                     dbConnection.Open();
                     var result = await dbConnection.QueryAsync(storeProcedureName, param, null, commandTimeout: 1000, CommandType.StoredProcedure);
-                    var obj = JsonConvert.SerializeObject(result);                     
+                    var obj = JsonConvert.SerializeObject(result);
                     return obj;
                 }
             }
@@ -131,43 +159,58 @@ namespace QPay.DAL.Repository
                 //Console.WriteLine($"SQL Exception: {ex.Message}");
                 //throw ex; // Rethrow the exception or return a custom error
 
-                return ex.Message;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-                // Handle other exceptions
-                //Console.WriteLine($"Exception: {ex.Message}");
-                //throw;
-            }
-        }
+                       return ex.Message;
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        return ex.Message;
+                //        // Handle other exceptions
+                //        //Console.WriteLine($"Exception: {ex.Message}");
+                //        //throw;
+                  }
+                }
 
-        // Example method to insert a new record
-        public async Task<int> InsertItemAsync(T model,string procedureName)
+                // Example method to insert a new record
+        public async Task<DbOperationResult> InsertItemAsync<T>(T model, string procedureName)
         {
+           
             try
             {
-                using (var dbConnection = Connection)
+                using var dbConnection = Connection;
+                dbConnection.Open();
+
+                var result = await dbConnection.ExecuteAsync(
+                    procedureName,
+                    model,
+                    commandTimeout: 1000,
+                    commandType: CommandType.StoredProcedure
+                );
+                return new DbOperationResult
                 {
-                    dbConnection.Open();
-                    SqlParameter param = new SqlParameter();
-                    var result = await dbConnection.ExecuteAsync(procedureName, model,null,null,CommandType.StoredProcedure);
-                    return result;
-                }
+                    IsSuccess = result == 1,
+                    Message = result == 1 ? "Inserted successfully" : "Insert failed"
+                };
             }
             catch (SqlException ex)
             {
-                // Log exception details
-                Console.WriteLine($"SQL Exception: {ex.Message}");
-                throw;
+                // Ideally use ILogger, not Console
+                return new DbOperationResult
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                //throw;
             }
             catch (Exception ex)
             {
-                // Handle other exceptions
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw;
+                return new DbOperationResult
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
+
         public async Task<int> BulkInsertItemAsync(List<T> model, string procedureName)
         {
             try
