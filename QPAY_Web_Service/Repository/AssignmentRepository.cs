@@ -16,7 +16,7 @@ namespace QPay.BAL.Repository
 
         public AssignmentRepository(DbRepository dbRepository)
         {
-            _dbRepository=dbRepository;
+            _dbRepository = dbRepository;
         }       
 
         public DataTable GetInputLots(int companyCode, int pay_period_id, int lot, int inputType)
