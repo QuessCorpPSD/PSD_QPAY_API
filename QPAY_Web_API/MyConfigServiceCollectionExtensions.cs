@@ -1,5 +1,9 @@
-﻿using QPay.BAL.IRepository;
+﻿using QPay.API.Extensions;
+using QPay.API.Models;
+using QPay.BAL.IRepository;
+using QPay.BAL.IRepository.Common;
 using QPay.BAL.Repository;
+using QPay.BAL.Repository.Common;
 
 namespace QPay.API
 {
@@ -14,13 +18,35 @@ namespace QPay.API
     {
         public static void AddServices(this IServiceCollection services)
         {
+            
             services.AddHttpClient();
+            services.AddSingleton<IJwtTokenService, JwtTokenService>();
+            services.AddSingleton<IEmailService, EmailService>();
+            #region Dependencies  PSD DI
+         
             services.AddTransient<ILoginRepository, LoginRepository>();
             services.AddTransient<IPayRegisterRepository, PayRegisterRepository>();
             services.AddSingleton<IAssignmentRepository, AssignmentRepository>();
-            services.AddSingleton<IQARepository, QARepository>();
             services.AddSingleton<IDashboardRepository, DashboardRepository>();
             services.AddSingleton<ICheckInCheckOutRepository, CheckInCheckOutRepository>();
+            services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
+            services.AddSingleton<IFinancialYearRepository, FinancialYearRepository>();
+            
+            #endregion
+
+
+
+            #region Dependencies   SOP DI
+
+            services.AddSingleton<IQARepository, QARepository>();
+            #endregion
+
+
+            #region Dependencies Common Master DI (Depdency Injection) 
+            services.AddSingleton<IProcessCategoryRepository, ProcessCategoryRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IAccesstypeRepository, AccesstypeRepository>();
+            #endregion
         }
     }
 

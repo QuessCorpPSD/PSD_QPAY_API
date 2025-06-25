@@ -8,8 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.6.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="GST_Certificate\" />
+    <Folder Include="LUT_Certificate\" />
+    <Folder Include="SEZ_Certificate\" />
+    <Folder Include="ReimbursementPolicyUploads\" />
     <Folder Include="PayRegister\Processed\" />
     <Folder Include="PayRegister\Unprocessed\" />
   </ItemGroup>
