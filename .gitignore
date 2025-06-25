@@ -161,3 +161,5 @@ QPay.API/bin/Debug/net6.0
 /QPay_Web_Data/obj/Release/net8.0/QPay.DAL.csproj.CoreCompileInputs.cache
 /QPay_Web_Data/obj/Release/net8.0/QPay.DAL.csproj.FileListAbsolute.txt
 >>>>>>> Heirarchy_01
+/QPAY_Web_API/obj/QPay.API.csproj.nuget.g.targets
+/QPAY_Web_Domain/QPay.UI.csproj.user
