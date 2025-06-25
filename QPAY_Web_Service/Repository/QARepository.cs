@@ -25,7 +25,7 @@ namespace QPay.BAL.Repository
 
         public QARepository(DbRepository dbRepository)
         {
-            this._dbRepository = dbRepository;
+            this._dbRepository = dbRepository;///DB Inject
         }
 
         public async Task<List<CustomerSOPQuestion>> GetCustomerSOPQuestionAnswer()
