@@ -1,7 +1,14 @@
-
+﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using QPay.API;
 using QPay.API.Extensions;
+using QPay.API.Models;
 using QPay.DAL.Repository;
+using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 // Access IConfiguration from the builder
@@ -16,22 +23,44 @@ builder.Services.AddHttpContextAccessor();
 
 
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidIssuer = jwtSettings.Issuer,
+
+//            ValidateAudience = true,
+//            ValidAudience = jwtSettings.Audience,
+
+//            ValidateIssuerSigningKey = true,
+//            IssuerSigningKey = new SymmetricSecurityKey(
+//                Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+
+//            ValidateLifetime = true,
+//            ClockSkew = TimeSpan.Zero
+//        };
+
+//        // Optional: log reason for failure
+//        options.Events = new JwtBearerEvents
+//        {
+//            OnAuthenticationFailed = context =>
+//            {
+//                Console.WriteLine("Token failed: " + context.Exception.Message);
+//                return Task.CompletedTask;
+//            },
+//            OnTokenValidated = context =>
+//            {
+//                Console.WriteLine("✅ Token validated successfully.");
+//                return Task.CompletedTask;
+//            }
+//        };
+//    });
 //builder.Services.AddAuthorization();
-
-//builder.Services.Configure<OAuthSettings>(builder.Configuration.GetSection("OAuthSettings"));
-//builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
-
-//builder.Services.AddHttpClient("ApiClient", client =>
-//{
-//    var apiSettings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
-//    client.BaseAddress = new Uri(apiSettings.BaseUrl);
-//})
-//.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-//{
-//    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-//});
-
-//builder.Services.AddScoped<ApiService>();
 
 builder.Services.AddCors(options =>
 {
@@ -43,17 +72,70 @@ builder.Services.AddCors(options =>
         );
 });
 // Add services to the container.
-
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+builder.Services.AddSingleton(jwtSettings);
 var app = builder.Build();
+
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "ReimbursementPolicyUploads")),
+    RequestPath = "/ReimbursementPolicyUploads",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/octet-stream"
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "GST_Certificate")),
+    RequestPath = "/GST_Certificate",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/octet-stream"
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "SEZ_Certificate")),
+    RequestPath = "/SEZ_Certificate",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/octet-stream"
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "LUT_Certificate")),
+    RequestPath = "/LUT_Certificate",
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/octet-stream"
+});
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-//app.MapGet("/", () => Results.Ok("Api is Working"));
+app.MapControllers();
+
 app.UseMiddleware<WrapperResponse>();
 app.UseCors("CorsPolicy");
-app.UseStaticFiles();
-app.UseRouting();
 app.MapFallbackToFile("index.html");
 app.UseHttpsRedirection();
+//app.UseExceptionHandler(errorApp =>
+//{
+//    errorApp.Run(async context =>
+//    {
+//        context.Response.StatusCode = 500;
+//        context.Response.ContentType = "application/json";
+
+//        var error = context.Features.Get<IExceptionHandlerPathFeature>();
+//        if (error != null)
+//        {
+//            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+//            {
+//                error = error.Error.Message
+//            }));
+//        }
+//    });
+//});
+
 app.MapControllerRoute(
     name: "default",
     pattern: "api/{controller}/{action}/{id?}");

@@ -1,6 +1,7 @@
 ﻿using Azure;
 using ClosedXML.Excel;
 using Dapper;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Win32;
@@ -553,6 +554,26 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
+
+        public PayRegisterQzoneResponse GetFileNameFromQzone(int companyCode, int pay_period_Id, int lotNumber)
+        {
+            string query = "select Company_Id,PayPeriod_id,Lot_Number,FileName from tbl_InputStatus_LotNumber where Company_Id='" + companyCode + "' and PayPeriod_id='"+ pay_period_Id + "' and Lot_Number='"+ lotNumber + "'";
+            var res = _dbRepository.QueryMultiAsync(query).Result;
+            try
+            {
+              var  responses = JsonConvert.DeserializeObject<List<PayRegisterQzoneResponse>>(res).FirstOrDefault()
+                                                 ;
+                return responses;
+                //var files= responses.FirstOrDefault();
+
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                // Log the error if needed
+                return new PayRegisterQzoneResponse();
+            }
+            
+        }
         public FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, int lotNumber)
         {
             FileResponse fileResponse = new FileResponse();
@@ -1086,5 +1107,6 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
+
     }
 }

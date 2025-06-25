@@ -1,14 +1,18 @@
 ﻿
 using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.DAL.Repository;
+using QPay.UI.Admin;
+using QPay.UI.Common;
 using QPay.UI.Models;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 
 namespace QPay.BAL.Repository
@@ -22,28 +26,140 @@ namespace QPay.BAL.Repository
         {
             this._dbRepository=dbRepository;
         }
-        public Users UserLogin(int userName, string password, string loginIp, string CName)
+      
+        public async Task<List<QPay.UI.Models.Users>> GetAllActiveUsers()
         {
+            List<QPay.UI.Models.Users> users = new List<QPay.UI.Models.Users>();
 
-            Users userDetails = null;
-            
-            var newPasswordSalt = GetSalt(userName);
-            var salt = PasswordHashAlgorithm.GetSaltBase64Decoded(newPasswordSalt.Salt);
-            var  encodedPassword = password != null ? PasswordHashAlgorithm.GetHashBase64EncodedPassword(password, salt) : string.Empty;
-            string storeProcedure = string.Format("sp_IsValidUser1");
-            var parameters = new DynamicParameters();
-            parameters.Add("@UserName", userName);
-            parameters.Add("@Password", encodedPassword);
-            parameters.Add("@LoginIP", loginIp);
-            parameters.Add("@ComputerName", CName);
-          
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
-            if(res!="")
+            try
             {
-                userDetails = JsonConvert.DeserializeObject<List<Users>>(res).FirstOrDefault();
-                return userDetails;
+                string sql = string.Format("select u.*,ur.RoleId Role_Id from tbl_user u left outer join userrole ur on u.User_Id = ur.UserId Where  ur.UserId is not null and u.IsActive ={0}", 1);
+                var status = await this._dbRepository.QueryMultiAsync(sql);
+                users = JsonConvert.DeserializeObject<List<QPay.UI.Models.Users>>(status)
+                                                   ?? new List<QPay.UI.Models.Users>();
             }
-            return userDetails;
+            catch (JsonException ex)
+            {
+                // Log the error if needed
+                users = new List<QPay.UI.Models.Users>();
+            }
+
+            return users;
+
+        }
+        public async Task<QPay.UI.Models.Users?> UserLogin(int userName, string password, string loginIp, string computerName)
+        {
+            QPay.UI.Models.Users users = new UI.Models.Users();
+            try
+            {
+                // Get salt and hash the password
+                var newPasswordSalt = GetSalt(userName);
+                var salt = PasswordHashAlgorithm.GetSaltBase64Decoded(newPasswordSalt.Salt);
+                var encodedPassword = string.IsNullOrWhiteSpace(password)
+                    ? string.Empty
+                    : PasswordHashAlgorithm.GetHashBase64EncodedPassword(password, salt);
+
+                // Prepare parameters
+                var parameters = new DynamicParameters();
+                parameters.Add("@UserName", userName);
+                parameters.Add("@Password", encodedPassword);
+                parameters.Add("@LoginIP", loginIp);
+                parameters.Add("@ComputerName", computerName);
+
+                // Call stored procedure
+                var resultJson = await _dbRepository.GetItemsAsync("sp_IsValidUser1", parameters);
+
+                // Deserialize and return
+                if (!string.IsNullOrWhiteSpace(resultJson))
+                {
+                    if (JsonConvert.DeserializeObject<List<QPay.UI.Models.Users>>(resultJson) is { Count: > 0 } userList &&
+                    userList.FirstOrDefault() is { } user)
+                    {
+                        users = user;
+                        return users;
+                    }
+                    else
+                    {
+                        users = new UI.Models.Users();
+                         users.Error_Message = "Invalid UserName and Password";
+                        return users;
+                    }
+                }
+                else
+                {
+                    users = new UI.Models.Users();
+                    users.Error_Message = "Invalid UserName and Password";
+                    return users;
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                // You can log the exception here using ILogger
+                // Console.WriteLine($"Login failed: {ex.Message}");
+                users.Error_Message= ex.Message;
+                return users;
+            }
+        }
+
+        public async Task<QPay.UI.Models.Users?> UserCreate(QPay.UI.Models.Users user)
+        {
+            try
+            {
+                var rowsalt = (byte[])PasswordHashAlgorithm.GenerateSalt();
+                var salt = PasswordHashAlgorithm.GetSaltBase64Encoded(rowsalt);
+                var password = PasswordHashAlgorithm.GetHashBase64EncodedPassword(user.Password, rowsalt);
+
+                UserDetails userDetails = new UserDetails()
+                {
+                    User_Id=0,
+                    Name=user.Name,
+                    
+                    Password=password,
+                    Salt=salt,
+                    Mail_Id=user.Mail_Id,
+                    Reporting_To=user.Reporting_To,
+                    Role_Id=user.Role_Id,
+                    Access_Type_Id=user.Access_Type_Id,
+                    EmployeeID=user.EmployeeID,
+                    IsActive=user.IsActive
+                };
+
+                var userResponse = new UserResponse();
+                userResponse.UserDetails = new UserDetails[1];
+                userResponse.UserDetails[0] = userDetails;
+                string userResponseSerialize = "";
+                userResponseSerialize = GenericSerializer<UserResponse>.Serialize(userResponse);
+                var parameters = new DynamicParameters();
+                parameters.Add("@xmlInput", userResponseSerialize);
+                parameters.Add("@mode", "Add");
+                parameters.Add("@CreatedBy", user.CreatedBy);
+                parameters.Add("@Process_Category", user.Process_Category);
+                parameters.Add("@TeamLead_User_Id", user.TeamLeadUserId);
+                parameters.Add("@TeamLead_Email_Id", user.TeamLeadEmailId);
+                parameters.Add("@Manager_User_Id", user.Manager_User_Id);
+                parameters.Add("@Manager_Email_Id", user.Manager_Email_Id);
+                parameters.Add("@Fun_Head_UserId", user.Fun_Manager_User_Id);
+                parameters.Add("@Fun_Head_EmailId", user.Fun_Manager_Email_Id);
+                // Call stored procedure
+                var resultJson = await _dbRepository.GetItemsAsync("sp_CreateUpdateUserDetails", parameters);
+
+                // Deserialize and return
+                if (!string.IsNullOrWhiteSpace(resultJson))
+                {
+                    var users = JsonConvert.DeserializeObject<List<QPay.UI.Models.Users>>(resultJson);
+                    return users?.FirstOrDefault();
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // You can log the exception here using ILogger
+                Console.WriteLine($"Login failed: {ex.Message}");
+                return null;
+            }
         }
 
         public bool Ismatching(int input,int output)
@@ -180,6 +296,58 @@ namespace QPay.BAL.Repository
             }
             return salt;
         }
+
+        public async Task<QPay.UI.Models.Users?> ChangePasswordAsync(ChangePassword changePassword)
+        {
+            if (changePassword == null)
+                throw new ArgumentNullException(nameof(changePassword));
+
+            //byte[] salt = PasswordHashAlgorithm.GetSalt(changePassword.User_Id.ToString()) ?? PasswordHashAlgorithm.GenerateSalt();
+            var salt = GetSalt(changePassword.employeeId);
+            var salts = PasswordHashAlgorithm.GetSaltBase64Decoded(salt.Salt);
+          var  oldpassword = string.IsNullOrWhiteSpace(changePassword.OldPassword)
+                ? string.Empty
+                : PasswordHashAlgorithm.GetHashBase64EncodedPassword(changePassword.OldPassword, salts);
+            var currnt = PasswordHashAlgorithm.GetSaltBase64Decoded(salt.Salt);
+            var password = new ChangePassword
+            {
+                User_Id= changePassword.User_Id,
+                UserName= changePassword.UserName,
+                OldPassword = oldpassword,
+                NewPassword = PasswordHashAlgorithm.GetHashBase64EncodedPassword(changePassword.NewPassword ?? string.Empty, currnt),
+                ConformNewPassword = PasswordHashAlgorithm.GetHashBase64EncodedPassword(changePassword.ConformNewPassword ?? string.Empty, currnt),
+                Salt = PasswordHashAlgorithm.GetSaltBase64Encoded(currnt)
+            };
+
+            var changePwdResponse = new ChangePwdResponse
+            {
+                ChangePasswordUser = [password] 
+            };
+
+            string serializedInput = GenericSerializer<ChangePwdResponse>.Serialize(changePwdResponse);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@xmlInput", serializedInput);
+
+            var resultXml = await _dbRepository.GetItemsAsync("sp_UpdateChangePassword", parameters);
+            if (string.IsNullOrWhiteSpace(resultXml))
+                return null;
+
+            var users = JsonConvert.DeserializeObject<List<QPay.UI.Models.Users>>(resultXml);
+            return users?.FirstOrDefault();
+        }
+        public  string GetSaltByEmployeeId(int encodedSalt,string password)
+        {
+            string ret_password = string.Empty;
+
+            var salt = GetSalt(encodedSalt);
+            var salts = PasswordHashAlgorithm.GetSaltBase64Decoded(salt.Salt);
+            ret_password = string.IsNullOrWhiteSpace(password)
+                ? string.Empty
+                : PasswordHashAlgorithm.GetHashBase64EncodedPassword(password, salts);
+            return ret_password;
+
+        }
     }
 
     internal class PasswordHashAlgorithm
@@ -197,30 +365,7 @@ namespace QPay.BAL.Repository
             else
                 return null;
         }
-        //public static byte[] GetSalt(string encodedSalt)
-        //{
-        //    string encodedSalt = null;
-
-        //    using (ModelDBContext context = Utility.GetDBContext())
-        //    {
-        //        context.Database.Connection.Open();
-        //        DbCommand cmd = context.Database.Connection.CreateCommand();
-        //        cmd.CommandText = "spGetSalt";
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.Add(new SqlParameter("@Employee_code", employee_code));
-        //        using (var reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                encodedSalt = Convert.ToString(reader["Salt"]);
-        //            }
-        //        }
-        //    }
-        //    if (!string.IsNullOrEmpty(encodedSalt))
-        //        return GetSaltBase64Decoded(encodedSalt);
-        //    else
-        //        return null;
-        //}
+        
         public static string GetSaltBase64Encoded(byte[] salt)
         {
             return Convert.ToBase64String(salt);

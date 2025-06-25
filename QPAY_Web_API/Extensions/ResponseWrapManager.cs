@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using QPAY_Web_API.Models;
 using System.Net;
 
@@ -67,22 +69,23 @@ namespace QPay.API.Extensions
             }
 
             // NOTE: Add any further customizations if needed here
-
+           
             var sumessage = status==true ? "Success" : "API Working";
-
-            if(!status)
-            {
-                var statusCode = 200;
-                var response = new APIResponses((HttpStatusCode)statusCode, sumessage, data, null);
-                return response;
-            }
-            else
-            {
-                if (!status && httpStatusCode==(HttpStatusCode)200)
-                    httpStatusCode=(HttpStatusCode)(201);
-                var response = new APIResponses(httpStatusCode, sumessage, data, error);
-                return response;
-            }
+            var response = new APIResponses(httpStatusCode, sumessage, data, error);
+            return response;
+            //if(!status)
+            //{
+            //    var statusCode = 200;
+            //    var response = new APIResponses((HttpStatusCode)statusCode, sumessage, data, null);
+            //    return response;
+            //}
+            //else
+            //{
+            //    if (!status && httpStatusCode==(HttpStatusCode)200)
+            //        httpStatusCode=(HttpStatusCode)(201);
+            //    var response = new APIResponses(httpStatusCode, sumessage, data, error);
+            //    return response;
+            //}
 
 
 

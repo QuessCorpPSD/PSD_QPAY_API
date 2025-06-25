@@ -17,5 +17,6 @@ namespace QPay.BAL.IRepository
         FileResponse ReconPayRegister(int companyCode, int pay_period_Id, int lotNumber);
         FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber);
         FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period);
+        PayRegisterQzoneResponse GetFileNameFromQzone(int companyCode, int pay_period_Id, int lotNumber);
     }
 }

@@ -10,15 +10,16 @@ namespace QPay.UI.Models
     {
         public int InputLot_Id { get; set; } = 0;
         public int Company_Id { get; set; }
-        public string CompanyCode { get; set; }
-        public string Pay_Period { get; set; }
+        public string CompanyCode { get; set; } = string.Empty;
+        public string Pay_Period { get; set; } = string.Empty;
         public int pay_period_id { get; set; }
         public int lotnumber { get; set; }
-        public string UpdateStatus { get; set; }
-        public string Payroll_Input_Type { get; set; }
-        public string createdon { get; set; }        
-        public string Remarks { get; set; }
+        public string UpdateStatus { get; set; } = string.Empty;
+        public string Payroll_Input_Type { get; set; } = string.Empty;
+        public string createdon { get; set; } = string.Empty;         
+        public string Remarks { get; set; } = string.Empty;
         public bool RequestForModification { get; set; }
+        public string QC_RaiseQuery { get; set; } = string.Empty;
     }
     public class QCVerifyModelResponse
     {
