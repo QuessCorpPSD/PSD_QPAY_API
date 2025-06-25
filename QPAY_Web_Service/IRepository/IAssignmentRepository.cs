@@ -14,9 +14,11 @@ namespace QPay.BAL.IRepository
         DataTable GetInputLots(int companyCode, int pay_period_id, int lot, int inputType);
         AutoAllottmentUI AutoAllocationLots(int userId);
         List<AllotmentUI> GetAllotmentByCompanyCodeLot(string companyCode, string payPeriod, int lot);
-        AllotmentLotStatusUI GetLotStatus(AllotmentLotStatusRequest statusRequest);
+        Task<AllotmentLotStatusUI> GetLotStatus(AllotmentLotStatusRequest statusRequest);
+        Task<object> QCQueryRaising(QCVerifyModelRequest userLotValidationRequest);
         DataSet GetInputLot(int companyCode, int pay_period_id, int lot, int inputType);
         QCVerifyModelResponse QCVerfyOrModification(QCVerifyModelRequest request);
+        Task<UserLotValidationUI> UserLotValidation(UserLotValidationRequest userLotValidationRequest);
 
 
 

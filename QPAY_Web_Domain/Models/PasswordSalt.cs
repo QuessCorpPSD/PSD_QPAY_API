@@ -2,8 +2,7 @@
 {
     public class PasswordSalt
     {
-       
-            public string Salt { get; set; }
-        
+        public string Salt { get; set; }     = string.Empty;  
     }
+  
 }

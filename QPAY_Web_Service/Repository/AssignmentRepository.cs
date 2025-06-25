@@ -142,9 +142,36 @@ namespace QPay.BAL.Repository
             }
             return allotments;
         }
+        public async Task<UserLotValidationUI> UserLotValidation(UserLotValidationRequest userLotValidationRequest)
+        {
+            UserLotValidationUI userLotValidationUI = new UserLotValidationUI();
+            string storeProcedure = string.Format("SP_AllottedTime_Eatimate_Time_validation");
+            var parameters = new DynamicParameters();
+            parameters.Add("@userId", userLotValidationRequest.userId);
+            parameters.Add("@companycode", userLotValidationRequest.companycode);
+            parameters.Add("@pay_period_Id", userLotValidationRequest.pay_period_Id);
+            parameters.Add("@lot_number", userLotValidationRequest.lot_number);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (res != "")
+            {
+                userLotValidationUI = JsonConvert.DeserializeObject<List<UserLotValidationUI>>(res).FirstOrDefault();
+            }
+            return userLotValidationUI;
+        }
 
+        public async Task<object> QCQueryRaising(QCVerifyModelRequest userLotValidationRequest)
+        {
+            
+            var res = await this._dbRepository.QueryAsync(@"update tbl_InputLot_Details set QC_RaiseQuery=@QC_RaiseQuery Where 
+	        inputLot_Id='"+ userLotValidationRequest .InputLot_Id+ "' and Company_Id='"+ userLotValidationRequest.Company_Id+ "' and Pay_Period_Id ='"+ userLotValidationRequest .pay_period_id+ "' and Lot_Number='"+ userLotValidationRequest.lotnumber + "' and Payroll_Input_Type='"+ userLotValidationRequest .Payroll_Input_Type+ "'  and cast(createdon as date)=cast('"+ userLotValidationRequest .createdon+ "' as date) and QC_Verified_Status is null");
+            //if (res != "")
+            //{
+            //    userLotValidationUI = JsonConvert.DeserializeObject<List<string>>(res).FirstOrDefault();
+            //}
+            return "";
+        }
 
-       public  AllotmentLotStatusUI GetLotStatus(AllotmentLotStatusRequest statusRequest)
+        public async  Task<AllotmentLotStatusUI> GetLotStatus(AllotmentLotStatusRequest statusRequest)
         {
             AllotmentLotStatusUI allotment = new AllotmentLotStatusUI();
             string storeProcedure = string.Format("SP_AllotmentWiseQCUpdate");
@@ -155,7 +182,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@UpdateType", statusRequest.UpdateStatus);
             parameters.Add("@Payroll_Input_Type", statusRequest.Payroll_Input_Type);
             parameters.Add("@createdon", statusRequest.createdon);
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             if (res!="")
             {
                 allotment = JsonConvert.DeserializeObject<List<AllotmentLotStatusUI>>(res).FirstOrDefault();
@@ -182,6 +209,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@createdon", request.createdon);
             parameters.Add("@Remarks", request.Remarks);
             parameters.Add("@RequestForModification", request.RequestForModification);
+            parameters.Add("@QC_RaiseQuery", request.QC_RaiseQuery);
             var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!="")
             {

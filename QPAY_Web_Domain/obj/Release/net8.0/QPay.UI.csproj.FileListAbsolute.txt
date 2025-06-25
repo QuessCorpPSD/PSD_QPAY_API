@@ -9,3 +9,4 @@ D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net8.0\QPay.UI.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net8.0\refint\QPay.UI.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net8.0\QPay.UI.pdb
 D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net8.0\ref\QPay.UI.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_Domain\obj\Release\net8.0\QPay.UI.sourcelink.json

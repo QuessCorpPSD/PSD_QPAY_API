@@ -23,8 +23,8 @@ namespace QPay.DAL.Repository
 
         public DbRepository(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-            _connectionReconString = configuration.GetConnectionString("ReConDBConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection") ?? "";
+            _connectionReconString = configuration.GetConnectionString("ReConDBConnection")??"";
         }
         private IDbConnection Connection => new SqlConnection(_connectionString);
         private IDbConnection ConnectionRecon => new SqlConnection(_connectionReconString);

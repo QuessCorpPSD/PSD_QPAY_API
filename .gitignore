@@ -45,3 +45,5 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_API/bin
 /QPAY_Web_Domain/bin
 /QPAY_Web_Data/bin
+*.user
+/QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfo.cs

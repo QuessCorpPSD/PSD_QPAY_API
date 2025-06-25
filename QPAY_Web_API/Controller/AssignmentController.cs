@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,10 @@ using System.Text.Json;
 
 namespace QPay.API.Controller
 {
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+   
     public class AssignmentController : ControllerBase
     {
         private readonly IAssignmentRepository _assignment;
@@ -52,11 +55,55 @@ namespace QPay.API.Controller
         [HttpPost,Route("LotStatus")]
         public async Task<IActionResult> LotStatus(AllotmentLotStatusRequest lotStatusrequestModel)
         {
-            var status = this._assignment.GetLotStatus(lotStatusrequestModel);
+            var status =await this._assignment.GetLotStatus(lotStatusrequestModel);
             return Ok(status);
         }
+        [HttpPost,Route("UserLotStatusValidation")]
+        public async Task<IActionResult> UserLotStatusValidation(UserLotValidationRequest userLotValidationRequest)
+        {
+            var status = await this._assignment.UserLotValidation(userLotValidationRequest);
+            return Ok(status);
+        }
+        [HttpPost,Route("QCQueryRaise")]        
+        public IActionResult QCQueryRaise(QCApprovedRequest lotStatusrequestModel)
+        {
+            AllotmentLotStatusUI allotmentLotStatus = new AllotmentLotStatusUI();
+            AllotmentLotStatusRequest lotStatusUI = new AllotmentLotStatusRequest()
+            {
+                Company_Id = lotStatusrequestModel.Company_Id,
+                pay_period_id = lotStatusrequestModel.pay_period_id,
+                lotnumber = lotStatusrequestModel.lotnumber,
+                UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                createdon = lotStatusrequestModel.createdon,
+                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
 
-        [HttpPost, Route("QCLotVerify")]
+            };
+            QCVerifyModelRequest modelRequest = new QCVerifyModelRequest()
+            {
+                InputLot_Id = 0,
+                Company_Id = lotStatusrequestModel.Company_Id,
+                pay_period_id = lotStatusrequestModel.pay_period_id,
+                lotnumber = lotStatusrequestModel.lotnumber,
+                UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                createdon = lotStatusrequestModel.createdon,
+                Remarks ="",
+                RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
+                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+
+
+            };
+
+
+            var status = this._assignment.QCQueryRaising(modelRequest).Result;
+
+            allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI).Result;
+
+
+
+            return Ok(allotmentLotStatus);
+        }
         public async Task<IActionResult> QCLotVerify(QCApprovedRequest lotStatusrequestModel)
         {
             AllotmentLotStatusUI allotmentLotStatus = new AllotmentLotStatusUI();
@@ -67,7 +114,8 @@ namespace QPay.API.Controller
                 lotnumber =lotStatusrequestModel.lotnumber,
                 UpdateStatus =lotStatusrequestModel.UpdateStatus,
                 Payroll_Input_Type =lotStatusrequestModel.Payroll_Input_Type,
-                createdon =lotStatusrequestModel.createdon
+                createdon =lotStatusrequestModel.createdon,
+                QC_RaiseQuery=lotStatusrequestModel.QC_RaiseQuery
                
             };
 
@@ -104,12 +152,14 @@ namespace QPay.API.Controller
                             Payroll_Input_Type =lotStatusrequestModel.Payroll_Input_Type,
                             createdon =lotStatusrequestModel.createdon,
                             Remarks=item.Remarks,
-                            RequestForModification=lotStatusrequestModel.UpdateStatus=="Q" ? false : true
+                            RequestForModification=lotStatusrequestModel.UpdateStatus=="Q" ? false : true,
+                            QC_RaiseQuery=lotStatusrequestModel.QC_RaiseQuery
+                            
 
                         };
                         var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
                     }
-                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI);
+                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI).Result;
                     allotmentLotStatus.fileResponse=fileResponse;
                     PayRegisterUploadModel payRegisterUploadModel = new PayRegisterUploadModel()
                     {
@@ -168,13 +218,36 @@ namespace QPay.API.Controller
 
                     };
                     var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
-                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI);
+                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI).Result;
                 }
             }
 
                 return Ok(allotmentLotStatus);
         }
 
+        [HttpPost,Route("SendFeedBackMail")]
+        public async Task<IActionResult> SendFeedBackMail(FeedBackMailRequest feedBackMailRequest)
+        {
+            FeedBackMailResponse feedBackMailResponse = new FeedBackMailResponse();
+            var requestJsonContent = System.Text.Json.JsonSerializer.Serialize(feedBackMailRequest);
+
+
+            var requestStringContents = new StringContent(requestJsonContent, Encoding.UTF8, "application/json");
+            var uri = this._config["EmailSetting:EmailAPI_Url"] + "api/AutoMailer/sendautomail";
+            using (var httpResponse = await _client.PostAsync(uri, requestStringContents))
+            {
+                httpResponse.EnsureSuccessStatusCode();
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    throw new Exception("Cannot retrieve tasks");
+                }
+                var content = await httpResponse.Content.ReadAsStringAsync();
+                feedBackMailResponse = System.Text.Json.JsonSerializer.Deserialize<FeedBackMailResponse>(content) ?? new FeedBackMailResponse();
+               return Ok(feedBackMailResponse);
+            }
+
+            
+        }
         [HttpPost("RequestForModification")]
         public IActionResult RequestForModification(RequestForModificationModel requestForModification)
         {

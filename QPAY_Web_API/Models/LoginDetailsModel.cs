@@ -6,5 +6,8 @@
 
         public string password { get; set; } = "";
 
+        public string ipAddress { get; set; } = "";
+        public string Cname { get; set; } = "";
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,8 +11,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+
 
 namespace QPay.BAL.Repository
 {
@@ -24,7 +28,7 @@ namespace QPay.BAL.Repository
             this._dbRepository = dbRepository;
         }
 
-        public List<CustomerSOPQuestion> GetCustomerSOPQuestionAnswer()
+        public async Task<List<CustomerSOPQuestion>> GetCustomerSOPQuestionAnswer()
         {
             var checklistQuestionAnswerDetails = new List<CustomerSOPQuestion>();
             string storeProcedure = "sp_Get_Cusromer_SOP_Question_Answer_Master";
@@ -46,7 +50,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -58,10 +62,10 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.questions = GetCustomerSOPQuestions(question.CategoryId);
+                        question.questions = await GetCustomerSOPQuestions(question.CategoryId);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPQuestion>();
@@ -71,7 +75,7 @@ namespace QPay.BAL.Repository
             return checklistQuestionAnswerDetails;
         }
 
-        public List<CustomerSOPQuestions> GetCustomerSOPQuestions(string CategoryId)
+        public async Task<List<CustomerSOPQuestions>> GetCustomerSOPQuestions(string CategoryId)
         {
             var checklistQuestionAnswerDetails = new List<CustomerSOPQuestions>();
             string storeProcedure = "sp_Get_Cusromer_SOP_Question_Answer_Master";
@@ -93,7 +97,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -105,10 +109,10 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer1s = GetSOPAnswersById1(question.QuestionId);
+                        question.customersopanswer1s = await GetSOPAnswersById1(question.QuestionId);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPQuestions>();
@@ -118,7 +122,7 @@ namespace QPay.BAL.Repository
             return checklistQuestionAnswerDetails;
         }
 
-        private List<CustomerSOPAnswer1> GetSOPAnswersById1(string questionId)
+        private async Task<List<CustomerSOPAnswer1>> GetSOPAnswersById1(string questionId)
         {
 
             var checklistQuestionAnswerDetails = new List<CustomerSOPAnswer1>();
@@ -141,7 +145,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -153,10 +157,10 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer2s = GetSOPAnswersById2(question.QuestionId, question.AnswerId_1);
+                        question.customersopanswer2s = await GetSOPAnswersById2(question.QuestionId, question.AnswerId_1);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer1>();
@@ -189,7 +193,7 @@ namespace QPay.BAL.Repository
             //return new List<CheklistAnswer1>();
         }
 
-        private List<CustomerSOPAnswer2> GetSOPAnswersById2(string questionId, string answerId1)
+        private async Task<List<CustomerSOPAnswer2>> GetSOPAnswersById2(string questionId, string answerId1)
         {
 
             var checklistQuestionAnswerDetails = new List<CustomerSOPAnswer2>();
@@ -212,7 +216,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -224,11 +228,11 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer3s = GetSOPAnswersById3(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer3s = await GetSOPAnswersById3(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer2>();
@@ -239,7 +243,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer3> GetSOPAnswersById3(string questionId, string answerId1, string answerId2)
+        private async Task<List<CustomerSOPAnswer3>> GetSOPAnswersById3(string questionId, string answerId1, string answerId2)
         {
 
             var checklistQuestionAnswerDetails = new List<CustomerSOPAnswer3>();
@@ -262,7 +266,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -274,11 +278,11 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer4s = GetSOPAnswersById4(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer4s = await GetSOPAnswersById4(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer3>();
@@ -289,7 +293,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer4> GetSOPAnswersById4(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer4>> GetSOPAnswersById4(string questionId, string answerId1, string answerId2,
             string answerId3)
         {
 
@@ -313,7 +317,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -325,11 +329,11 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer5s = GetSOPAnswersById5(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer5s = await GetSOPAnswersById5(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer4>();
@@ -340,7 +344,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer5> GetSOPAnswersById5(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer5>> GetSOPAnswersById5(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4)
         {
 
@@ -364,7 +368,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -376,11 +380,11 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer6s = GetSOPAnswersById6(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer6s = await GetSOPAnswersById6(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer5>();
@@ -391,7 +395,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer6> GetSOPAnswersById6(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer6>> GetSOPAnswersById6(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5)
         {
 
@@ -415,7 +419,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -427,12 +431,12 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer7s = GetSOPAnswersById7(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer7s = await GetSOPAnswersById7(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer6>();
@@ -443,7 +447,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer7> GetSOPAnswersById7(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer7>> GetSOPAnswersById7(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6)
         {
 
@@ -467,7 +471,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -479,12 +483,12 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer8s = GetSOPAnswersById8(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer8s = await GetSOPAnswersById8(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer7>();
@@ -495,7 +499,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer8> GetSOPAnswersById8(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer8>> GetSOPAnswersById8(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7)
         {
 
@@ -519,7 +523,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -531,12 +535,12 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer9s = GetSOPAnswersById9(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer9s = await GetSOPAnswersById9(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7, question.AnswerId_8);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer8>();
@@ -547,7 +551,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer9> GetSOPAnswersById9(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer9>> GetSOPAnswersById9(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7, string answerId8)
         {
 
@@ -571,7 +575,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -583,12 +587,12 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer10s = GetSOPAnswersById10(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer10s = await GetSOPAnswersById10(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7, question.AnswerId_8, question.AnswerId_9);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer9>();
@@ -599,7 +603,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer10> GetSOPAnswersById10(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer10>> GetSOPAnswersById10(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7, string answerId8,
             string answerId9)
         {
@@ -624,7 +628,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -636,13 +640,13 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer11s = GetSOPAnswersById11(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer11s = await GetSOPAnswersById11(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7, question.AnswerId_8, question.AnswerId_9,
                              question.AnswerId_10);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer10>();
@@ -653,7 +657,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        private List<CustomerSOPAnswer11> GetSOPAnswersById11(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer11>> GetSOPAnswersById11(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7, string answerId8,
             string answerId9, string answerId10)
         {
@@ -678,7 +682,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -690,13 +694,13 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer12s = GetSOPAnswersById12(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer12s = await GetSOPAnswersById12(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7, question.AnswerId_8, question.AnswerId_9,
                              question.AnswerId_10, question.AnswerId_11);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer11>();
@@ -708,7 +712,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        private List<CustomerSOPAnswer12> GetSOPAnswersById12(string questionId, string answerId1, string answerId2,
+        private async Task<List<CustomerSOPAnswer12>> GetSOPAnswersById12(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7, string answerId8,
             string answerId9, string answerId10, string answerId11)
         {
@@ -733,7 +737,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_13", 0);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -745,13 +749,13 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var question in checklistQuestionAnswerDetails)
                     {
-                        question.customersopanswer13s = GetSOPAnswersById13(question.QuestionId, question.AnswerId_1,
+                        question.customersopanswer13s = await GetSOPAnswersById13(question.QuestionId, question.AnswerId_1,
                             question.AnswerId_2, question.AnswerId_3, question.AnswerId_4, question.AnswerId_5,
                              question.AnswerId_6, question.AnswerId_7, question.AnswerId_8, question.AnswerId_9,
                              question.AnswerId_10, question.AnswerId_11, question.AnswerId_12);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new List<CustomerSOPAnswer12>();
@@ -762,7 +766,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        public List<CustomerSOPAnswer13> GetSOPAnswersById13(string questionId, string answerId1, string answerId2,
+        public async Task<List<CustomerSOPAnswer13>> GetSOPAnswersById13(string questionId, string answerId1, string answerId2,
             string answerId3, string answerId4, string answerId5, string answerId6, string answerId7, string answerId8,
             string answerId9, string answerId10, string answerId11, string answerId12)
         {
@@ -785,7 +789,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@AnswerId_12", answerId12);
             parameters.Add("@AnswerId_13", 0);
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -803,7 +807,7 @@ namespace QPay.BAL.Repository
             return new List<CustomerSOPAnswer13>();
         }
 
-        public CompanyMaster GetCompanyCode(int user_id)
+        public async Task<CompanyMaster> GetCompanyCode(int user_id)
         {
             var companyMasterDetails = new CompanyMaster();
             string storeProcedure = "sp_Get_Company_Details_SOP";
@@ -811,7 +815,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@UserId", user_id);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -820,7 +824,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<CompanyMaster>>(res);
                     companyMasterDetails = companyList?.FirstOrDefault() ?? new CompanyMaster();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     companyMasterDetails = new CompanyMaster();
@@ -830,13 +834,13 @@ namespace QPay.BAL.Repository
             return companyMasterDetails;
         }
 
-        public List<StateMaster> GetState()
+        public async Task<List<StateMaster>> GetState()
         {
             var stateMasterDetails = new List<StateMaster>();
             string storeProcedure = "sp_Get_State_Master_SOP";
             var parameters = new DynamicParameters();
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -845,7 +849,7 @@ namespace QPay.BAL.Repository
                     stateMasterDetails = JsonConvert.DeserializeObject<List<StateMaster>>(res)
                                                      ?? new List<StateMaster>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     stateMasterDetails = new List<StateMaster>();
@@ -855,7 +859,7 @@ namespace QPay.BAL.Repository
             return stateMasterDetails;
         }
 
-        public List<CityMaster> GetCity(int state_id)
+        public async Task<List<CityMaster>> GetCity(int state_id)
         {
             var cityMasterDetails = new List<CityMaster>();
             string storeProcedure = "sp_Get_City_Master_SOP";
@@ -863,7 +867,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@StateId", state_id);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -872,7 +876,7 @@ namespace QPay.BAL.Repository
                     cityMasterDetails = JsonConvert.DeserializeObject<List<CityMaster>>(res)
                                                      ?? new List<CityMaster>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     cityMasterDetails = new List<CityMaster>();
@@ -882,7 +886,7 @@ namespace QPay.BAL.Repository
             return cityMasterDetails;
         }
 
-        public List<DesignationMaster> GetDesignation(string company_code)
+        public async Task<List<DesignationMaster>> GetDesignation(string company_code)
         {
             var designationMasterDetails = new List<DesignationMaster>();
             string storeProcedure = "sp_Get_Designation_Master_SOP";
@@ -890,7 +894,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CompanyCode", company_code);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -899,7 +903,7 @@ namespace QPay.BAL.Repository
                     designationMasterDetails = JsonConvert.DeserializeObject<List<DesignationMaster>>(res)
                                                      ?? new List<DesignationMaster>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     designationMasterDetails = new List<DesignationMaster>();
@@ -909,15 +913,15 @@ namespace QPay.BAL.Repository
             return designationMasterDetails;
         }
 
-        public FirstMonthPayroll GetFirstMonthPayroll(string company_code)
+        public async Task<FirstMonthPayroll> GetFirstMonthPayroll(string companyId)
         {
             var firstMonthPayrollDetails = new FirstMonthPayroll();
             string storeProcedure = "sp_Get_First_Month_Payroll_SOP";
             var parameters = new DynamicParameters();
-            parameters.Add("@CompanyCode", company_code);
+            parameters.Add("@Company_Id", companyId);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -926,7 +930,7 @@ namespace QPay.BAL.Repository
                     var firstMonthPayrollList = JsonConvert.DeserializeObject<List<FirstMonthPayroll>>(res);
                     firstMonthPayrollDetails = firstMonthPayrollList?.FirstOrDefault() ?? new FirstMonthPayroll();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     firstMonthPayrollDetails = new FirstMonthPayroll();
@@ -936,7 +940,7 @@ namespace QPay.BAL.Repository
             return firstMonthPayrollDetails;
         }
 
-        public List<Category> GetCategory()
+        public async Task<List<Category>> GetCategory()
         {
             var Categorylist = new List<Category>();
             string Query = "Select * from tbl_Customer_SOP_Category_Master_New";
@@ -951,7 +955,7 @@ namespace QPay.BAL.Repository
                 Categorylist = JsonConvert.DeserializeObject<List<Category>>(res)
                                                  ?? new List<Category>();
             }
-            catch (JsonException ex)
+            catch (System.Text.Json.JsonException ex)
             {
                 // Log the error if needed
                 Categorylist = new List<Category>();
@@ -995,7 +999,7 @@ namespace QPay.BAL.Repository
         //}
 
 
-        public List<Question> GetQuestion(int categoryId)
+        public async Task<List<Question>> GetQuestion(int categoryId)
         {
             var Questionlist = new List<Question>();
             string Query = "Select * from tbl_Customer_SOP_Question_Master_New Where CategoryId='" + categoryId + "' AND IsActive=1";
@@ -1008,7 +1012,7 @@ namespace QPay.BAL.Repository
                 Questionlist = JsonConvert.DeserializeObject<List<Question>>(res)
                                                  ?? new List<Question>();
             }
-            catch (JsonException ex)
+            catch (System.Text.Json.JsonException ex)
             {
 
                 Questionlist = new List<Question>();
@@ -1016,7 +1020,7 @@ namespace QPay.BAL.Repository
             return Questionlist;
         }
 
-        public Answer1 GetSOPAnswer1(int QuestionId, string Createdby)
+        public async Task<Answer1> GetSOPAnswer1(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer1();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_1";
@@ -1025,7 +1029,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1034,7 +1038,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer1>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer1();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer1();
@@ -1044,7 +1048,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer1(Answer1 answer1)
+        public async Task<AnswerResponse> PostSOPAnswer1(Answer1 answer1)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1056,7 +1060,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Client_website_link", answer1.Client_website_link);
                 parameters.Add("@CreatedBy", answer1.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1071,7 +1075,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer2 GetSOPAnswer2(int QuestionId, string Createdby)
+        public async Task<Answer2> GetSOPAnswer2(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer2();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_2";
@@ -1080,7 +1084,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1089,7 +1093,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer2>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer2();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer2();
@@ -1099,7 +1103,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer2(Answer2 answer2)
+        public async Task<AnswerResponse> PostSOPAnswer2(Answer2 answer2)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1115,7 +1119,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@MyContract_Reference_ID", answer2.MyContract_Reference_ID);
                 parameters.Add("@CreatedBy", answer2.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1131,7 +1135,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public Answer3 GetSOPAnswer3(int QuestionId, string Createdby)
+        public async Task<Answer3> GetSOPAnswer3(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer3();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_3";
@@ -1140,7 +1144,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1149,7 +1153,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer3>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer3();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer3();
@@ -1159,7 +1163,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer3(Answer3 answer3)
+        public async Task<AnswerResponse> PostSOPAnswer3(Answer3 answer3)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1172,7 +1176,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@POC_Change", answer3.POC_Change);
                 parameters.Add("@CreatedBy", answer3.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1187,7 +1191,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer6 GetSOPAnswer6(int QuestionId, string Createdby)
+        public async Task<Answer6> GetSOPAnswer6(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer6();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_6";
@@ -1196,7 +1200,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1205,7 +1209,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer6>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer6();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer6();
@@ -1215,7 +1219,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer6(Answer6 answer6)
+        public async Task<AnswerResponse> PostSOPAnswer6(Answer6 answer6)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1228,7 +1232,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@FF_Payment_Mode", answer6.FF_Payment_Mode);
                 parameters.Add("@CreatedBy", answer6.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1243,7 +1247,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer8 GetSOPAnswer8(int QuestionId, string Createdby)
+        public async Task<Answer8> GetSOPAnswer8(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer8();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_8";
@@ -1252,7 +1256,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1261,7 +1265,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer8>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer8();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer8();
@@ -1271,7 +1275,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer8(Answer8 answer8)
+        public async Task<AnswerResponse> PostSOPAnswer8(Answer8 answer8)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1284,7 +1288,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Sim_Card_Management_tracker", answer8.Sim_Card_Management_tracker);
                 parameters.Add("@CreatedBy", answer8.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1299,7 +1303,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer9 GetSOPAnswer9(int QuestionId, string Createdby)
+        public async Task<Answer9> GetSOPAnswer9(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer9();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_9";
@@ -1308,7 +1312,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1317,7 +1321,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer9>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer9();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer9();
@@ -1327,7 +1331,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer9(Answer9 answer3)
+        public async Task<AnswerResponse> PostSOPAnswer9(Answer9 answer3)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1340,7 +1344,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Email_ID_Managemnet_Tracker", answer3.Email_ID_Managemnet_Tracker);
                 parameters.Add("@CreatedBy", answer3.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1354,7 +1358,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer10 GetSOPAnswer10(int QuestionId, string Createdby)
+        public async Task<Answer10> GetSOPAnswer10(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer10();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_10";
@@ -1363,7 +1367,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1372,7 +1376,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer10>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer10();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer10();
@@ -1382,7 +1386,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer10(Answer10 answer10)
+        public async Task<AnswerResponse> PostSOPAnswer10(Answer10 answer10)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1395,7 +1399,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@ID_Card_Managemnet_Tracker", answer10.ID_Card_Managemnet_Tracker);
                 parameters.Add("@CreatedBy", answer10.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1409,16 +1413,16 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer5 GetSOPAnswer5(int QuestionId, string Createdby)
+        public async Task<Answer5> GetSOPAnswer5(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer5();
-            string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_5";
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Payroll_Calendar_5";
             var parameters = new DynamicParameters();
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1427,7 +1431,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer5>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer5();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer5();
@@ -1437,28 +1441,29 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer5(Answer5 answer5)
+        public async Task<AnswerResponse> PostSOPAnswer5(Answer5 answer5)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
             if (answer5 != null)
             {
-                string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Answer_Details_5";
+                string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Payroll_Calendar_5";
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@QuestionId", answer5.QuestionId);
-                parameters.Add("@Attendance_Cycle_From", DateTime.TryParse(answer5.Attendance_Cycle_From, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
-                parameters.Add("@Attendance_Cycle_To", DateTime.TryParse(answer5.Attendance_Cycle_To, out var parsedDate1) ? parsedDate1 : (object?)null, DbType.Date);
-                parameters.Add("@PayRoll_Cycle_From", DateTime.TryParse(answer5.PayRoll_Cycle_From, out var parsedDate2) ? parsedDate2 : (object?)null, DbType.Date);
-                parameters.Add("@PayRoll_Cycle_To", DateTime.TryParse(answer5.PayRoll_Cycle_To, out var parsedDate3) ? parsedDate3 : (object?)null, DbType.Date);
-                parameters.Add("@Collection_Date_From", DateTime.TryParse(answer5.Collection_Date_From, out var parsedDate4) ? parsedDate4 : (object?)null, DbType.Date);
-                parameters.Add("@Collection_Date_To", DateTime.TryParse(answer5.Collection_Date_To, out var parsedDate5) ? parsedDate5 : (object?)null, DbType.Date);
-                parameters.Add("@Group_Name_Site_Master", answer5.Group_Name_Site_Master);
-                parameters.Add("@PayOut_Date", DateTime.TryParse(answer5.PayOut_Date, out var parsedDate6) ? parsedDate6 : (object?)null, DbType.Date);
-                parameters.Add("@Payment_Proof", answer5.Payment_Proof);
+                parameters.Add("@Attendance_Cycle_From", answer5.Attendance_Cycle_From ?? (object)DBNull.Value);
+                parameters.Add("@Attendance_Cycle_To", answer5.Attendance_Cycle_To ?? (object)DBNull.Value);
+                parameters.Add("@PayRoll_Cycle_From", answer5.PayRoll_Cycle_From ?? (object)DBNull.Value);
+                parameters.Add("@PayRoll_Cycle_To", answer5.PayRoll_Cycle_To ?? (object)DBNull.Value);
+                parameters.Add("@Collection_Date_From", answer5.Collection_Date_From ?? (object)DBNull.Value);
+                parameters.Add("@Collection_Date_To", answer5.Collection_Date_To ?? (object)DBNull.Value);
+                parameters.Add("@Group_Name_Site_Master", !string.IsNullOrWhiteSpace(answer5.Group_Name_Site_Master) ? answer5.Group_Name_Site_Master : (object?)null, DbType.String);
+                parameters.Add("@PayOut_Date_From", answer5.PayOut_Date_From ?? (object)DBNull.Value);
+                parameters.Add("@PayOut_Date_To", answer5.PayOut_Date_To ?? (object)DBNull.Value);
+                parameters.Add("@Payment_Proof", !string.IsNullOrWhiteSpace(answer5.Payment_Proof) ? answer5.Payment_Proof : (object?)null, DbType.String);
                 parameters.Add("@CreatedBy", answer5.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1472,35 +1477,35 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer7 GetSOPAnswer7(int QuestionId, string Createdby)
+        public async Task<List<Answer7>> GetSOPAnswer7(int QuestionId, string Createdby)
         {
-            var AnswerDetails = new Answer7();
+            var AnswerDetails = new List<Answer7>();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_7";
             var parameters = new DynamicParameters();
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
                 try
                 {
-                    var companyList = JsonConvert.DeserializeObject<List<Answer7>>(res);
-                    AnswerDetails = companyList?.FirstOrDefault() ?? new Answer7();
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer7>>(res)
+                                                     ?? new List<Answer7>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
-                    AnswerDetails = new Answer7();
+                    AnswerDetails = new List<Answer7>();
                 }
             }
 
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer7(Answer7 answer7)
+        public async Task<AnswerResponse> PostSOPAnswer7(Answer7 answer7)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1510,10 +1515,11 @@ namespace QPay.BAL.Repository
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@QuestionId", answer7.QuestionId);
-                parameters.Add("@First_month_Payroll", answer7.First_month_Payroll);
+                parameters.Add("@CompanyId", answer7.CompanyId ?? (object)DBNull.Value);
+                parameters.Add("@First_month_Payroll", answer7.First_month_Payroll ?? (object)DBNull.Value);
                 parameters.Add("@CreatedBy", answer7.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1527,7 +1533,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer13 GetSOPAnswer13(int QuestionId, string Createdby)
+        public async Task<Answer13> GetSOPAnswer13(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer13();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_13";
@@ -1536,7 +1542,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1545,7 +1551,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer13>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer13();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer13();
@@ -1555,7 +1561,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer13(Answer13 answer13)
+        public async Task<AnswerResponse> PostSOPAnswer13(Answer13 answer13)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1568,7 +1574,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Attendance_Checking", answer13.Attendance_Checking);
                 parameters.Add("@CreatedBy", answer13.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1583,7 +1589,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public Answer14 GetSOPAnswer14(int QuestionId, string Createdby)
+        public async Task<Answer14> GetSOPAnswer14(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer14();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_14";
@@ -1592,7 +1598,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1601,7 +1607,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer14>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer14();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer14();
@@ -1611,7 +1617,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer14(Answer14 answer14)
+        public async Task<AnswerResponse> PostSOPAnswer14(Answer14 answer14)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1625,7 +1631,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Remarks", answer14.Remarks);
                 parameters.Add("@CreatedBy", answer14.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1640,7 +1646,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public Answer17 GetSOPAnswer17(int QuestionId, string Createdby)
+        public async Task<Answer17> GetSOPAnswer17(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer17();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_17";
@@ -1649,7 +1655,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1658,7 +1664,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer17>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer17();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer17();
@@ -1668,7 +1674,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer17(Answer17 answer17)
+        public async Task<AnswerResponse> PostSOPAnswer17(Answer17 answer17)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1685,7 +1691,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Date_Submission", DateTime.TryParse(answer17.Date_Submission, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
                 parameters.Add("@CreatedBy", answer17.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1699,7 +1705,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer16 GetSOPAnswer16(int QuestionId, string Createdby)
+        public async Task<Answer16> GetSOPAnswer16(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer16();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_16";
@@ -1708,7 +1714,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1717,7 +1723,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer16>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer16();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer16();
@@ -1727,7 +1733,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer16(Answer16 answer16)
+        public async Task<AnswerResponse> PostSOPAnswer16(Answer16 answer16)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1745,7 +1751,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Incentive_Calculation", answer16.Incentive_Calculation);
                 parameters.Add("@CreatedBy", answer16.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1759,7 +1765,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer18 GetSOPAnswer18(int QuestionId, string Createdby)
+        public async Task<Answer18> GetSOPAnswer18(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer18();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_18";
@@ -1768,7 +1774,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1777,7 +1783,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer18>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer18();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer18();
@@ -1787,7 +1793,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer18(Answer18 answer18)
+        public async Task<AnswerResponse> PostSOPAnswer18(Answer18 answer18)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1800,7 +1806,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Payslip_Distribution", answer18.Payslip_Distribution);
                 parameters.Add("@CreatedBy", answer18.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1814,7 +1820,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer19 GetSOPAnswer19(int QuestionId, string Createdby)
+        public async Task<Answer19> GetSOPAnswer19(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer19();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_19";
@@ -1823,7 +1829,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1832,7 +1838,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer19>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer19();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer19();
@@ -1842,7 +1848,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer19(Answer19 answer19)
+        public async Task<AnswerResponse> PostSOPAnswer19(Answer19 answer19)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1858,7 +1864,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Applicable_Wages_GROSS", answer19.Applicable_Wages_GROSS);
                 parameters.Add("@CreatedBy", answer19.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1872,7 +1878,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer21 GetSOPAnswer21(int QuestionId, string Createdby)
+        public async Task<Answer21> GetSOPAnswer21(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer21();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_21";
@@ -1881,7 +1887,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1890,7 +1896,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer21>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer21();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer21();
@@ -1900,7 +1906,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer21(Answer21 answer21)
+        public async Task<AnswerResponse> PostSOPAnswer21(Answer21 answer21)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1922,7 +1928,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Name", answer21.Name);
                 parameters.Add("@CreatedBy", answer21.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1936,7 +1942,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer23 GetSOPAnswer23(int QuestionId, string Createdby)
+        public async Task<Answer23> GetSOPAnswer23(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer23();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_23";
@@ -1945,7 +1951,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -1954,7 +1960,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer23>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer23();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer23();
@@ -1964,7 +1970,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer23(Answer23 answer23)
+        public async Task<AnswerResponse> PostSOPAnswer23(Answer23 answer23)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -1980,7 +1986,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Cost", answer23.Cost);
                 parameters.Add("@CreatedBy", answer23.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -1994,7 +2000,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer25 GetSOPAnswer25(int QuestionId, string Createdby)
+        public async Task<Answer25> GetSOPAnswer25(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer25();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_25";
@@ -2003,7 +2009,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2012,7 +2018,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer25>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer25();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer25();
@@ -2022,7 +2028,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer25(Answer25 answer25)
+        public async Task<AnswerResponse> PostSOPAnswer25(Answer25 answer25)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2038,7 +2044,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Billed_Paid", answer25.Billed_Paid);
                 parameters.Add("@CreatedBy", answer25.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2053,7 +2059,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public Answer28 GetSOPAnswer28(int QuestionId, string Createdby)
+        public async Task<Answer28> GetSOPAnswer28(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer28();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_28";
@@ -2062,7 +2068,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2071,7 +2077,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer28>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer28();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer28();
@@ -2081,7 +2087,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer28(Answer28 answer28)
+        public async Task<AnswerResponse> PostSOPAnswer28(Answer28 answer28)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2103,7 +2109,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Name", answer28.Name);
                 parameters.Add("@CreatedBy", answer28.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2117,7 +2123,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer29 GetSOPAnswer29(int QuestionId, string Createdby)
+        public async Task<Answer29> GetSOPAnswer29(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer29();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_29";
@@ -2126,7 +2132,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2135,7 +2141,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer29>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer29();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer29();
@@ -2145,7 +2151,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer29(Answer29 answer29)
+        public async Task<AnswerResponse> PostSOPAnswer29(Answer29 answer29)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2159,7 +2165,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Display_Register", answer29.Display_Register);
                 parameters.Add("@CreatedBy", answer29.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2173,7 +2179,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer30 GetSOPAnswer30(int QuestionId, string Createdby)
+        public async Task<Answer30> GetSOPAnswer30(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer30();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_30";
@@ -2182,7 +2188,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2191,7 +2197,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer30>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer30();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer30();
@@ -2201,7 +2207,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer30(Answer30 answer30)
+        public async Task<AnswerResponse> PostSOPAnswer30(Answer30 answer30)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2217,7 +2223,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@PF_Calculated_Earnings_Restricting_15K", answer30.PF_Calculated_Earnings_Restricting_15K);
                 parameters.Add("@CreatedBy", answer30.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2231,7 +2237,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer32 GetSOPAnswer32(int QuestionId, string Createdby)
+        public async Task<Answer32> GetSOPAnswer32(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer32();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_32";
@@ -2240,7 +2246,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2249,7 +2255,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer32>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer32();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer32();
@@ -2259,7 +2265,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer32(Answer32 answer32)
+        public async Task<AnswerResponse> PostSOPAnswer32(Answer32 answer32)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2273,7 +2279,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@ATTRIBUTES", answer32.ATTRIBUTES);
                 parameters.Add("@CreatedBy", answer32.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2287,7 +2293,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer36 GetSOPAnswer36(int QuestionId, string Createdby)
+        public async Task<Answer36> GetSOPAnswer36(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer36();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_36";
@@ -2296,7 +2302,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2305,7 +2311,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer36>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer36();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer36();
@@ -2315,7 +2321,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer36(Answer36 answer36)
+        public async Task<AnswerResponse> PostSOPAnswer36(Answer36 answer36)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2329,10 +2335,12 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Eligibility", answer36.Eligibility);
                 parameters.Add("@TAT", answer36.TAT);
                 parameters.Add("@Commercials", answer36.Commercials);
+                parameters.Add("@Flat", answer36.Flat ?? (object)DBNull.Value);
                 parameters.Add("@Pay_Code", answer36.Pay_Code);
+                parameters.Add("@Designation", answer36.Designation);
                 parameters.Add("@CreatedBy", answer36.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2346,7 +2354,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer37 GetSOPAnswer37(int QuestionId, string Createdby)
+        public async Task<Answer37> GetSOPAnswer37(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer37();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_37";
@@ -2355,7 +2363,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2364,7 +2372,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer37>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer37();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer37();
@@ -2374,7 +2382,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer37(Answer37 answer37)
+        public async Task<AnswerResponse> PostSOPAnswer37(Answer37 answer37)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2388,7 +2396,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Payment_Days", answer37.Payment_Days);
                 parameters.Add("@CreatedBy", answer37.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2402,7 +2410,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer38 GetSOPAnswer38(int QuestionId, string Createdby)
+        public async Task<Answer38> GetSOPAnswer38(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer38();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_38";
@@ -2411,7 +2419,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2420,7 +2428,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer38>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer38();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer38();
@@ -2430,7 +2438,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer38(Answer38 answer38)
+        public async Task<AnswerResponse> PostSOPAnswer38(Answer38 answer38)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2443,7 +2451,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Penalty_Clause", answer38.Penalty_Clause);
                 parameters.Add("@CreatedBy", answer38.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2458,57 +2466,69 @@ namespace QPay.BAL.Repository
         }
 
 
-        public Answer12 GetSOPAnswer12(int QuestionId, string Createdby)
+        public async Task<List<Answer12>> GetSOPAnswer12(int QuestionId, string Createdby)
         {
-            var AnswerDetails = new Answer12();
+            var AnswerDetails = new List<Answer12>();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_12";
             var parameters = new DynamicParameters();
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
                 try
                 {
-                    var companyList = JsonConvert.DeserializeObject<List<Answer12>>(res);
-                    AnswerDetails = companyList?.FirstOrDefault() ?? new Answer12();
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer12>>(res)
+                                                     ?? new List<Answer12>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
-                    AnswerDetails = new Answer12();
+                    AnswerDetails = new List<Answer12>();
                 }
             }
 
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer12(List<Answer12> answer12)
+        public async Task<AnswerResponse> PostSOPAnswer12(List<Answer12> answer12)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
             if (answer12 != null)
             {
-                foreach (var answer in answer12)
+                string storeProcedure1 = "SP_Delete_tbl_Customer_SOP_Answer_Details_12";
+                var parameters1 = new DynamicParameters();
+                parameters1.Add("@QuestionId", answer12[0].QuestionId);
+                parameters1.Add("@CreatedBy", answer12[0].CreatedBy);
+
+
+                var res1 = await this._dbRepository.GetItemsAsync(storeProcedure1, parameters1);
+                if (!string.IsNullOrWhiteSpace(res1))
                 {
-                    string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Answer_Details_12";
-                    var parameters = new DynamicParameters();
-
-                    parameters.Add("@QuestionId", answer.QuestionId);
-                    parameters.Add("@SubId", answer.SubId);
-                    parameters.Add("@Filling_Attendance", answer.Filling_Attendance);
-                    parameters.Add("@CreatedBy", answer.CreatedBy);
-
-                    var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
-                    if (!string.IsNullOrWhiteSpace(res))
+                    foreach (var answer in answer12)
                     {
-                        AnswerDetails.response = "Success";
+                        string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Answer_Details_12";
+                        var parameters = new DynamicParameters();
+
+                        parameters.Add("@QuestionId", answer.QuestionId);
+                        parameters.Add("@SubId", answer.SubId);
+                        parameters.Add("@Filling_Attendance", answer.Filling_Attendance);
+                        parameters.Add("@CreatedBy", answer.CreatedBy);
+
+                        var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                        if (!string.IsNullOrWhiteSpace(res))
+                        {
+                            AnswerDetails.response = "Success";
+                        }
                     }
+                    AnswerDetails.response = "Success";
                 }
-                AnswerDetails.response = "Success";
+
+
             }
             else
             {
@@ -2518,7 +2538,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer27 GetSOPAnswer27(int QuestionId, string Createdby)
+        public async Task<Answer27> GetSOPAnswer27(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer27();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_27";
@@ -2527,7 +2547,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2536,7 +2556,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer27>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer27();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer27();
@@ -2546,7 +2566,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer27(Answer27 answer27)
+        public async Task<AnswerResponse> PostSOPAnswer27(Answer27 answer27)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2561,7 +2581,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Billing_Type", answer27.Billing_Type);
                 parameters.Add("@CreatedBy", answer27.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2575,7 +2595,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer39 GetSOPAnswer39(int QuestionId, string Createdby)
+        public async Task<Answer39> GetSOPAnswer39(int QuestionId, string Createdby)
         {
 
             var checklistQuestionAnswerDetails = new Answer39();
@@ -2585,7 +2605,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2595,9 +2615,9 @@ namespace QPay.BAL.Repository
                     checklistQuestionAnswerDetails = answerList?.FirstOrDefault() ?? new Answer39();
 
                     // Get and set POUtilization list separately
-                    checklistQuestionAnswerDetails.POUtiliziation = GetSOPAnswer39_1(QuestionId, Createdby);
+                    checklistQuestionAnswerDetails.POUtiliziation = await GetSOPAnswer39_1(QuestionId, Createdby);
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     checklistQuestionAnswerDetails = new Answer39();
@@ -2608,7 +2628,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        public List<Po_Utiliziation> GetSOPAnswer39_1(int QuestionId, string Createdby)
+        public async Task<List<Po_Utiliziation>> GetSOPAnswer39_1(int QuestionId, string Createdby)
         {
             var checklistQuestionAnswerDetails = new List<Po_Utiliziation>();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_39_1";
@@ -2616,7 +2636,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@CreatedBy", Createdby);
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2635,7 +2655,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public AnswerResponse PostSOPAnswer39(Answer39 answer39)
+        public async Task<AnswerResponse> PostSOPAnswer39(Answer39 answer39)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2657,7 +2677,7 @@ namespace QPay.BAL.Repository
                         parameters.Add("@Currency", answer39.Currency);
                         parameters.Add("@CreatedBy", answer39.CreatedBy);
 
-                        var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                        var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                         if (!string.IsNullOrWhiteSpace(res))
                         {
                             AnswerDetails.response = "Success";
@@ -2678,7 +2698,7 @@ namespace QPay.BAL.Repository
                     parameters.Add("@Currency", "");
                     parameters.Add("@CreatedBy", answer39.CreatedBy);
 
-                    var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                    var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                     if (!string.IsNullOrWhiteSpace(res))
                     {
                         AnswerDetails.response = "Success";
@@ -2694,7 +2714,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public List<Marked_Category> GetmarkedQuestion(string Createdby)
+        public async Task<List<Marked_Category>> GetmarkedQuestion(string Createdby)
         {
             var categorydetails = new List<Marked_Category>();
             string storeProcedure = "SP_GET_Customer_SOP_Marked_Category";
@@ -2702,7 +2722,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@Createdby", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2714,10 +2734,10 @@ namespace QPay.BAL.Repository
                     // Now populate cheklistAnswer1s for each question
                     foreach (var category in categorydetails)
                     {
-                        category.Marked_Question = GetmarkedQuestion(category.CategoryId, Createdby);
+                        category.Marked_Question = await GetmarkedQuestion(category.CategoryId, Createdby);
                     }
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     categorydetails = new List<Marked_Category>();
@@ -2728,7 +2748,7 @@ namespace QPay.BAL.Repository
 
         }
 
-        public List<Marked_Question> GetmarkedQuestion(string CategoryId, string Createdby)
+        public async Task<List<Marked_Question>> GetmarkedQuestion(string CategoryId, string Createdby)
         {
             var questionDetails = new List<Marked_Question>();
             string storeProcedure = "SP_GET_Customer_SOP_Marked_Question";
@@ -2736,7 +2756,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CategoryId", CategoryId);
             parameters.Add("@Createdby", Createdby);
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -2754,7 +2774,7 @@ namespace QPay.BAL.Repository
             return new List<Marked_Question>();
         }
 
-        public AnswerResponse PostSOPAnswer4(Answer4Request answer4)
+        public async Task<AnswerResponse> PostSOPAnswer4(Answer4Request answer4)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2766,7 +2786,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@QuestionId", answer4.QuestionId);
                 parameters.Add("@CreatedBy", answer4.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
                 if (answer4.Vertical.Count > 0)
                 {
@@ -2821,7 +2841,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer4RequestGet GetSOPAnswer4(int QuestionId, string Createdby)
+        public async Task<Answer4RequestGet> GetSOPAnswer4(int QuestionId, string Createdby)
         {
             var checklistQuestionAnswerDetails = new Answer4RequestGet
             {
@@ -2865,7 +2885,7 @@ namespace QPay.BAL.Repository
             return checklistQuestionAnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer33(Answer33Request answer33)
+        public async Task<AnswerResponse> PostSOPAnswer33(Answer33Request answer33)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -2877,7 +2897,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@QuestionId", answer33.QuestionId);
                 parameters.Add("@CreatedBy", answer33.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
                 if (answer33.Email.Count > 0)
                 {
@@ -2922,7 +2942,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer33RequestGet GetSOPAnswer33(int QuestionId, string Createdby)
+        public async Task<Answer33RequestGet> GetSOPAnswer33(int QuestionId, string Createdby)
         {
             var checklistQuestionAnswerDetails = new Answer33RequestGet
             {
@@ -2958,7 +2978,7 @@ namespace QPay.BAL.Repository
             return checklistQuestionAnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer31(IFormFile file, [FromForm] string billApplicable,
+        public async Task<AnswerResponse> PostSOPAnswer31(IFormFile file, [FromForm] string billApplicable,
             [FromForm] int QuestionId, [FromForm] string CreatedBy)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
@@ -2969,11 +2989,15 @@ namespace QPay.BAL.Repository
                 if (!Directory.Exists(uploadsFolder))
                     Directory.CreateDirectory(uploadsFolder);
 
-                var filePath = Path.Combine(uploadsFolder, file.FileName);
+                var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var originalFileName = Path.GetFileName(file.FileName);
+                var newFileName = $"ReimbursementPolicy_{datePrefix}.pdf";
+
+                var filePath = Path.Combine(uploadsFolder, newFileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    file.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
                 string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Answer_Details_31";
@@ -2984,7 +3008,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@File_Path", filePath);
                 parameters.Add("@CreatedBy", CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -2997,7 +3021,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer31_1([FromForm] string billApplicable,
+        public async Task<AnswerResponse> PostSOPAnswer31_1([FromForm] string billApplicable,
            [FromForm] int QuestionId, [FromForm] string CreatedBy)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
@@ -3010,7 +3034,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@File_Path", "");
             parameters.Add("@CreatedBy", CreatedBy);
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             if (!string.IsNullOrWhiteSpace(res))
             {
                 AnswerDetails.response = "Success";
@@ -3019,7 +3043,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer31 GetSOPAnswer31(int QuestionId, string Createdby)
+        public async Task<Answer31> GetSOPAnswer31(int QuestionId, string Createdby)
         {
             var AnswerDetails = new Answer31();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_31";
@@ -3028,7 +3052,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -3037,7 +3061,7 @@ namespace QPay.BAL.Repository
                     var companyList = JsonConvert.DeserializeObject<List<Answer31>>(res);
                     AnswerDetails = companyList?.FirstOrDefault() ?? new Answer31();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new Answer31();
@@ -3047,7 +3071,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer11(Answer11Request answer11)
+        public async Task<AnswerResponse> PostSOPAnswer11(Answer11Request answer11)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -3059,7 +3083,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@QuestionId", answer11.QuestionId);
                 parameters.Add("@CreatedBy", answer11.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
                 if (answer11.Email.Count > 0)
                 {
@@ -3116,7 +3140,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer11RequestGet GetSOPAnswer11(int QuestionId, string Createdby)
+        public async Task<Answer11RequestGet> GetSOPAnswer11(int QuestionId, string Createdby)
         {
             var checklistQuestionAnswerDetails = new Answer11RequestGet
             {
@@ -3163,7 +3187,7 @@ namespace QPay.BAL.Repository
         }
 
 
-        public AnswerResponse PostSOPAnswer15(Answer15Request answer15)
+        public async Task<AnswerResponse> PostSOPAnswer15(Answer15Request answer15)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -3175,7 +3199,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@QuestionId", answer15.QuestionId);
                 parameters.Add("@CreatedBy", answer15.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
                 if (answer15.Email.Count > 0)
                 {
@@ -3232,7 +3256,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public Answer15RequestGet GetSOPAnswer15(int QuestionId, string Createdby)
+        public async Task<Answer15RequestGet> GetSOPAnswer15(int QuestionId, string Createdby)
         {
             var checklistQuestionAnswerDetails = new Answer15RequestGet
             {
@@ -3249,7 +3273,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@CreatedBy", Createdby);
 
-            var result = _dbRepository.GetItemsAsync<Answer15Get>(storedProcedure, parameters).Result;
+            var result = await _dbRepository.GetItemsAsync<Answer15Get>(storedProcedure, parameters);
 
             if (result != null)
             {
@@ -3278,7 +3302,7 @@ namespace QPay.BAL.Repository
             return checklistQuestionAnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer20(Answer20 answer20)
+        public async Task<AnswerResponse> PostSOPAnswer20(Answer20 answer20)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -3289,16 +3313,17 @@ namespace QPay.BAL.Repository
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@QuestionId", answer20.QuestionId);
-                parameters.Add("@Applicable", answer20.Applicable);
-                parameters.Add("@Eligible_days", answer20.Eligible_days);
-                parameters.Add("@Applicable_Desc_Client", answer20.Applicable_Desc_Client);
-                parameters.Add("@Designation_Id", answer20.Designation_Id);
-                parameters.Add("@Designation_Name", answer20.Designation_Name);
+                parameters.Add("@Applicable", !string.IsNullOrWhiteSpace(answer20.Applicable) ? answer20.Applicable : (object?)null, DbType.String);
+                parameters.Add("@Eligible_days", answer20.Eligible_days ?? (object)DBNull.Value);
+                parameters.Add("@Applicable_Desc_Client", !string.IsNullOrWhiteSpace(answer20.Applicable_Desc_Client) ? answer20.Applicable_Desc_Client : (object?)null, DbType.String);
+                parameters.Add("@Designation_Id", answer20.Designation_Id ?? (object)DBNull.Value);
+                parameters.Add("@CompanyId", !string.IsNullOrWhiteSpace(answer20.CompanyId) ? answer20.CompanyId : (object?)null, DbType.String);
+                parameters.Add("@Designation_Name", !string.IsNullOrWhiteSpace(answer20.Designation_Name) ? answer20.Designation_Name : (object?)null, DbType.String);
                 parameters.Add("@Applicable_Wages_BASIC_DA", answer20.Applicable_Wages_BASIC_DA);
-                parameters.Add("@Applicable_Wages_GROSS", answer20.Applicable_Wages_GROSS);
+                parameters.Add("@Applicable_Wages_GROSS", answer20.Applicable_Wages_GROSS ?? (object)DBNull.Value);
                 parameters.Add("@CreatedBy", answer20.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -3311,7 +3336,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public List<Answer20> GetSOPAnswer20(int QuestionId, string Createdby)
+        public async Task<List<Answer20>> GetSOPAnswer20(int QuestionId, string Createdby)
         {
             var AnswerDetails = new List<Answer20>();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Notice_Period_Recovery_20";
@@ -3320,7 +3345,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -3329,17 +3354,18 @@ namespace QPay.BAL.Repository
                     AnswerDetails = JsonConvert.DeserializeObject<List<Answer20>>(res)
                                                       ?? new List<Answer20>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new List<Answer20>();
                 }
             }
 
+
             return AnswerDetails;
         }
 
-        public AnswerResponse PostSOPAnswer22(Answer22 answer22)
+        public async Task<AnswerResponse> PostSOPAnswer22(Answer22 answer22)
         {
             AnswerResponse AnswerDetails = new AnswerResponse();
 
@@ -3354,13 +3380,13 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Leave_Type_Id", answer22.Leave_Type_Id);
                 parameters.Add("@Leave_Type", answer22.Leave_Type);
                 parameters.Add("@Carry_Forward", answer22.Carry_Forward);
-                parameters.Add("@Carry_Forward_Days", answer22.Carry_Forward_Days);
+                parameters.Add("@Carry_Forward_Days", answer22.Carry_Forward_Days ?? (object)DBNull.Value);
                 parameters.Add("@Calander_Type", answer22.Calander_Type);
                 parameters.Add("@Leave_Encashment", answer22.Leave_Encashment);
                 parameters.Add("@Leave_Management", answer22.Leave_Management);
                 parameters.Add("@CreatedBy", answer22.CreatedBy);
 
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     AnswerDetails.response = "Success";
@@ -3373,7 +3399,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public List<Answer22> GetSOPAnswer22(int QuestionId, string Createdby)
+        public async Task<List<Answer22>> GetSOPAnswer22(int QuestionId, string Createdby)
         {
             var AnswerDetails = new List<Answer22>();
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Leave_22";
@@ -3382,7 +3408,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@CreatedBy", Createdby);
 
 
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -3391,7 +3417,7 @@ namespace QPay.BAL.Repository
                     AnswerDetails = JsonConvert.DeserializeObject<List<Answer22>>(res)
                                                       ?? new List<Answer22>();
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     // Log the error if needed
                     AnswerDetails = new List<Answer22>();
@@ -3401,5 +3427,1209 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
+        public async Task<AnswerResponse> PostSOPAnswer24(Answer24 answer24)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer24 != null)
+            {
+
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Holiday_24";
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@QuestionId", answer24.QuestionId);
+                parameters.Add("@Calander_Type", answer24.Calander_Type);
+                parameters.Add("@State_Id", answer24.State_Id);
+                parameters.Add("@State_Name", answer24.State_Name);
+                parameters.Add("@Leave_Type", answer24.Leave_Type);
+                parameters.Add("@Holiday_Date", DateTime.TryParse(answer24.Holiday_Date, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@Leave_Description", answer24.Leave_Description);
+                parameters.Add("@Is_Billable", answer24.Is_Billable);
+                parameters.Add("@Billable_Type", answer24.Billable_Type);
+                parameters.Add("@CreatedBy", answer24.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer24>> GetSOPAnswer24(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer24>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Holiday_24";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer24>>(res)
+                                                      ?? new List<Answer24>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer24>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<PermissionwiseCompanyModel>> GetUserWiseCompanyCode(int UserId)
+        {
+            if (UserId != 3)
+            {
+                UserId = 3;
+            }
+            var CompanyCodeDetails = new List<PermissionwiseCompanyModel>();
+            string storeProcedure = "Sp_GetUserWiseCompanyCode";
+            var parameters = new DynamicParameters();
+            parameters.Add("@UserId", UserId);
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    CompanyCodeDetails = JsonConvert.DeserializeObject<List<PermissionwiseCompanyModel>>(res)
+                                                     ?? new List<PermissionwiseCompanyModel>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    CompanyCodeDetails = new List<PermissionwiseCompanyModel>();
+                }
+            }
+
+            return CompanyCodeDetails;
+        }
+        public async Task<List<PremiumTracker>> GetPremiumTracker26()
+        {
+            var PremiumTrackerDetails = new List<PremiumTracker>();
+            string storeProcedure = "USP_CommonDropDowns";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "INSURANCE_PERMIUM_TRACKER");
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    PremiumTrackerDetails = JsonConvert.DeserializeObject<List<PremiumTracker>>(res)
+                                                     ?? new List<PremiumTracker>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    PremiumTrackerDetails = new List<PremiumTracker>();
+                }
+            }
+
+            return PremiumTrackerDetails;
+        }
+
+        public async Task<List<InsuranceCoverageType>> GetCoverageType26()
+        {
+            var InsuranceCoverageTypeDetails = new List<InsuranceCoverageType>();
+            string storeProcedure = "sp_GetAllCoverageType";
+            var parameters = new DynamicParameters();
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    InsuranceCoverageTypeDetails = JsonConvert.DeserializeObject<List<InsuranceCoverageType>>(res)
+                                                     ?? new List<InsuranceCoverageType>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    InsuranceCoverageTypeDetails = new List<InsuranceCoverageType>();
+                }
+            }
+
+            return InsuranceCoverageTypeDetails;
+        }
+
+        public async Task<List<Policy>> GetGPAPolicy26()
+        {
+            var PolicyDetails = new List<Policy>();
+            string storeProcedure = "sp_GetAllInsurancePolicyTypeForOther";
+            var parameters = new DynamicParameters();
+            parameters.Add("@InsuranceType", "GPA");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    PolicyDetails = JsonConvert.DeserializeObject<List<Policy>>(res)
+                                                     ?? new List<Policy>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    PolicyDetails = new List<Policy>();
+                }
+            }
+
+            return PolicyDetails;
+        }
+
+        public async Task<List<Policy>> GetGTLIPolicy26()
+        {
+            var PolicyDetails = new List<Policy>();
+            string storeProcedure = "sp_GetAllInsurancePolicyTypeForOther";
+            var parameters = new DynamicParameters();
+            parameters.Add("@InsuranceType", "GTLI");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    PolicyDetails = JsonConvert.DeserializeObject<List<Policy>>(res)
+                                                     ?? new List<Policy>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    PolicyDetails = new List<Policy>();
+                }
+            }
+
+            return PolicyDetails;
+        }
+
+        public async Task<List<Paycode>> GetDeductionPaycode26()
+        {
+            var PaycodeDetails = new List<Paycode>();
+            string storeProcedure = "sp_GetAllInsurancePayCodes";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "Deduction");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    PaycodeDetails = JsonConvert.DeserializeObject<List<Paycode>>(res)
+                                                     ?? new List<Paycode>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    PaycodeDetails = new List<Paycode>();
+                }
+            }
+
+            return PaycodeDetails;
+        }
+
+        public async Task<List<Paycode>> GetBillingPaycode26()
+        {
+            var PaycodeDetails = new List<Paycode>();
+            string storeProcedure = "sp_GetAllInsurancePayCodes";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "Billing");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    PaycodeDetails = JsonConvert.DeserializeObject<List<Paycode>>(res)
+                                                     ?? new List<Paycode>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    PaycodeDetails = new List<Paycode>();
+                }
+            }
+
+            return PaycodeDetails;
+        }
+
+        public async Task<List<string>> GetMartialStatus26()
+        {
+            return new List<string>() { "-Select-", "Single", "Married", "Divorced", "Widowed" };
+        }
+
+        public async Task<List<EmployeeType>> GetEmployeeType26()
+        {
+            var EmployeeTypeDetails = new List<EmployeeType>();
+            string storeProcedure = "USP_CommonDropDowns";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "GetAllEmployeeType");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    EmployeeTypeDetails = JsonConvert.DeserializeObject<List<EmployeeType>>(res)
+                                                     ?? new List<EmployeeType>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    EmployeeTypeDetails = new List<EmployeeType>();
+                }
+            }
+
+            return EmployeeTypeDetails;
+        }
+
+        public async Task<List<NewJoinee_Arrear>> GetNewJoinee26()
+        {
+            var NewJoineeDetails = new List<NewJoinee_Arrear>();
+            string storeProcedure = "USP_CommonDropDowns";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "GetAllNewJoineeArrearType");
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    NewJoineeDetails = JsonConvert.DeserializeObject<List<NewJoinee_Arrear>>(res)
+                                                     ?? new List<NewJoinee_Arrear>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    NewJoineeDetails = new List<NewJoinee_Arrear>();
+                }
+            }
+
+            return NewJoineeDetails;
+        }
+
+        public async Task<List<GroupDetails>> GetAllGroupByCompany(int CompanyId)
+        {
+            var GroupDetails = new List<GroupDetails>();
+            string storeProcedure = "sp_GetAllGroupNameByCompany";
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", CompanyId);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    GroupDetails = JsonConvert.DeserializeObject<List<GroupDetails>>(res)
+                                                     ?? new List<GroupDetails>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    GroupDetails = new List<GroupDetails>();
+                }
+            }
+
+            return GroupDetails;
+        }
+
+        public async Task<List<InsuranceVertical>> GetInsuranceVertical(int CompanyId)
+        {
+            var InsuranceVerticalDetails = new List<InsuranceVertical>();
+            string storeProcedure = "sp_GetAllInsuranceVertical";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Company_ID", CompanyId);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    InsuranceVerticalDetails = JsonConvert.DeserializeObject<List<InsuranceVertical>>(res)
+                                                     ?? new List<InsuranceVertical>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    InsuranceVerticalDetails = new List<InsuranceVertical>();
+                }
+            }
+
+            return InsuranceVerticalDetails;
+        }
+
+        public async Task<List<DesignationMaster>> GetAllDesignationByCompany(int CompanyId)
+        {
+            var DesignationMasterDetails = new List<DesignationMaster>();
+            string storeProcedure = "sp_GetDesignationDetails";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Companycode", CompanyId);
+            parameters.Add("@Designation_Id", 0);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    DesignationMasterDetails = JsonConvert.DeserializeObject<List<DesignationMaster>>(res)
+                                                     ?? new List<DesignationMaster>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    DesignationMasterDetails = new List<DesignationMaster>();
+                }
+            }
+
+            return DesignationMasterDetails;
+        }
+
+        public async Task<List<GMCPolicyCondition>> GetPolicyConditionByCoverageType(int CoverageTypeId)
+        {
+            var GMCPolicyConditionDetails = new List<GMCPolicyCondition>();
+            string storeProcedure = "sp_GetAllPolicyCondition";
+            var parameters = new DynamicParameters();
+            parameters.Add("@CoverageTypeId", CoverageTypeId);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    GMCPolicyConditionDetails = JsonConvert.DeserializeObject<List<GMCPolicyCondition>>(res)
+                                                     ?? new List<GMCPolicyCondition>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    GMCPolicyConditionDetails = new List<GMCPolicyCondition>();
+                }
+            }
+
+            return GMCPolicyConditionDetails;
+        }
+
+        public async Task<List<GMCPolicyNo>> GetPolicyNoByCondition(int CoverageTypeId, int PolicyConditionId)
+        {
+            var GMCPolicyNoDetails = new List<GMCPolicyNo>();
+            string storeProcedure = "sp_GetAllInsurancePolicyType";
+            var parameters = new DynamicParameters();
+            parameters.Add("@CoverageTypeId", CoverageTypeId);
+            parameters.Add("@PolicyConditionId", PolicyConditionId);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    GMCPolicyNoDetails = JsonConvert.DeserializeObject<List<GMCPolicyNo>>(res)
+                                                     ?? new List<GMCPolicyNo>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    GMCPolicyNoDetails = new List<GMCPolicyNo>();
+                }
+            }
+
+            return GMCPolicyNoDetails;
+        }
+
+        public async Task<AnswerResponse> InsuranceExists(InsuranceAlreadyExists answer26)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer26 != null)
+            {
+                string storeProcedure = "SP_tbl_Customer_SOP_Insurance_Policy_26_Exists";
+                var parameters = new DynamicParameters();
+                parameters.Add("@CompanyId", answer26.CompanyId);
+                parameters.Add("@GroupDetailId", answer26.GroupDetailId);
+                parameters.Add("@PremiumTrackerId", answer26.PremiumTrackerId);
+                parameters.Add("@EffectiveDate", answer26.EffectiveDate);
+                parameters.Add("@Insurance_Vertical_ID", answer26.Insurance_Vertical_ID);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    var resultList = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(res);
+
+                    if (resultList != null && resultList.Count > 0)
+                    {
+                        var existsValue = resultList[0]["existss"];
+
+                        if (existsValue == "0")
+                        {
+                            AnswerDetails.response = "Success";
+                        }
+                        else
+                        {
+                            AnswerDetails.response = "Already Exists";
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> InsuranceCreate(InsuranceAdd answer26)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer26 != null)
+            {
+                string json = System.Text.Json.JsonSerializer.Serialize<object>(answer26);
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Insurance_Policy_26_Exists";
+                var parameters = new DynamicParameters();
+                parameters.Add("@jsonInput", json);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<InsurancePolicy>> GetSOPInsurance26(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<InsurancePolicy>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Insurance_Policy_Mapping_26";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<InsurancePolicy>>(res)
+                                                      ?? new List<InsurancePolicy>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<InsurancePolicy>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Client>> GetClientName26()
+        {
+            var ClientDetails = new List<Client>();
+            string storeProcedure = "USP_Client_Request_Full_Name_Organization";
+            var parameters = new DynamicParameters();
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    ClientDetails = JsonConvert.DeserializeObject<List<Client>>(res)
+                                                      ?? new List<Client>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    ClientDetails = new List<Client>();
+                }
+            }
+
+            return ClientDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswer35(Answer35 answer35)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer35 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Service_Fee_35";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer35.QuestionId);
+                parameters.Add("@Client_ID", answer35.Client_ID ?? (object)DBNull.Value);
+                parameters.Add("@Full_Name_Of_Organization", !string.IsNullOrWhiteSpace(answer35.Full_Name_Of_Organization) ? answer35.Full_Name_Of_Organization : (object?)null, DbType.String);
+                parameters.Add("@Type_Of_Contact", !string.IsNullOrWhiteSpace(answer35.Type_Of_Contact) ? answer35.Type_Of_Contact : (object?)null, DbType.String);
+                parameters.Add("@Credit_Days_Agreed", !string.IsNullOrWhiteSpace(answer35.Credit_Days_Agreed) ? answer35.Credit_Days_Agreed : (object?)null, DbType.String);
+                parameters.Add("@Agreement_Start_Date", DateTime.TryParse(answer35.Agreement_Start_Date, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@Agreement_End_Date", DateTime.TryParse(answer35.Agreement_End_Date, out var parsedDate1) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@Type_Of_Contact", !string.IsNullOrWhiteSpace(answer35.Type_Of_Contact) ? answer35.Type_Of_Contact : (object?)null, DbType.String);
+                parameters.Add("@Agreement_Status", !string.IsNullOrWhiteSpace(answer35.Agreement_Status) ? answer35.Agreement_Status : (object?)null, DbType.String);
+                parameters.Add("@Busniess_Head_Approval", !string.IsNullOrWhiteSpace(answer35.Busniess_Head_Approval) ? answer35.Busniess_Head_Approval : (object?)null, DbType.String);
+                parameters.Add("@One_Time_Onboarding_Fees", decimal.TryParse(answer35.One_Time_Onboarding_Fees, out var fee) ? fee : (object?)null, DbType.Decimal);
+                parameters.Add("@Service_Fee_Type", !string.IsNullOrWhiteSpace(answer35.Service_Fee_Type) ? answer35.Service_Fee_Type : (object?)null, DbType.String);
+                parameters.Add("@Service_Fee", decimal.TryParse(answer35.Service_Fee, out var fee1) ? fee1 : (object?)null, DbType.Decimal);
+                parameters.Add("@Sourcing_Fee", decimal.TryParse(answer35.Sourcing_Fee, out var fee2) ? fee2 : (object?)null, DbType.Decimal);
+                parameters.Add("@Replacement_Clause", !string.IsNullOrWhiteSpace(answer35.Replacement_Clause) ? answer35.Replacement_Clause : (object?)null, DbType.String);
+                parameters.Add("@Absorption_Fee", decimal.TryParse(answer35.Absorption_Fee, out var fee3) ? fee3 : (object?)null, DbType.Decimal);
+                parameters.Add("@Upfront_Charges", decimal.TryParse(answer35.Upfront_Charges, out var fee4) ? fee4 : (object?)null, DbType.Decimal);
+                parameters.Add("@InEdge_Charges", decimal.TryParse(answer35.InEdge_Charges, out var fee5) ? fee5 : (object?)null, DbType.Decimal);
+                parameters.Add("@Supplementary_Fee_Type", !string.IsNullOrWhiteSpace(answer35.Supplementary_Fee_Type) ? answer35.Supplementary_Fee_Type : (object?)null, DbType.String);
+                parameters.Add("@Supplementary_Charges", decimal.TryParse(answer35.Supplementary_Charges, out var fee6) ? fee6 : (object?)null, DbType.Decimal);
+                parameters.Add("@LatePayment_Fee", decimal.TryParse(answer35.LatePayment_Fee, out var fee7) ? fee7 : (object?)null, DbType.Decimal);
+                parameters.Add("@Other_Fees", !string.IsNullOrWhiteSpace(answer35.Other_Fees) ? answer35.Other_Fees : (object?)null, DbType.String);
+                parameters.Add("@PAYROLL_WITH_DECIMAL", !string.IsNullOrWhiteSpace(answer35.PAYROLL_WITH_DECIMAL) ? answer35.PAYROLL_WITH_DECIMAL : (object?)null, DbType.String);
+                parameters.Add("@SERVICE_FEE_WITH_DECIMAL", !string.IsNullOrWhiteSpace(answer35.SERVICE_FEE_WITH_DECIMAL) ? answer35.SERVICE_FEE_WITH_DECIMAL : (object?)null, DbType.String);
+                parameters.Add("@OBApplicable", answer35.OBApplicable ?? (object)DBNull.Value);
+                parameters.Add("@CreatedBy", answer35.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer35>> GetSOPAnswer35(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer35>();
+            string storeProcedure = "SP_Get_tbl_Customer_SOP_Service_Fee_35";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer35>>(res)
+                                                      ?? new List<Answer35>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer35>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer34>> GetSOPAnswer34(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer34>();
+            string storeProcedure = "SP_Get_tbl_Customer_SOP_Gst_Certificate_34";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer34>>(res)
+                                                      ?? new List<Answer34>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer34>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswer34([FromForm] Answer34 answer34, IFormFile? fileGST, IFormFile? fileSEZ,
+            IFormFile? fileLUT)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer34 != null)
+            {
+                string filePathGST = null;
+                if (fileGST != null && fileGST.Length != 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "GST_Certificate");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var newFileName = $"GST_Certificate_{datePrefix}.pdf";
+
+                    filePathGST = Path.Combine(uploadsFolder, newFileName);
+
+                    using (var stream = new FileStream(filePathGST, FileMode.Create))
+                    {
+                        await fileGST.CopyToAsync(stream);
+                    }
+                }
+
+                string filePathSEZ = null;
+
+                if (fileSEZ != null && fileSEZ.Length != 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "SEZ_Certificate");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var newFileName = $"SEZ_Certificate_{datePrefix}.pdf";
+
+                    filePathSEZ = Path.Combine(uploadsFolder, newFileName);
+
+                    using (var stream = new FileStream(filePathSEZ, FileMode.Create))
+                    {
+                        await fileSEZ.CopyToAsync(stream);
+                    }
+                }
+
+                string filePathLUT = null;
+                if (fileLUT != null && fileLUT.Length != 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "LUT_Certificate");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var newFileName = $"LUT_Certificate_{datePrefix}.pdf";
+
+                    filePathLUT = Path.Combine(uploadsFolder, newFileName);
+
+                    using (var stream = new FileStream(filePathLUT, FileMode.Create))
+                    {
+                        await fileLUT.CopyToAsync(stream);
+                    }
+                }
+
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Gst_Certificate_34";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer34.QuestionId);
+                parameters.Add("@State_Id", answer34.State_Id ?? (object)DBNull.Value);
+                parameters.Add("@State_Name", !string.IsNullOrWhiteSpace(answer34.State_Name) ? answer34.State_Name : (object?)null, DbType.String);
+                parameters.Add("@Certificate_Type", !string.IsNullOrWhiteSpace(answer34.Certificate_Type) ? answer34.Certificate_Type : (object?)null, DbType.String);
+                parameters.Add("@Invoice_Category", !string.IsNullOrWhiteSpace(answer34.Invoice_Category) ? answer34.Invoice_Category : (object?)null, DbType.String);
+                parameters.Add("@Bill_To", !string.IsNullOrWhiteSpace(answer34.Bill_To) ? answer34.Bill_To : (object?)null, DbType.String);
+                parameters.Add("@Bill_To_Pin", answer34.Bill_To_Pin ?? (object)DBNull.Value);
+                parameters.Add("@Ship_To", !string.IsNullOrWhiteSpace(answer34.Ship_To) ? answer34.Ship_To : (object?)null, DbType.String);
+                parameters.Add("@Ship_To_Pin", answer34.Ship_To_Pin ?? (object)DBNull.Value);
+                parameters.Add("@GST_Certificate_Path", !string.IsNullOrWhiteSpace(filePathGST) ? filePathGST : (object?)null, DbType.String);
+                parameters.Add("@GST_No", !string.IsNullOrWhiteSpace(answer34.GST_No) ? answer34.GST_No : (object?)null, DbType.String);
+                parameters.Add("@PAN_No", !string.IsNullOrWhiteSpace(answer34.PAN_No) ? answer34.PAN_No : (object?)null, DbType.String);
+                parameters.Add("@TAN_No", !string.IsNullOrWhiteSpace(answer34.TAN_No) ? answer34.TAN_No : (object?)null, DbType.String);
+                parameters.Add("@SAC_Code", answer34.SAC_Code ?? (object)DBNull.Value);
+                parameters.Add("@Client_Invoice_State", !string.IsNullOrWhiteSpace(answer34.Client_Invoice_State) ? answer34.Client_Invoice_State : (object?)null, DbType.String);
+                parameters.Add("@Quess_Invoice_State", !string.IsNullOrWhiteSpace(answer34.Quess_Invoice_State) ? answer34.Quess_Invoice_State : (object?)null, DbType.String);
+                parameters.Add("@SEZ_Certificate_path", !string.IsNullOrWhiteSpace(filePathSEZ) ? filePathSEZ : (object?)null, DbType.String);
+                parameters.Add("@LUT_No", !string.IsNullOrWhiteSpace(answer34.LUT_No) ? answer34.LUT_No : (object?)null, DbType.String);
+                parameters.Add("@LUT_From_Date", DateTime.TryParse(answer34.LUT_From_Date, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@LUT_End_Date", DateTime.TryParse(answer34.LUT_End_Date, out var parsedDate1) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@LUT_Certificate_Path", !string.IsNullOrWhiteSpace(filePathLUT) ? filePathLUT : (object?)null, DbType.String);
+                parameters.Add("@SUB_Code", answer34.SUB_Code ?? (object)DBNull.Value);
+                parameters.Add("@CreatedBy", answer34.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Country>> GetCountry()
+        {
+            var CountryDetails = new List<Country>();
+            string storeProcedure = "SP_Get_Country";
+            var parameters = new DynamicParameters();
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    CountryDetails = JsonConvert.DeserializeObject<List<Country>>(res)
+                                                     ?? new List<Country>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    CountryDetails = new List<Country>();
+                }
+            }
+
+            return CountryDetails;
+        }
+
+        public async Task<List<Currency>> GetCurrency()
+        {
+            var CurrencyDetails = new List<Currency>();
+            string storeProcedure = "SP_Get_Currency";
+            var parameters = new DynamicParameters();
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    CurrencyDetails = JsonConvert.DeserializeObject<List<Currency>>(res)
+                                                     ?? new List<Currency>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    CurrencyDetails = new List<Currency>();
+                }
+            }
+
+            return CurrencyDetails;
+        }
+
+        public async Task<List<Answer40>> GetSOPAnswer40(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer40>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Vendor_Master_40";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer40>>(res)
+                                                      ?? new List<Answer40>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer40>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswer40(Answer40 answer40)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer40 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Vendor_Master_40";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer40.QuestionId);
+                parameters.Add("@VendorCode", !string.IsNullOrWhiteSpace(answer40.VendorCode) ? answer40.VendorCode : (object?)null, DbType.String);
+                parameters.Add("@VendorName", !string.IsNullOrWhiteSpace(answer40.VendorName) ? answer40.VendorName : (object?)null, DbType.String);
+                parameters.Add("@CountryCode", answer40.CountryCode ?? (object)DBNull.Value);
+                parameters.Add("@CountryName", !string.IsNullOrWhiteSpace(answer40.CountryName) ? answer40.CountryName : (object?)null, DbType.String);
+                parameters.Add("@CityId", answer40.CityId ?? (object)DBNull.Value);
+                parameters.Add("@CityName", !string.IsNullOrWhiteSpace(answer40.CityName) ? answer40.CityName : (object?)null, DbType.String);
+                parameters.Add("@RegionId", answer40.RegionId ?? (object)DBNull.Value);
+                parameters.Add("@RegionName", !string.IsNullOrWhiteSpace(answer40.RegionName) ? answer40.RegionName : (object?)null, DbType.String);
+                parameters.Add("@GSTIN", !string.IsNullOrWhiteSpace(answer40.GSTIN) ? answer40.GSTIN : (object?)null, DbType.String);
+                parameters.Add("@MSMENumber", !string.IsNullOrWhiteSpace(answer40.MSMENumber) ? answer40.MSMENumber : (object?)null, DbType.String);
+                parameters.Add("@PANNumber", !string.IsNullOrWhiteSpace(answer40.PANNumber) ? answer40.PANNumber : (object?)null, DbType.String);
+                parameters.Add("@PurchaseOrderCurrency", !string.IsNullOrWhiteSpace(answer40.PurchaseOrderCurrency) ? answer40.PurchaseOrderCurrency : (object?)null, DbType.String);
+                parameters.Add("@VendorStatus", answer40.VendorStatus ?? (object)DBNull.Value);
+                parameters.Add("@VendorCreationDate", DateTime.TryParse(answer40.VendorCreationDate, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@VendorAddress", !string.IsNullOrWhiteSpace(answer40.VendorAddress) ? answer40.VendorAddress : (object?)null, DbType.String);
+                parameters.Add("@CreatedBy", answer40.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer41>> GetSOPAnswer41(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer41>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_PIN_41";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer41>>(res)
+                                                      ?? new List<Answer41>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer41>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswer41(Answer41 answer41)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer41 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_PIN_41";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer41.QuestionId);
+                parameters.Add("@CompanyCode", !string.IsNullOrWhiteSpace(answer41.CompanyCode) ? answer41.CompanyCode : (object?)null, DbType.String);
+                parameters.Add("@MasterChecklist", !string.IsNullOrWhiteSpace(answer41.MasterChecklist) ? answer41.MasterChecklist : (object?)null, DbType.String);
+                parameters.Add("@SpocDetails", !string.IsNullOrWhiteSpace(answer41.SpocDetails) ? answer41.SpocDetails : (object?)null, DbType.String);
+                parameters.Add("@CompletionActivity", DateTime.TryParse(answer41.CompletionActivity, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
+                parameters.Add("@CreatedBy", answer41.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer42_1>> GetSOPAnswerCompliance42(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer42_1>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Compliance_42";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer42_1>>(res)
+                                                      ?? new List<Answer42_1>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer42_1>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswerCompliance42(Answer42_1 answer42_1)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer42_1 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Compliance_42";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer42_1.QuestionId);
+                parameters.Add("@IndustryType", !string.IsNullOrWhiteSpace(answer42_1.IndustryType) ? answer42_1.IndustryType : (object?)null, DbType.String);
+                parameters.Add("@CreatedBy", answer42_1.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer42_2>> GetSOPAnswerMinimumwages42(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer42_2>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Minimumwages_42";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer42_2>>(res)
+                                                      ?? new List<Answer42_2>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer42_2>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswerMinimumwages42(Answer42_2 answer42_2)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer42_2 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Minimumwages_42";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer42_2.QuestionId);
+                parameters.Add("@Category", !string.IsNullOrWhiteSpace(answer42_2.Category) ? answer42_2.Category : (object?)null, DbType.String);
+                parameters.Add("@StateId", answer42_2.StateId ?? (object)DBNull.Value);
+                parameters.Add("@StateName", !string.IsNullOrWhiteSpace(answer42_2.StateName) ? answer42_2.StateName : (object?)null, DbType.String);
+                parameters.Add("@Structure", !string.IsNullOrWhiteSpace(answer42_2.Structure) ? answer42_2.Structure : (object?)null, DbType.String);
+                parameters.Add("@CreatedBy", answer42_2.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer42_3>> GetSOPAnswerDesignation42(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer42_3>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Designation_42";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer42_3>>(res)
+                                                      ?? new List<Answer42_3>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer42_3>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswerDesignation42(Answer42_3 answer42_3)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer42_3 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_Designation_42";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer42_3.QuestionId);
+                parameters.Add("@CompanyId", answer42_3.CompanyId);
+                parameters.Add("@Designationid", answer42_3.Designationid ?? (object)DBNull.Value);
+                parameters.Add("@DesignationName", !string.IsNullOrWhiteSpace(answer42_3.DesignationName) ? answer42_3.DesignationName : (object?)null, DbType.String);
+                parameters.Add("@SkilledCategoryId", answer42_3.SkilledCategoryId ?? (object)DBNull.Value);
+                parameters.Add("@SkilledCategoryName", !string.IsNullOrWhiteSpace(answer42_3.SkilledCategoryName) ? answer42_3.SkilledCategoryName : (object?)null, DbType.String);
+                parameters.Add("@CreatedBy", answer42_3.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<List<Answer42_4>> GetSOPAnswerCLRA42(int QuestionId, string Createdby)
+        {
+            var AnswerDetails = new List<Answer42_4>();
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_CLRA_42";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    AnswerDetails = JsonConvert.DeserializeObject<List<Answer42_4>>(res)
+                                                      ?? new List<Answer42_4>();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Log the error if needed
+                    AnswerDetails = new List<Answer42_4>();
+                }
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> PostSOPAnswerCLRA42(Answer42_4 answer42_4)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            if (answer42_4 != null)
+            {
+                string storeProcedure = "SP_Insert_tbl_Customer_SOP_CLRA_42";
+                var parameters = new DynamicParameters();
+                parameters.Add("@QuestionId", answer42_4.QuestionId);
+                parameters.Add("@StateId", answer42_4.StateId ?? (object)DBNull.Value);
+                parameters.Add("@StateName", !string.IsNullOrWhiteSpace(answer42_4.StateName) ? answer42_4.StateName : (object?)null, DbType.String);
+                parameters.Add("@CityId", answer42_4.CityId ?? (object)DBNull.Value);
+                parameters.Add("@CityName", !string.IsNullOrWhiteSpace(answer42_4.CityName) ? answer42_4.CityName : (object?)null, DbType.String);
+                parameters.Add("@HC", !string.IsNullOrWhiteSpace(answer42_4.HC) ? answer42_4.HC : (object?)null, DbType.String);
+                parameters.Add("@CreatedBy", answer42_4.CreatedBy);
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    AnswerDetails.response = "Success";
+                }
+
+            }
+            else
+            {
+                AnswerDetails = new AnswerResponse();
+            }
+
+            return AnswerDetails;
+        }
+
+        public async Task<AnswerResponse> DeleteSOPAnswer31(int QuestionId, string Createdby)
+        {
+            AnswerResponse AnswerDetails = new AnswerResponse();
+
+            string storeProcedure = "SP_Delete_tbl_Customer_SOP_Answer_Details_31";
+            var parameters = new DynamicParameters();
+            parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@CreatedBy", Createdby);
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                AnswerDetails.response = "Success";
+            }
+            return AnswerDetails;
+        }
     }
 }

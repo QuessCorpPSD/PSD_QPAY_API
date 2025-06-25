@@ -1,11 +1,13 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.UI.Models;
+using System.Buffers.Text;
 using System.Collections;
 using System.Data;
 
@@ -13,6 +15,7 @@ namespace QPay.API.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class PayRegisterController : ControllerBase
     {
         private readonly IPayRegisterRepository _payRegisterRepository;
@@ -68,6 +71,77 @@ namespace QPay.API.Controller
             return Ok(payRegisterResponse);
         }
 
+        [HttpPost, Route("OutFileDownload")]
+        public async Task<IActionResult> OutFileDownload(PayRegisterQzoneRequest registerRequest)
+        {
+
+            if (registerRequest.payroll_input_type == "Q")
+            {
+                var filename = this._payRegisterRepository.GetFileNameFromQzone(registerRequest.companyId, registerRequest.pay_period_Id, registerRequest.lotNumber);
+                if(filename.FileName=="")
+                {
+                    var fileResponse = new FileResponse
+                    {
+                        FileName =string.Format("Lot Number {0} not available in QZone", registerRequest.lotNumber),
+                        File = "No"
+                    };
+                }
+                string path = string.Format("{0}/{1}/{2}/{3}/{4}",
+                _configuration["FilePath"],
+                registerRequest.companycode,
+                registerRequest.pay_period,
+                registerRequest.lotNumber,
+                filename.FileName);
+                
+
+                    if (System.IO.File.Exists(path))
+                    {
+                        byte[] fileBytes =await  System.IO.File.ReadAllBytesAsync(path);
+                        string base64 = Convert.ToBase64String(fileBytes);
+
+                        var fileResponse = new FileResponse
+                        {
+                            FileName = "PayRegister.xlsx",
+                            File = base64
+                        };
+
+                        return Ok(fileResponse); // or return it in your response
+                    }
+                    else
+                    {
+                        var fileResponse = new FileResponse
+                        {
+                            File = "No",
+                            FileName = "File Not Existing from Qzone Application"
+                        };
+                        return Ok(fileResponse);
+                    }
+
+
+
+
+                    //Directory.CreateDirectory(path);
+              
+               
+
+
+            }
+            else
+            {
+                var fileResponse = new FileResponse
+                {
+                    File = "No",
+                    FileName = "Directory not exists"
+                };
+                return Ok(fileResponse);
+            }
+
+            
+
+
+
+
+        }
 
         [HttpPost,Route("GetPayRegister")]
         public IActionResult PayRegister(PayRegisterRequest registerRequest)
