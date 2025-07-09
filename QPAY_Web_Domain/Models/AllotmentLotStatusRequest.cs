@@ -29,7 +29,7 @@ namespace QPay.UI.Models
         public int Input { get; set; }
         public int Output { get; set; }
         public string Mismatch { get; set; } = string.Empty;
-        public string Remarks { get; set; } = string.Empty;
+        public string? Remarks { get; set; } = string.Empty;
 
     }
 
@@ -44,10 +44,9 @@ namespace QPay.UI.Models
         public string UpdateStatus { get; set; } = string.Empty;
         public string Payroll_Input_Type { get; set; } = string.Empty;
         public string createdon { get; set; } = string.Empty;
-        public int userId { get; set; }
-        public bool RequestForModeification { get; set; }
+        public int userId { get; set; }       
 
-        public string QC_RaiseQuery { get; set; } = string.Empty;
+        public string? QC_RaiseQuery { get; set; } = string.Empty;
         public List<Allotmemet> allotments { get; set; } = new List<Allotmemet>();
       
     }

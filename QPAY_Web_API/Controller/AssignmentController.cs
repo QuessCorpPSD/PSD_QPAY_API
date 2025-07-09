@@ -104,6 +104,7 @@ namespace QPay.API.Controller
 
             return Ok(allotmentLotStatus);
         }
+        [HttpPost, Route("QCLotVerify")]
         public async Task<IActionResult> QCLotVerify(QCApprovedRequest lotStatusrequestModel)
         {
             AllotmentLotStatusUI allotmentLotStatus = new AllotmentLotStatusUI();
