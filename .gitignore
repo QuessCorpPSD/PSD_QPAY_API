@@ -19,6 +19,7 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.AssemblyInfoInputs.cache
 /QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfoInputs.cache
 /QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.AssemblyInfoInputs.cache
+/QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.assets.cache
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.csproj.AssemblyReference.cache
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.csproj.FileListAbsolute.txt
 
@@ -163,3 +164,5 @@ QPay.API/bin/Debug/net6.0
 >>>>>>> Heirarchy_01
 /QPAY_Web_API/obj/QPay.API.csproj.nuget.g.targets
 /QPAY_Web_Domain/QPay.UI.csproj.user
+/QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.assets.cache
+/QPAY_Web_API/obj/Debug/net8.0/QPay.API.GeneratedMSBuildEditorConfig.editorconfig
