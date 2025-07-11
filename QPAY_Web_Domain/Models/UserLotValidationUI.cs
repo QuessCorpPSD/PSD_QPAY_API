@@ -21,7 +21,7 @@ namespace QPay.UI.Models
         public string body { get; set; } = string.Empty;
         public string subjects { get; set; } = string.Empty;
 
-        public float Score { get; set; } 
+        public float? Score { get; set; } 
 
 
     }
