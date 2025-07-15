@@ -149,7 +149,7 @@ namespace QPay.API.Controller
 
             var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-            var register = this._payRegisterRepository.PayRegisterDownload(registerRequest.companycode, registerRequest.pay_period_Id,registerRequest.lotNumber);
+            var register = this._payRegisterRepository.PayRegisterDownload(registerRequest.companycode, registerRequest.pay_period_Id,registerRequest.lotNumber, registerRequest.pay_period);
             return Ok(register);
             //using var workbook = new XLWorkbook();
             //{               

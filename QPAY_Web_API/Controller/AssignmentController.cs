@@ -38,10 +38,10 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet,Route("GetAssignmentLot/{userId}")]
-        public IActionResult GetAssignmentLot(int userId)
+        [HttpGet,Route("GetAssignmentLot/{userId}/{filter}")]
+        public IActionResult GetAssignmentLot(int userId, string filter)
         {
-            var lots = this._assignment.GetAssignmentLotByDate(userId);
+            var lots = this._assignment.GetAssignmentLotByDate(userId, filter);
             return Ok(lots);
 
         }
@@ -135,7 +135,7 @@ namespace QPay.API.Controller
                 }
                 else
                 {
-                    fileResponse = this._payRegisterRepository.PayRegisterDownload(lotStatusrequestModel.Company_Id, lotStatusrequestModel.pay_period_id, lotStatusrequestModel.lotnumber);
+                    fileResponse = this._payRegisterRepository.PayRegisterDownload(lotStatusrequestModel.Company_Id, lotStatusrequestModel.pay_period_id, lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period);
                 }
                     
 

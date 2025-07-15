@@ -52,7 +52,7 @@ namespace QPay.BAL.Repository
            // }
             return dataTable;
         }
-        public AssignmentLots GetAssignmentLotByDate(int userId)
+        public AssignmentLots GetAssignmentLotByDate(int userId,string filter)
         {
             AssignmentLots assignment = new AssignmentLots();
             string date = System.DateTime.Now.ToString("yyyy-MM-dd");
@@ -60,6 +60,7 @@ namespace QPay.BAL.Repository
             string storeProcedure = string.Format("sp_AutoGetLotDetails");
             var parameters = new DynamicParameters();
             parameters.Add("@Date", date);
+            parameters.Add("@filter", filter);
             parameters.Add("@user_id", userId);
             var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!="")

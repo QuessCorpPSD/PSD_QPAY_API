@@ -98,6 +98,7 @@ namespace QPay.BAL.Repository
                                 var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
                                 if (column_Unique.Count()>1)
                                 {
+
                                     var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<Int64?>(column));
                                     dtrow[column]=columnsum;
                                     if (Convert.ToString(columnsum).ToLower()==("0").ToLower())
@@ -574,7 +575,7 @@ namespace QPay.BAL.Repository
             }
             
         }
-        public FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, int lotNumber)
+        public FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, int lotNumber,string pay_period)
         {
             FileResponse fileResponse = new FileResponse();
             DataTable payregister_dt = new DataTable();
@@ -686,14 +687,36 @@ namespace QPay.BAL.Repository
                                             var ws = workbook.AddWorksheet(payregister_dt, "PayRegister");
                                             ws.Table(0).ShowAutoFilter = false;
                                             ws.Table(0).Theme = XLTableTheme.None;
-                                            ws.SheetView.FreezeRows(2);
+                                            ws.SheetView.FreezeRows(4);
                                             ws.SheetView.FreezeColumns(2);
 
-                                            ws.Row(1).InsertRowsAbove(1);                                            
+                                            ws.Row(1).InsertRowsAbove(3);
                                             ws.Range("A1:Z1").Merge();
-                                            
+                                            ws.Range("A2:Z2").Merge();
+                                            ws.Range("A3:Z3").Merge();
+
+                                            var usedRange = ws.RangeUsed();
+
+                                            if (usedRange != null)
+                                            {
+                                                foreach (var cell in usedRange.Cells())
+                                                {
+                                                    cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                                    cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                                    cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                                    cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                                                    cell.Style.Border.TopBorderColor = XLColor.Black;
+                                                    cell.Style.Border.BottomBorderColor = XLColor.Black;
+                                                    cell.Style.Border.LeftBorderColor = XLColor.Black;
+                                                    cell.Style.Border.RightBorderColor = XLColor.Black;
+                                                }
+                                            }
+
                                             ws.Cell(1, 1).Value = comapny.Client_Name;
                                             ws.Cell(1, 1).Style.Font.Bold=true;
+                                            ws.Cell(2, 1).Value = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
+                                            ws.Cell(2, 1).Style.Font.Bold = true;
                                             var lastrow = ws.LastRowUsed().RowNumber();
 
                                             if (ctc!=null && service!=null)
@@ -702,7 +725,7 @@ namespace QPay.BAL.Repository
                                                 var toal_GST = Total*(18.0/100.0);
                                                 ws.Cell(lastrow, 1).Value = "Grand Total";
 
-                                                ws.Cell(lastrow + 3, 4).Value = comapny.Client_Name;
+                                                ws.Cell(lastrow + 3, 4).Value = string.Format("SALARY FOR THE MONTH OF {0}", pay_period); ;
 
 
 
@@ -774,6 +797,9 @@ namespace QPay.BAL.Repository
                                                 ws.Cell(lastrow + 7, 5).Style.Border.OutsideBorderColor = XLColor.Black;
 
                                             }
+
+                                           
+
 
                                         }
 
