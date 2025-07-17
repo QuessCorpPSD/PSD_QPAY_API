@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using Azure.Core;
+using Dapper;
+using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -1045,7 +1047,7 @@ namespace QPay.BAL.Repository
                 }
             }
 
-            return AnswerDetails;
+            return AnswerDetails ?? new List<Answer1>();
         }
 
         public async Task<AnswerResponse> PostSOPAnswer1(Answer1 answer1)
@@ -1707,10 +1709,10 @@ namespace QPay.BAL.Repository
 
                 parameters.Add("@QuestionId", answer17.QuestionId);
                 parameters.Add("@Company_Id", answer17.Company_Id);
-                parameters.Add("@Inactive_Employee_Load", answer17.Inactive_Employee_Load);
-                parameters.Add("@FF_Days", answer17.FF_Days);
-                parameters.Add("@Remarks", answer17.Remarks);
-                parameters.Add("@Gratuity", answer17.Gratuity);
+                parameters.Add("@Inactive_Employee_Load", !string.IsNullOrWhiteSpace(answer17.Inactive_Employee_Load) ? answer17.Inactive_Employee_Load : (object?)null, DbType.String);
+                parameters.Add("@FF_Days", !string.IsNullOrWhiteSpace(answer17.FF_Days) ? answer17.FF_Days : (object?)null, DbType.String);
+                parameters.Add("@Remarks", !string.IsNullOrWhiteSpace(answer17.Remarks) ? answer17.Remarks : (object?)null, DbType.String);
+                parameters.Add("@Gratuity", !string.IsNullOrWhiteSpace(answer17.Gratuity) ? answer17.Gratuity : (object?)null, DbType.String);
                 parameters.Add("@Date_Submission", DateTime.TryParse(answer17.Date_Submission, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
                 parameters.Add("@CreatedBy", answer17.CreatedBy);
 
@@ -2095,12 +2097,13 @@ namespace QPay.BAL.Repository
         }
 
 
-        public async Task<Answer28> GetSOPAnswer28(int QuestionId, string Createdby)
+        public async Task<Answer28> GetSOPAnswer28(int QuestionId,int CompanyId, string Createdby)
         {
             var AnswerDetails = new Answer28();
-            string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_28";
+            string storeProcedure = "SP_GET_tbl_Customer_SOP_Compensatory_Off_28";
             var parameters = new DynamicParameters();
             parameters.Add("@QuestionId", QuestionId);
+            parameters.Add("@Company_Id", CompanyId);
             parameters.Add("@CreatedBy", Createdby);
 
 
@@ -2129,20 +2132,22 @@ namespace QPay.BAL.Repository
 
             if (answer28 != null)
             {
-                string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Answer_Details_28";
+                string storeProcedure = "SP_Insert_Update_tbl_Customer_SOP_Compensatory_Off_28";
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@QuestionId", answer28.QuestionId);
-                parameters.Add("@Compensatory_Off", answer28.Compensatory_Off);
-                parameters.Add("@Remarks", answer28.Remarks);
-                parameters.Add("@Applicable", answer28.Applicable);
-                parameters.Add("@Billable", answer28.Billable);
-                parameters.Add("@Salary", answer28.Salary);
-                parameters.Add("@Approval", answer28.Approval);
-                parameters.Add("@Point_Of_Contact", answer28.Point_Of_Contact);
-                parameters.Add("@Email", answer28.Email);
-                parameters.Add("@Mobile_Number", answer28.Mobile_Number);
-                parameters.Add("@Name", answer28.Name);
+                parameters.Add("@Company_Id", answer28.Company_Id);
+                parameters.Add("@Compensatory_Off", !string.IsNullOrWhiteSpace(answer28.Compensatory_Off) ? answer28.Compensatory_Off : (object?)null, DbType.String);
+                parameters.Add("@Remarks", !string.IsNullOrWhiteSpace(answer28.Compensatory_Off) ? answer28.Compensatory_Off : (object?)null, DbType.String);
+                parameters.Add("@Applicable", !string.IsNullOrWhiteSpace(answer28.Applicable) ? answer28.Applicable : (object?)null, DbType.String);
+                parameters.Add("@Billable", !string.IsNullOrWhiteSpace(answer28.Billable) ? answer28.Billable : (object?)null, DbType.String);
+                parameters.Add("@Salary", !string.IsNullOrWhiteSpace(answer28.Salary) ? answer28.Salary : (object?)null, DbType.String);
+                parameters.Add("@Approval", !string.IsNullOrWhiteSpace(answer28.Approval) ? answer28.Approval : (object?)null, DbType.String);
+                parameters.Add("@Point_Of_Contact", !string.IsNullOrWhiteSpace(answer28.Point_Of_Contact) ? answer28.Point_Of_Contact : (object?)null, DbType.String);
+                parameters.Add("@Point_Of_Contact", !string.IsNullOrWhiteSpace(answer28.Point_Of_Contact) ? answer28.Point_Of_Contact : (object?)null, DbType.String);
+                parameters.Add("@Email", !string.IsNullOrWhiteSpace(answer28.Email) ? answer28.Email : (object?)null, DbType.String);
+                parameters.Add("@Mobile_Number", !string.IsNullOrWhiteSpace(answer28.Mobile_Number) ? answer28.Mobile_Number : (object?)null, DbType.String);
+                parameters.Add("@Name", !string.IsNullOrWhiteSpace(answer28.Name) ? answer28.Name : (object?)null, DbType.String);
                 parameters.Add("@CreatedBy", answer28.CreatedBy);
 
                 var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
@@ -3115,14 +3120,17 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public async Task<Answer31> GetSOPAnswer31(int QuestionId,int CompanyId, string Createdby)
+        public async Task<Answer31> GetSOPAnswer31(int QuestionId,int CompanyId, string Createdby, string fullUrl)
         {
+        
             var AnswerDetails = new Answer31();
+            fullUrl = fullUrl + "/ReimbursementPolicyUploads/";
             string storeProcedure = "SP_GET_tbl_Customer_SOP_Answer_Details_31";
             var parameters = new DynamicParameters();
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@Company_Id", CompanyId);
             parameters.Add("@CreatedBy", Createdby);
+            parameters.Add("@FullUrl", fullUrl);
 
 
             var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
@@ -3196,6 +3204,7 @@ namespace QPay.BAL.Repository
                         parameters.Add("@Input2", item.Input2);
                         parameters.Add("@Input3", item.Input3);
                         parameters.Add("@Input4", item.Input4);
+                        parameters.Add("@Input5", item.Input5);
                         parameters.Add("@CreatedBy", answer11.CreatedBy);
 
                         var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
@@ -4161,7 +4170,7 @@ namespace QPay.BAL.Repository
             return AnswerDetails;
         }
 
-        public async Task<List<Answer34>> GetSOPAnswer34(int QuestionId,int CompanyId, string Createdby)
+        public async Task<List<Answer34>> GetSOPAnswer34(int QuestionId,int CompanyId, string Createdby,string fullUrl)
         {
             var AnswerDetails = new List<Answer34>();
             string storeProcedure = "SP_Get_tbl_Customer_SOP_Gst_Certificate_34";
@@ -4290,8 +4299,6 @@ namespace QPay.BAL.Repository
     DbType.Date);
 
 
-                parameters.Add("@LUT_From_Date", DateTime.TryParse(answer34.LUT_From_Date, out var parsedDate) ? parsedDate : (object?)null, DbType.Date);
-                parameters.Add("@LUT_End_Date", DateTime.TryParse(answer34.LUT_End_Date, out var parsedDate1) ? parsedDate : (object?)null, DbType.Date);
                 parameters.Add("@LUT_Certificate_Path", !string.IsNullOrWhiteSpace(filePathLUT) ? filePathLUT : (object?)null, DbType.String);
                 parameters.Add("@SUB_Code", answer34.SUB_Code ?? (object)DBNull.Value);
                 parameters.Add("@CreatedBy", answer34.CreatedBy);

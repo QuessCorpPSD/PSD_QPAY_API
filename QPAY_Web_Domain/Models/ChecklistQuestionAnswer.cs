@@ -660,6 +660,7 @@ namespace QPay.UI.Models
     public class Answer28
     {
         public string QuestionId { get; set; } = string.Empty;
+        public string Company_Id { get; set; } = string.Empty;
         public string Compensatory_Off { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
         public string Applicable { get; set; } = string.Empty;
@@ -860,6 +861,7 @@ namespace QPay.UI.Models
         public string Input2 { get; set; } = string.Empty;
         public string Input3 { get; set; } = string.Empty;
         public string Input4 { get; set; } = string.Empty;
+        public string Input5 { get; set; } = string.Empty;
     }
 
     public class Answer11Get
@@ -872,6 +874,7 @@ namespace QPay.UI.Models
         public string Input2 { get; set; } = string.Empty;
         public string Input3 { get; set; } = string.Empty;
         public string Input4 { get; set; } = string.Empty;
+        public string Input5 { get; set; } = string.Empty;
     }
 
     public class Answer11RequestGet

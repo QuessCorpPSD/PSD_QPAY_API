@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.BAL.IRepository;
@@ -7,9 +8,10 @@ using QPAY_Web_API.Models;
 
 namespace QPay.API.Controller
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
-
+   
     public class QuestionAnswerController : ControllerBase
     {
         private readonly IQARepository _qaRepository;
@@ -328,10 +330,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer28/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer28(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer28/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer28(int QuestionId,int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer28(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer28(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -529,7 +531,11 @@ namespace QPay.API.Controller
         [HttpGet, Route("GetSOPAnswer31/{QuestionId}/{CompanyId}/{Createdby}")]
         public async Task<IActionResult> GetSOPAnswer31(int QuestionId,int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer31(QuestionId, CompanyId, Createdby);
+            var request = HttpContext.Request;
+
+            var fullUrl = $"{request.Scheme}://{request.Host}";
+
+            var res = await this._qaRepository.GetSOPAnswer31(QuestionId, CompanyId, Createdby,fullUrl);
             return Ok(res);
         }
 
@@ -757,7 +763,11 @@ namespace QPay.API.Controller
         [HttpGet, Route("GetSOPAnswer34/{QuestionId}/{CompanyId}/{Createdby}")]
         public async Task<IActionResult> GetSOPAnswer34(int QuestionId,int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer34(QuestionId, CompanyId, Createdby);
+            var request = HttpContext.Request;
+
+            var fullUrl = $"{request.Scheme}://{request.Host}";
+
+            var res = await this._qaRepository.GetSOPAnswer34(QuestionId, CompanyId, Createdby, fullUrl);
             return Ok(res);
         }
 
