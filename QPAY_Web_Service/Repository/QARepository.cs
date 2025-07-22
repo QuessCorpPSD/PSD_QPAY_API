@@ -4178,6 +4178,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@QuestionId", QuestionId);
             parameters.Add("@Company_Id", CompanyId);
             parameters.Add("@CreatedBy", Createdby);
+            parameters.Add("@FullUrl", fullUrl);
 
 
             var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
