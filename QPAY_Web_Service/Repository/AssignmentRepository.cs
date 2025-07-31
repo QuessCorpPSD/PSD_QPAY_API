@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
 using QPay.DAL.Repository;
@@ -39,17 +40,23 @@ namespace QPay.BAL.Repository
         public DataSet GetInputLot(int companyCode, int pay_period_id, int lot, int inputType)
         {
             DataSet dataTable = new DataSet();
-            string storeProcedure = string.Format("InputAutomation_Custom_Report");
-            //var parameters = new DynamicParameters();
-            //parameters.Add("@Company_Id", companyCode);
-            //parameters.Add("@Pay_Period_Id", pay_period_id);
-            //parameters.Add("@InputLotNumber", lot);
-            //parameters.Add("@InputType", inputType);
-            dataTable = this._dbRepository.GetDataSetAsync(companyCode, pay_period_id, lot, inputType);
-            //if (res!=null)
-            //{
-            //    dataTable =(DataSet)JsonConvert.DeserializeObject<DataSet>(res);
-           // }
+            string storeProcedure = string.Empty;
+            if (inputType==5)
+            {
+                storeProcedure = string.Format("sp_PayregisteruploadexporttoExcel");
+                var parameter=new   DynamicParameters();
+                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameter).Result;                
+                dataTable = JsonConvert.DeserializeObject<DataSet>(res) ?? new DataSet();
+
+            }
+            else
+            {
+                 storeProcedure = string.Format("InputAutomation_Custom_Report");
+                dataTable = this._dbRepository.GetDataSetAsync(companyCode, pay_period_id, lot, inputType);
+            }           
+          
+           
+          
             return dataTable;
         }
         public AssignmentLots GetAssignmentLotByDate(int userId,string filter)
@@ -142,6 +149,46 @@ namespace QPay.BAL.Repository
                 allotments = JsonConvert.DeserializeObject<List<AllotmentUI>>(res).ToList();
             }
             return allotments;
+        }
+        public async Task<UserEstimateLotValidationUI> UserEstimateLotValidation(LotValidationRequest lotValidationRequest)
+        {
+            UserEstimateLotValidationUI validation = new UserEstimateLotValidationUI();
+            string storeProcedure = string.Format("SP_Estimate_Time_Validation_By_User");
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", lotValidationRequest.company_Id);
+            parameters.Add("@PayperiodId", lotValidationRequest.payperiodId);
+            parameters.Add("@LotNumber", lotValidationRequest.lotnumber);
+            parameters.Add("@Payroll_Input_Type", lotValidationRequest.Payroll_Input_Type);
+            parameters.Add("@CreatedOn", lotValidationRequest.CreatedOn);
+            parameters.Add("@userId", lotValidationRequest.userId);
+            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (res != "")
+            {
+                validation = JsonConvert.DeserializeObject<List<UserEstimateLotValidationUI>>(res).FirstOrDefault() ?? new UserEstimateLotValidationUI();
+            }
+            return validation;
+
+        }
+
+        public async Task<LotValidationResponse> UserEstimateLotValidationLog(LotValidationRequest lotValidationRequest)
+        {
+            LotValidationResponse validation = new LotValidationResponse();
+            string storeProcedure = string.Format("SP_Estimate_Time_Validation_By_User_Insert");
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", lotValidationRequest.company_Id);
+            parameters.Add("@PayperiodId", lotValidationRequest.payperiodId);
+            parameters.Add("@LotNumber", lotValidationRequest.lotnumber);
+            parameters.Add("@Payroll_Input_Type", lotValidationRequest.Payroll_Input_Type);
+            parameters.Add("@CreatedOn", lotValidationRequest.CreatedOn);
+            parameters.Add("@userId", lotValidationRequest.userId);
+            parameters.Add("@ActionType", lotValidationRequest.ActionType);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (res != "")
+            {
+                validation = JsonConvert.DeserializeObject<List<LotValidationResponse>>(res).FirstOrDefault() ?? new LotValidationResponse();
+            }
+            return validation;
+
         }
         public async Task<UserLotValidationUI> UserLotValidation(UserLotValidationRequest userLotValidationRequest)
         {

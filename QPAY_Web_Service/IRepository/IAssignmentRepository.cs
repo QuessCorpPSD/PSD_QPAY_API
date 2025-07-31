@@ -19,7 +19,8 @@ namespace QPay.BAL.IRepository
         DataSet GetInputLot(int companyCode, int pay_period_id, int lot, int inputType);
         QCVerifyModelResponse QCVerfyOrModification(QCVerifyModelRequest request);
         Task<UserLotValidationUI> UserLotValidation(UserLotValidationRequest userLotValidationRequest);
-
+        Task<LotValidationResponse> UserEstimateLotValidationLog(LotValidationRequest lotValidationRequest);
+        Task<UserEstimateLotValidationUI> UserEstimateLotValidation(LotValidationRequest lotValidationRequest);
 
 
 

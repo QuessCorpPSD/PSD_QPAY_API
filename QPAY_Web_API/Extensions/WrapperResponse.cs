@@ -49,7 +49,7 @@ namespace QPay.API.Extensions
             var readToEnd = new StreamReader(memoryStream).ReadToEnd();
 
             context.Response.ContentType = "application/json";
-
+            context.Response.StatusCode = 200;
             if (exception == null)
             {
                 // Deserializing Controller Response to an object                
@@ -67,6 +67,7 @@ namespace QPay.API.Extensions
             }
             else
             {
+                
                 var response = ResponseWrapManager.ResponseWrapper(null, context, exception.InnerException);
 
                 // returing response to caller

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.DAL.Repository;
+using QPay.UI.Admin;
 using QPay.UI.Dashboard;
 using QPay.UI.Models;
 using System;
@@ -38,6 +39,81 @@ namespace QPay.BAL.Repository
             return dashboardUI;
         }
 
+        public async Task<BreakTimeResponse> AddUpdateBreakDetail(BreakTimeDetailsUI breakTimeDetailsUI)
+        {
+            BreakTimeResponse breakTimeResponse=new BreakTimeResponse();
+            var parameter = new DynamicParameters();
+            string storeProcedure = "SP_tbl_BreakTimeDetails_AddAndUpdate" ?? "";
+
+            parameter.Add("@BreakId", breakTimeDetailsUI.BreakId);
+            parameter.Add("@Description", breakTimeDetailsUI.Description);
+            parameter.Add("@TotalMinutes", breakTimeDetailsUI.TotalMinutes);            
+            parameter.Add("@IsActive", breakTimeDetailsUI.IsActive);
+            parameter.Add("@UserId", breakTimeDetailsUI.CreatedBy);
+
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<List<BreakTimeResponse>>(res).FirstOrDefault() ?? new BreakTimeResponse();
+                }
+                catch (JsonException ex)
+                {
+                    // Log exception or handle as needed
+                    Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+                    return new BreakTimeResponse();
+                }
+            }
+
+            return new BreakTimeResponse();
+
+          
+        }
+        public async Task<List<EmployeeBreakUI>> GetEmployeeBreakByUserIdAndDate(int userId,DateTime currentDate)
+        {
+            List<EmployeeBreakUI> employeeBreaks = new List<EmployeeBreakUI>();
+            var parameter = new DynamicParameters();
+            string storeProcedure = "SP_GET_tbl_employee_BreakTimeDetails_AddAndUpdate" ?? "";
+
+            parameter.Add("@UserId", userId);
+            parameter.Add("@date", currentDate);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    employeeBreaks= JsonConvert.DeserializeObject<List<EmployeeBreakUI>>(res).ToList() ?? new List<EmployeeBreakUI>();
+                }
+                catch (JsonException ex)
+                {
+                    // Log exception or handle as needed
+                    Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+                    return new List<EmployeeBreakUI>();
+                }
+            }
+            return employeeBreaks;
+        }
+       public async Task<List<BreakTimeDetailsUI>> GetBreakDetail()
+        {
+            const string query = "select * from tbl_BreakTimeDetails";
+            var res = await _dbRepository.QueryMultiAsync(query);
+
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<List<BreakTimeDetailsUI>>(res) ?? new List<BreakTimeDetailsUI>();
+                }
+                catch (JsonException ex)
+                {
+                    // Log exception or handle as needed
+                    Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+                    return new List<BreakTimeDetailsUI>();
+                }
+            }
+            return new List<BreakTimeDetailsUI>();
+        }
         public async Task<List<DashboardDetailUI>> GetPendingLotAsync()
         {
             const string storeProcedure = "SP_InputLot_Pending_Status";

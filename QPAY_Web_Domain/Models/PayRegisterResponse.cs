@@ -2,10 +2,10 @@
 {
     public class PayRegisterResponse
     {
-        public int statusCode { get; set; }
-        public string Qzone { get; set; }
+        public int? statusCode { get; set; }
+        public string qzone { get; set; }
 
-        public string Reference { get; set; }
+        public string reference { get; set; }
     }
     public class PayRegisterQzoneResponse
     {

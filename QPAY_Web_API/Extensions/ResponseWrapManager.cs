@@ -16,6 +16,7 @@ namespace QPay.API.Extensions
             ErrorDetails error = null;            
 
             var status = result != null;
+            
             var httpStatusCode = (HttpStatusCode)context.Response.StatusCode;
 
             if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
@@ -60,8 +61,10 @@ namespace QPay.API.Extensions
 
             if (!status && error == null)
             {
+                
                 error = new ErrorDetails()
                 {
+                    
                     ErrorCode = 800401,
                     ErrorMessage = ""  //"There is no data for given input parameters."
 
@@ -72,6 +75,7 @@ namespace QPay.API.Extensions
            
             var sumessage = status==true ? "Success" : "API Working";
             httpStatusCode = (HttpStatusCode)200;
+
             var response = new APIResponses(httpStatusCode, sumessage, data, error);
             return response;
             //if(!status)

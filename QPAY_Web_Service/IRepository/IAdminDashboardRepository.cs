@@ -1,4 +1,5 @@
-﻿using QPay.UI.Dashboard;
+﻿using QPay.UI.Admin;
+using QPay.UI.Dashboard;
 using QPay.UI.Models;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,11 @@ namespace QPay.BAL.IRepository
         Task<AdminDashboardUI> GetAdminDashboard();
         Task<List<DashboardDetailUI>> GetPendingLotAsync();
         Task<List<DashboardDetailUI>> GetAdminDashboardDetail(AdminDashboardParameterlUI adminDashboardParameterlUI);
+
+        Task<BreakTimeResponse> AddUpdateBreakDetail(BreakTimeDetailsUI breakTimeDetailsUI);
+        Task<List<BreakTimeDetailsUI>> GetBreakDetail();
+        Task<List<EmployeeBreakUI>> GetEmployeeBreakByUserIdAndDate(int userId, DateTime currentDate);
+
+
     }
 }

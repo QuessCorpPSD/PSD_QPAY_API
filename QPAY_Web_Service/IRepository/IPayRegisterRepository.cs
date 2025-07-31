@@ -12,8 +12,10 @@ namespace QPay.BAL.IRepository
    public interface IPayRegisterRepository
     {
         FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, int lotNumber,string pay_period);
+
+        FileResponse ExternalPayRegister(int companyCode, int pay_period_Id);
         string CompanyNameByCode(int company_Id);
-        PayRegisterResponse PayRegisterUpload(PayRegisterUI payRegisterUI);
+        Task<PayRegisterResponse> PayRegisterUpload(PayRegisterUI payRegisterUI);
         FileResponse ReconPayRegister(int companyCode, int pay_period_Id, int lotNumber);
         FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber);
         FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period);

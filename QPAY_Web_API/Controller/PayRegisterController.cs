@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QPay.API.LoggerService;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.UI.Models;
 using System.Buffers.Text;
 using System.Collections;
 using System.Data;
+using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace QPay.API.Controller
 {
@@ -20,54 +23,196 @@ namespace QPay.API.Controller
     {
         private readonly IPayRegisterRepository _payRegisterRepository;
         private readonly IConfiguration _configuration;
-
-        public PayRegisterController(IPayRegisterRepository payRegisterRepository, IConfiguration configuration)
+        private readonly ILoggerManager _logger;
+        private readonly HttpClient _client;
+        public PayRegisterController(ILoggerManager logger, HttpClient client, IPayRegisterRepository payRegisterRepository, IConfiguration configuration)
         {
             this._payRegisterRepository=payRegisterRepository;
             _configuration = configuration;
+            this._logger = logger;
+            this._client = client;
         }
 
+        public async Task<PayRegisterResponse> Payregisterupload(PayRegisterUploadModel payRegisterUpload)
+        {
+            PayRegisterResponse payRegisterResponse = new PayRegisterResponse();         
+            
+            try
+            {
+                if (payRegisterUpload != null)
+                {
+                    this._logger.LogInfo("From PSD Payregister Received json" + JsonConvert.SerializeObject(payRegisterUpload));
+                    var bytes = Convert.FromBase64String(payRegisterUpload.Docs);
+                    this._logger.LogInfo("File Name extension");
+                    var comayName = _payRegisterRepository.CompanyNameByCode(payRegisterUpload.CompanyId);
+                    var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
+                    string fileExtention = Path.GetExtension(payRegisterUpload.FileName.ToUpper());
+
+                    string fileName = string.Format("{0}_{1}_{2}_{3}_{4}{5}",
+                        payRegisterUpload.CompanyCode,
+                        comapny.Client_Name,
+                        payRegisterUpload.Input_type,
+                        payRegisterUpload.LotNumber,
+                        DateTime.Now.ToString("_yyyyMMddhhmmssffff"),
+                        fileExtention);
+                    this._logger.LogInfo("File Name With Extension" + fileName);
+                    //  var filepaths = "\\\\stgqcpsftpstorg.file.core.windows.net\\sftpstorage\\APP_Data\\QZone\\CApplication_Documents\\Application_Documents\\ClaimDocPath\\\"";
+                    //_configuration["FilePath"].ToString()
+
+                    this._logger.LogInfo("File path get from Configfile ");
+                    var companyPath = Path.Combine(_configuration["FilePath"].ToString(), payRegisterUpload.CompanyCode);
+                    this._logger.LogInfo("File path get from Configfile " + companyPath);
+
+                    var payperiodPath = Path.Combine(companyPath, payRegisterUpload.Pay_Period);
+                    this._logger.LogInfo("File path get from payperiodPath " + payperiodPath);
+                    var filePath = Path.Combine(payperiodPath, payRegisterUpload.LotNumber.ToString());
+                    this._logger.LogInfo("File path get from filePath " + payperiodPath);
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    //Directory.CreateDirectory(filePath);
+                    filePath = filePath + "\\" + fileName;
+                    this._logger.LogInfo("Folder Created");
+                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
+                    this._logger.LogInfo("File converted base64 to byte");
+                    payRegisterUpload.FilePath = filePath;
+
+                    PayRegisterUI payRegisterUI = new PayRegisterUI()
+                    {
+                        CompanyCode = payRegisterUpload.CompanyId,
+                        Pay_Period_id = payRegisterUpload.Pay_Period_id,
+                        LotNumber = payRegisterUpload.LotNumber,
+                        FilePath = filePath,
+                        LoginUser = payRegisterUpload.LoginUser,
+                        Input_type = payRegisterUpload.Input_type,
+                        FileName = fileName
+
+                    };
+                    this._logger.LogInfo("DB Updated request");
+                    payRegisterResponse =await this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
+                    this._logger.LogInfo("DB Updated Completed");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(string.Format("Stack Trace :{0} , InnerException : {1} , Message : {2}", ex.StackTrace, ex.InnerException, ex.Message));
+            }
+            
+            return payRegisterResponse;
+        }
+                
+            //    var uri = _configuration["ApiURL"] + "PayRegister/PayRegisterAutoUpload";
+            //    _logger.LogInfo("Initiating PayRegister upload to URL: {Uri} " + uri);
+
+            //    using var httpResponse = await _client.PostAsync(uri, requestStringContents);
+            //    var content = await httpResponse.Content.ReadAsStringAsync();
+
+            //    if (!httpResponse.IsSuccessStatusCode)
+            //    {
+            //        _logger.LogDebug("Upload failed. StatusCode: {StatusCode}, Response: {ResponseContent}"
+            //            );
+            //        payRegisterResponse.qzone = "Upload failed. StatusCode: {StatusCode}, Response: {ResponseContent}";
+            //        return payRegisterResponse;
+            //    }
+
+            //    var response = System.Text.Json.JsonSerializer.Deserialize<PayRegisterResponse>(content);
+
+            //    // Optional: validate the response object
+            //    if (response == null)
+            //    {
+            //        this._logger.LogDebug("Deserialized PayRegisterResponse is null.");
+            //        payRegisterResponse.qzone = "Deserialized PayRegisterResponse is null.";
+            //        return payRegisterResponse;
+            //    }
+
+            //    _logger.LogInfo("PayRegister upload succeeded.");
+            //    return response;
+            //}
+            //catch (HttpRequestException httpEx)
+            //{
+            //    this._logger.LogDebug(httpEx.ToString());
+            //    payRegisterResponse.qzone = httpEx.ToString();
+            //    return payRegisterResponse;
+            //}
+            //catch (Exception ex)
+            //{
+            //    payRegisterResponse.qzone = ex.Message.ToString();
+            //    return payRegisterResponse;
+            //}
+        //}
+
         [HttpPost("PayRegisterUpload")]
-        public IActionResult PayRegisterUpload(PayRegisterUploadModel payRegisterUpload)
+        public async Task<IActionResult> PayRegisterUpload(PayRegisterUploadModel payRegisterUpload)
         {
             PayRegisterResponse payRegisterResponse = new PayRegisterResponse();
-            if (payRegisterUpload!=null)
+
+            PayRegisterUploadModel payRegisterUploadModel = new PayRegisterUploadModel()
             {
-                var bytes = Convert.FromBase64String(payRegisterUpload.Docs);
+                CompanyId = payRegisterUpload.CompanyId,
+                CompanyCode = payRegisterUpload.CompanyCode,
+                Pay_Period_id = payRegisterUpload.Pay_Period_id,
+                Pay_Period = payRegisterUpload.Pay_Period,
+                LotNumber = payRegisterUpload.LotNumber,
+                FilePath = "",
+                FileName = payRegisterUpload.FileName,
+                FileType = ".xlsx",
+                LoginUser = payRegisterUpload.LoginUser.ToString(),
+                Input_type = payRegisterUpload.Input_type,
+                Docs = payRegisterUpload.Docs
+            };
+            var requestJsonContent = System.Text.Json.JsonSerializer.Serialize(payRegisterUploadModel);
+            var requestStringContents = new StringContent(requestJsonContent, Encoding.UTF8, "application/json");
+            payRegisterResponse = await Payregisterupload(payRegisterUploadModel);
 
-                string fileExtention = Path.GetExtension(payRegisterUpload.FileName.ToUpper());
-                string fileName = string.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(payRegisterUpload.FileName.ToUpper()), DateTime.Now.ToString("_yyyyMMddhhmmssffff"), fileExtention);
+           
 
-                var companyPath = Path.Combine(_configuration["FilePath"].ToString(), payRegisterUpload.CompanyCode);
-                var payperiodPath = Path.Combine(companyPath, payRegisterUpload.Pay_Period);
-                var filePath = Path.Combine(payperiodPath, payRegisterUpload.LotNumber.ToString());
-                if (!Directory.Exists(filePath))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-                //Directory.CreateDirectory(filePath);
-                filePath =filePath+"\\"+fileName;
-                
-                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                {
-                    fs.Write(bytes, 0, bytes.Length);
-                }
-                payRegisterUpload.FilePath=filePath;
+            //if (payRegisterUpload!=null)
+            //{
+            //    var bytes = Convert.FromBase64String(payRegisterUpload.Docs);
 
-                PayRegisterUI payRegisterUI = new PayRegisterUI()
-                {
-                    CompanyCode=payRegisterUpload.CompanyId,
-                    Pay_Period_id=payRegisterUpload.Pay_Period_id,
-                    LotNumber=payRegisterUpload.LotNumber,
-                    FilePath=filePath,
-                    LoginUser=payRegisterUpload.LoginUser,
-                    Input_type=payRegisterUpload.Input_type,
-                    FileName=fileName
+            //    string fileExtention = Path.GetExtension(payRegisterUpload.FileName.ToUpper());
+            //    string fileName = string.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(payRegisterUpload.FileName.ToUpper()), DateTime.Now.ToString("_yyyyMMddhhmmssffff"), fileExtention);
 
-                };
+            //    var companyPath = Path.Combine(_configuration["FilePath"].ToString(), payRegisterUpload.CompanyCode);
+            //    var payperiodPath = Path.Combine(companyPath, payRegisterUpload.Pay_Period);
+            //    var filePath = Path.Combine(payperiodPath, payRegisterUpload.LotNumber.ToString());
+            //    if (!Directory.Exists(filePath))
+            //    {
+            //        Directory.CreateDirectory(filePath);
+            //    }
+            //    //Directory.CreateDirectory(filePath);
+            //    filePath =filePath+"\\"+fileName;
 
-                var staus = this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
-            }
+            //    //using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            //    //{
+            //    //    fs.Write(bytes, 0, bytes.Length);
+            //    //}
+            //    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            //    {
+            //        fs.Write(bytes, 0, bytes.Length);
+            //    }
+            //    payRegisterUpload.FilePath=filePath;
+
+            //    PayRegisterUI payRegisterUI = new PayRegisterUI()
+            //    {
+            //        CompanyCode=payRegisterUpload.CompanyId,
+            //        Pay_Period_id=payRegisterUpload.Pay_Period_id,
+            //        LotNumber=payRegisterUpload.LotNumber,
+            //        FilePath=filePath,
+            //        LoginUser=payRegisterUpload.LoginUser,
+            //        Input_type=payRegisterUpload.Input_type,
+            //        FileName=fileName
+
+            //    };
+
+            //    var staus = this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
+            //    return Ok(staus);
+            //}
             return Ok(payRegisterResponse);
         }
 
@@ -260,9 +405,14 @@ namespace QPay.API.Controller
 
             //var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
             //var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-            if(registerRequest.payroll_input_type=="Other Input")
+            if (registerRequest.payroll_input_type == "Other Input")
             {
-                var register = this._payRegisterRepository.GetQCOtherIncomePayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.pay_period) ;
+                var register = this._payRegisterRepository.GetQCOtherIncomePayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.pay_period);
+                return Ok(register);
+            }
+            else if (registerRequest.payroll_input_type == "External Payregister")
+            {
+                var register = this._payRegisterRepository.ExternalPayRegister(registerRequest.companycode, registerRequest.pay_period_Id);
                 return Ok(register);
             }
             else
