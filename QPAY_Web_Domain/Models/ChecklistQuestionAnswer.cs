@@ -613,6 +613,7 @@ namespace QPay.UI.Models
         public string Company_Id { get; set; } = string.Empty;
         public string Notice_Period_Pay { get; set; } = string.Empty;
         public string Threshold_Day { get; set; } = string.Empty;
+        public string Applicable_Wages { get; set; } = string.Empty;
         public string Applicable_Wages_BASIC_DA { get; set; } = string.Empty;
         public string Applicable_Wages_GROSS { get; set; } = string.Empty;
         public string CreatedBy { get; set; } = string.Empty;
@@ -652,6 +653,7 @@ namespace QPay.UI.Models
         public string Company_Id { get; set; } = string.Empty;
         public string Billiable { get; set; } = string.Empty;
         public string Calandar_Type { get; set; } = string.Empty;
+        public string Bonus_Flush_Out { get; set; } = string.Empty;
         public string Accumulated_FlushOut { get; set; } = string.Empty;
         public string Billed_Paid { get; set; } = string.Empty;
         public string CreatedBy { get; set; } = string.Empty;
@@ -723,6 +725,7 @@ namespace QPay.UI.Models
         public string Company_Id { get; set; } = string.Empty;
         public string Payment { get; set; } = string.Empty;
         public string Payment_Days { get; set; } = string.Empty;
+        public string Partial_Percentage { get; set; } = string.Empty;
         public string CreatedBy { get; set; } = string.Empty;
     }
 
@@ -960,6 +963,7 @@ namespace QPay.UI.Models
         public string Designation_Id { get; set; } = string.Empty;
         public string Designation_Name { get; set; } = string.Empty;
         public string Designationwise_Days { get; set; } = string.Empty;
+        public string Applicable_Wages { get; set; } = string.Empty;
         public string Applicable_Wages_BASIC_DA { get; set; } = string.Empty;
         public string Applicable_Wages_GROSS { get; set; } = string.Empty;
         public string CreatedBy { get; set; } = string.Empty;
@@ -1237,6 +1241,7 @@ namespace QPay.UI.Models
         public string Company_Id { get; set; } = string.Empty;
         public string VendorCode { get; set; } = string.Empty;
         public string VendorName { get; set; } = string.Empty;
+        public string VendorWbsId { get; set; } = string.Empty;
         public string CountryCode { get; set; } = string.Empty;
         public string CountryName { get; set; } = string.Empty;
         public string CityId { get; set; } = string.Empty;
@@ -1263,6 +1268,7 @@ namespace QPay.UI.Models
         public string MasterChecklist { get; set; } = string.Empty;
         public string SpocDetails { get; set; } = string.Empty;
         public string CompletionActivity { get; set; } = string.Empty;
+        public string ReportType { get; set; } = string.Empty;
         public string CreatedBy { get; set; } = string.Empty;
 
 
