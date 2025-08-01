@@ -3677,10 +3677,6 @@ namespace QPay.BAL.Repository
 
         public async Task<List<PermissionwiseCompanyModel>> GetUserWiseCompanyCode(int UserId)
         {
-            if (UserId != 3)
-            {
-                UserId = 3;
-            }
             var CompanyCodeDetails = new List<PermissionwiseCompanyModel>();
             string storeProcedure = "Sp_GetUserWiseCompanyCode";
             var parameters = new DynamicParameters();
