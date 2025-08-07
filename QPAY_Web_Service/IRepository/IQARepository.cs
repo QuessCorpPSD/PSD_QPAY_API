@@ -55,7 +55,7 @@ namespace QPay.BAL.IRepository
         Task<AnswerResponse> PostSOPAnswer23(Answer23 answer23);
         Task<Answer25> GetSOPAnswer25(int QuestionId,int CompanyId, string Createdby);
         Task<AnswerResponse> PostSOPAnswer25(Answer25 answer25);
-        Task<Answer28> GetSOPAnswer28(int QuestionId, string Createdby);
+        Task<Answer28> GetSOPAnswer28(int QuestionId,int CompanyId, string Createdby);
         Task<AnswerResponse> PostSOPAnswer28(Answer28 answer28);
         Task<Answer29> GetSOPAnswer29(int QuestionId,int CompanyId, string Createdby);
         Task<AnswerResponse> PostSOPAnswer29(Answer29 answer29);
@@ -84,7 +84,7 @@ namespace QPay.BAL.IRepository
             [FromForm] int QuestionId, [FromForm] int CompanyId,[FromForm] string CreatedBy);
         Task<AnswerResponse> PostSOPAnswer31_1([FromForm] string billApplicable,
            [FromForm] int QuestionId, [FromForm] int CompanyId,[FromForm] string CreatedBy);
-        Task<Answer31> GetSOPAnswer31(int QuestionId,int CompanyId, string Createdby);
+        Task<Answer31> GetSOPAnswer31(int QuestionId,int CompanyId, string Createdby, string fullUrl);
         Task<Answer11RequestGet> GetSOPAnswer11(int QuestionId,int CompanyId, string Createdby);
         Task<AnswerResponse> PostSOPAnswer11(Answer11Request answer11);
         Task<Answer15RequestGet> GetSOPAnswer15(int QuestionId,int CompanyId, string Createdby);
@@ -116,7 +116,7 @@ namespace QPay.BAL.IRepository
         Task<List<Client>> GetClientName26();
         Task<AnswerResponse> PostSOPAnswer35(Answer35 answer35);
         Task<List<Answer35>> GetSOPAnswer35(int QuestionId, string Createdby);
-        Task<List<Answer34>> GetSOPAnswer34(int QuestionId,int CompanyId, string Createdby);
+        Task<List<Answer34>> GetSOPAnswer34(int QuestionId,int CompanyId, string Createdby,string fullUrl);
         Task<AnswerResponse> PostSOPAnswer34([FromForm] Answer34 answer34, IFormFile? fileGST = null, IFormFile? fileSEZ = null, IFormFile? fileLUT = null);
         Task<List<Country>> GetCountry();
         Task<List<Currency>> GetCurrency();
