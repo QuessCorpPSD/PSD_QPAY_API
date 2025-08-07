@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QPay.API.LoggerService;
 using QPay.BAL.IRepository;
 using QPay.UI.Models;
 using QPAY_Web_API.Models;
 
 namespace QPay.API.Controller
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
 
     public class QuestionAnswerController : ControllerBase
     {
         private readonly IQARepository _qaRepository;
-        public QuestionAnswerController(IQARepository qaRepository)
+        private readonly ILoggerManager _logger;
+        public QuestionAnswerController(IQARepository qaRepository, ILoggerManager logger)
         {
             this._qaRepository = qaRepository;
+            this._logger = logger;
         }
 
 
@@ -103,10 +108,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer3/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer3(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer3/{QuestionId}/{ComapnayId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer3(int QuestionId, int ComapnayId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer3(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer3(QuestionId, ComapnayId, Createdby);
             return Ok(res);
         }
 
@@ -117,10 +122,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer6/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer6(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer6/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer6(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer6(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer6(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -131,10 +136,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer8/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer8(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer8/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer8(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer8(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer8(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -173,10 +178,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer5/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer5(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer5/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer5(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer5(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer5(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -201,10 +206,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer13/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer13(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer13/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer13(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer13(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer13(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -216,10 +221,10 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet, Route("GetSOPAnswer14/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer14(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer14/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer14(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer14(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer14(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -230,10 +235,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer16/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer16(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer16/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer16(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer16(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer16(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -244,10 +249,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer17/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer17(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer17/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer17(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer17(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer17(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -258,10 +263,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer18/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer18(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer18/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer18(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer18(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer18(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -272,10 +277,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer19/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer19(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer19/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer19(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer19(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer19(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -286,10 +291,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer21/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer21(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer21/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer21(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer21(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer21(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -300,10 +305,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer23/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer23(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer23/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer23(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer23(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer23(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -314,10 +319,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer25/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer25(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer25/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer25(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer25(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer25(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -328,10 +333,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer28/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer28(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer28/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer28(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer28(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer28(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -342,10 +347,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer29/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer29(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer29/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer29(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer29(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer29(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -356,10 +361,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer30/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer30(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer30/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer30(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer30(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer30(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -370,10 +375,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer32/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer32(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer32/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer32(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer32(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer32(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -384,10 +389,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer36/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer36(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer36/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer36(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer36(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer36(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -398,10 +403,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer37/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer37(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer37/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer37(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer37(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer37(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -412,10 +417,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer38/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer38(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer38/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer38(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer38(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer38(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -426,10 +431,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer12/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer12(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer12/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer12(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer12(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer12(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -440,10 +445,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer27/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer27(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer27/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer27(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer27(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer27(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -455,10 +460,10 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet, Route("GetSOPAnswer39/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer39(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer39/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer39(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer39(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer39(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -469,17 +474,17 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetmarkedQuestion/{Createdby}")]
-        public async Task<IActionResult> GetmarkedQuestion(string Createdby)
+        [HttpGet, Route("GetmarkedQuestion/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetmarkedQuestion(int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetmarkedQuestion(Createdby);
+            var res = await this._qaRepository.GetmarkedQuestion(CompanyId, Createdby);
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer4/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer4(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer4/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer4(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer4(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer4(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -490,10 +495,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer33/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer33(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer33/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer33(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer33(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer33(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -507,36 +512,40 @@ namespace QPay.API.Controller
         [HttpPost]
         [Route("PostSOPAnswer31")]
         public async Task<IActionResult> PostSOPAnswer31(IFormFile file, [FromForm] string billApplicable,
-            [FromForm] int QuestionId, [FromForm] string CreatedBy)
+            [FromForm] int QuestionId, [FromForm] int CompanyId, [FromForm] string CreatedBy)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("File is missing.");
 
-            var res = await _qaRepository.PostSOPAnswer31(file, billApplicable, QuestionId, CreatedBy);
+            var res = await _qaRepository.PostSOPAnswer31(file, billApplicable, QuestionId, CompanyId, CreatedBy);
             return Ok(res);
         }
 
         [HttpPost]
         [Route("PostSOPAnswer31_1")]
         public async Task<IActionResult> PostSOPAnswer31_1([FromForm] string billApplicable,
-            [FromForm] int QuestionId, [FromForm] string CreatedBy)
+            [FromForm] int QuestionId, [FromForm] int CompanyId, [FromForm] string CreatedBy)
         {
 
-            var res = await _qaRepository.PostSOPAnswer31_1(billApplicable, QuestionId, CreatedBy);
+            var res = await _qaRepository.PostSOPAnswer31_1(billApplicable, QuestionId, CompanyId, CreatedBy);
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer31/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer31(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer31/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer31(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer31(QuestionId, Createdby);
+            var request = HttpContext.Request;
+
+            var fullUrl = $"{request.Scheme}://{request.Host}";
+
+            var res = await this._qaRepository.GetSOPAnswer31(QuestionId, CompanyId, Createdby, fullUrl);
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer11/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer11(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer11/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer11(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer11(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer11(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -547,10 +556,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer15/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer15(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer15/{QuestionId}/{Company_Id}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer15(int QuestionId, int Company_Id, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer15(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer15(QuestionId, Company_Id, Createdby);
             return Ok(res);
         }
 
@@ -569,10 +578,10 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet, Route("GetSOPAnswer20/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer20(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer20/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer20(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer20(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer20(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -584,10 +593,10 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet, Route("GetSOPAnswer22/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer22(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer22/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer22(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer22(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer22(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -599,10 +608,11 @@ namespace QPay.API.Controller
         }
 
 
-        [HttpGet, Route("GetSOPAnswer24/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer24(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer24/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer24(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer24(QuestionId, Createdby);
+            this._logger.LogInfo("Get Request 24");
+            var res = await this._qaRepository.GetSOPAnswer24(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -754,10 +764,14 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer34/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer34(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer34/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer34(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer34(QuestionId, Createdby);
+            var request = HttpContext.Request;
+
+            var fullUrl = $"{request.Scheme}://{request.Host}";
+
+            var res = await this._qaRepository.GetSOPAnswer34(QuestionId, CompanyId, Createdby, fullUrl);
             return Ok(res);
         }
 
@@ -769,7 +783,18 @@ namespace QPay.API.Controller
     IFormFile? fileLUT = null)
 
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Any())
+                    .Select(x => new
+                    {
+                        Field = x.Key,
+                        Messages = x.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    });
 
+                return BadRequest(new { Message = "Model binding failed", Errors = errors });
+            }
             var res = await this._qaRepository.PostSOPAnswer34(answer34, fileGST, fileSEZ, fileLUT);
             return Ok(res);
         }
@@ -788,10 +813,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer40/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer40(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer40/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer40(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer40(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer40(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -802,10 +827,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswer41/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswer41(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswer41/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswer41(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswer41(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswer41(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -816,10 +841,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswerCompliance42/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswerCompliance42(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswerCompliance42/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswerCompliance42(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswerCompliance42(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswerCompliance42(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -830,10 +855,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswerMinimumwages42/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswerMinimumwages42(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswerMinimumwages42/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswerMinimumwages42(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswerMinimumwages42(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswerMinimumwages42(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -844,10 +869,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswerDesignation42/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswerDesignation42(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswerDesignation42/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswerDesignation42(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswerDesignation42(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswerDesignation42(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -858,10 +883,10 @@ namespace QPay.API.Controller
             return Ok(res);
         }
 
-        [HttpGet, Route("GetSOPAnswerCLRA42/{QuestionId}/{Createdby}")]
-        public async Task<IActionResult> GetSOPAnswerCLRA42(int QuestionId, string Createdby)
+        [HttpGet, Route("GetSOPAnswerCLRA42/{QuestionId}/{CompanyId}/{Createdby}")]
+        public async Task<IActionResult> GetSOPAnswerCLRA42(int QuestionId, int CompanyId, string Createdby)
         {
-            var res = await this._qaRepository.GetSOPAnswerCLRA42(QuestionId, Createdby);
+            var res = await this._qaRepository.GetSOPAnswerCLRA42(QuestionId, CompanyId, Createdby);
             return Ok(res);
         }
 
@@ -878,5 +903,6 @@ namespace QPay.API.Controller
             var res = await this._qaRepository.DeleteSOPAnswer31(QuestionId, Createdby);
             return Ok(res);
         }
+
     }
 }
