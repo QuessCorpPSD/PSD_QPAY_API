@@ -18,7 +18,7 @@ namespace QPay.BAL.IRepository
         Task<BreakTimeResponse> AddUpdateBreakDetail(BreakTimeDetailsUI breakTimeDetailsUI);
         Task<List<BreakTimeDetailsUI>> GetBreakDetail();
         Task<List<EmployeeBreakUI>> GetEmployeeBreakByUserIdAndDate(int userId, DateTime currentDate);
-
-
+        Task<List<EmployeeBreakUI>> EmployeeBreakAddUpdate(EmployeeBreakUI employeeBreakUI);
+        Task<List<EmployeeBreakUI>> EmployeeBulkBreakAddUpdate(List<EmployeeBreakUI> employeeBreakUI, int userId);
     }
 }

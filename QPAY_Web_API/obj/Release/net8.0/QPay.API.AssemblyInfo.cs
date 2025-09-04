@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QPay.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c8e8b14b697230bdfc7c4ae1940777b5c92ba79a")]
 [assembly: System.Reflection.AssemblyProductAttribute("QPay.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QPay.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

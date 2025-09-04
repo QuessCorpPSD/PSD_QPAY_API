@@ -59,6 +59,7 @@ namespace QPay.API.Controller
             //Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             //Response.Headers["Pragma"] = "no-cache";
             //Response.Headers["Expires"] = "0";
+            this._assignment.AutoAllocationLots(userId);
             var lots = this._assignment.GetAssignmentLotByDate(userId, filter);
             return Ok(lots);
 
@@ -133,6 +134,13 @@ namespace QPay.API.Controller
             return Ok(allotmentLotStatus);
         }
 
+        [HttpGet,Route("AutoAllomentByUserId/{userId}")]
+        public async Task<IActionResult> AutoAllomentByUserId(int userId)
+        {
+            var res =await this._assignment.AutoAllocationByUser(userId);
+            return Ok(res);
+        }
+
         [HttpPost]
         [Route("QCLotVerify")]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
@@ -184,6 +192,10 @@ namespace QPay.API.Controller
                                         lotStatusrequestModel.Company_Id,
                                         lotStatusrequestModel.pay_period_id,
                                         lotStatusrequestModel.lotnumber),
+                    "Revised Other Input" => _payRegisterRepository.GetOtherIncomePayRegister(
+                    lotStatusrequestModel.Company_Id,
+                    lotStatusrequestModel.pay_period_id,
+                    lotStatusrequestModel.lotnumber),
 
                     "External Payregister" => _payRegisterRepository.ExternalPayRegister(
                                         lotStatusrequestModel.Company_Id,
@@ -193,7 +205,7 @@ namespace QPay.API.Controller
                                         lotStatusrequestModel.Company_Id,
                                         lotStatusrequestModel.pay_period_id,
                                         lotStatusrequestModel.lotnumber,
-                                        lotStatusrequestModel.Pay_Period)
+                                        lotStatusrequestModel.Pay_Period,0)
                 };
 
 
@@ -567,7 +579,6 @@ namespace QPay.API.Controller
                     FileResponse fileResponse = new FileResponse();
                     fileResponse.FileName="InputLot";
                     fileResponse.File=bytes;
-
                     return Ok(fileResponse);//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
                 }
             }

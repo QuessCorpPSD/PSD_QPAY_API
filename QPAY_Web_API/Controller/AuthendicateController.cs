@@ -85,7 +85,7 @@ namespace QPAY_Web_API.Controller
 
                         int userId = user.User_Id ?? 0;
 
-                        _assignment.AutoAllocationLots(userId);
+                       
 
                         var refreshToken = new RefreshToken
                         {

@@ -17,7 +17,6 @@ D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\ExcelNumberFormat.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Bcl.Cryptography.dll
-D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
@@ -94,12 +93,6 @@ D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\scopedcss\bundle\QPay.API
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.build.json
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.development.json
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets\msbuild.QPay.API.Microsoft.AspNetCore.StaticWebAssets.props
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets\msbuild.QPay.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets\msbuild.build.QPay.API.props
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.QPay.API.props
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.QPay.API.props
-D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.pack.json
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.csproj.Up2Date
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.dll
@@ -107,3 +100,11 @@ D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\refint\QPay.API.dll
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.pdb
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.genruntimeconfig.cache
 D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\ref\QPay.API.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\nlog.config
+D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\NLog.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\NLog.Extensions.Logging.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_API\bin\Debug\net8.0\NLog.Web.AspNetCore.dll
+D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.MvcApplicationPartsAssemblyInfo.cs
+D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\QPay.API.sourcelink.json
+D:\Solution\QPAY_Web_API\QPAY_Web_API\obj\Debug\net8.0\staticwebassets.build.json.cache

@@ -42,7 +42,10 @@ namespace QPay.API.Controller
                 if (payRegisterUpload != null)
                 {
                     this._logger.LogInfo("From PSD Payregister Received json" + JsonConvert.SerializeObject(payRegisterUpload));
-                    var bytes = Convert.FromBase64String(payRegisterUpload.Docs);
+                    var base64String = payRegisterUpload.Docs.Trim();
+                    base64String = base64String.Replace(" ", "").Replace("\r", "").Replace("\n", "");
+                    var bytes = Convert.FromBase64String(base64String);
+                   // var bytes = Convert.FromBase64String(payRegisterUpload.Docs);
                     this._logger.LogInfo("File Name extension");
                     var comayName = _payRegisterRepository.CompanyNameByCode(payRegisterUpload.CompanyId);
                     var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
@@ -54,10 +57,9 @@ namespace QPay.API.Controller
                         payRegisterUpload.Input_type,
                         payRegisterUpload.LotNumber,
                         DateTime.Now.ToString("_yyyyMMddhhmmssffff"),
-                        fileExtention);
+                      fileExtention);
                     this._logger.LogInfo("File Name With Extension" + fileName);
-                    //  var filepaths = "\\\\stgqcpsftpstorg.file.core.windows.net\\sftpstorage\\APP_Data\\QZone\\CApplication_Documents\\Application_Documents\\ClaimDocPath\\\"";
-                    //_configuration["FilePath"].ToString()
+                    
 
                     this._logger.LogInfo("File path get from Configfile ");
                     var companyPath = Path.Combine(_configuration["FilePath"].ToString(), payRegisterUpload.CompanyCode);
@@ -74,10 +76,11 @@ namespace QPay.API.Controller
                     //Directory.CreateDirectory(filePath);
                     filePath = filePath + "\\" + fileName;
                     this._logger.LogInfo("Folder Created");
-                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        fs.Write(bytes, 0, bytes.Length);
-                    }
+                    System.IO.File.WriteAllBytes(filePath, bytes);
+                    //using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    //{
+                    //    fs.Write(bytes, 0, bytes.Length);
+                    //}
                     this._logger.LogInfo("File converted base64 to byte");
                     payRegisterUpload.FilePath = filePath;
 
@@ -160,7 +163,7 @@ namespace QPay.API.Controller
                 LotNumber = payRegisterUpload.LotNumber,
                 FilePath = "",
                 FileName = payRegisterUpload.FileName,
-                FileType = ".xlsx",
+                FileType = payRegisterUpload.FileType,
                 LoginUser = payRegisterUpload.LoginUser.ToString(),
                 Input_type = payRegisterUpload.Input_type,
                 Docs = payRegisterUpload.Docs
@@ -294,7 +297,7 @@ namespace QPay.API.Controller
 
             var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-            var register = this._payRegisterRepository.PayRegisterDownload(registerRequest.companycode, registerRequest.pay_period_Id,registerRequest.lotNumber, registerRequest.pay_period);
+            var register = this._payRegisterRepository.PayRegisterDownload(registerRequest.companycode, registerRequest.pay_period_Id,registerRequest.lotNumber, registerRequest.pay_period,0);
             return Ok(register);
             //using var workbook = new XLWorkbook();
             //{               
@@ -417,7 +420,7 @@ namespace QPay.API.Controller
             }
             else
             {
-                var register = this._payRegisterRepository.ReconPayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber);
+                var register = this._payRegisterRepository.ReconPayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber,registerRequest.revised,registerRequest.process_category);
                 return Ok(register);
             }
             

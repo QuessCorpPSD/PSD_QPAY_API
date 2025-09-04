@@ -31,6 +31,7 @@ namespace QPay.UI.Models
         public string Mismatch { get; set; } = string.Empty;
         public string? Remarks { get; set; } = string.Empty;
 
+
     }
 
     public class QCApprovedRequest
@@ -45,7 +46,7 @@ namespace QPay.UI.Models
         public string Payroll_Input_Type { get; set; } = string.Empty;
         public string createdon { get; set; } = string.Empty;
         public int userId { get; set; }       
-
+        public int revised { get; set; }
         public string? QC_RaiseQuery { get; set; } = string.Empty;
         public List<Allotmemet> allotments { get; set; } = new List<Allotmemet>();
       

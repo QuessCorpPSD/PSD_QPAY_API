@@ -98,38 +98,38 @@ builder.Services.AddSingleton(jwtSettings);
 var app = builder.Build();
 //app.UseMiddleware<ValidationJwtMiddleware>();
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "ReimbursementPolicyUploads")),
-    RequestPath = "/ReimbursementPolicyUploads",
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream"
-});
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "GST_Certificate")),
-    RequestPath = "/GST_Certificate",
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream"
-});
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "SEZ_Certificate")),
-    RequestPath = "/SEZ_Certificate",
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream"
-});
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "LUT_Certificate")),
-    RequestPath = "/LUT_Certificate",
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream"
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "ReimbursementPolicyUploads")),
+//    RequestPath = "/ReimbursementPolicyUploads",
+//    ServeUnknownFileTypes = true,
+//    DefaultContentType = "application/octet-stream"
+//});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "GST_Certificate")),
+//    RequestPath = "/GST_Certificate",
+//    ServeUnknownFileTypes = true,
+//    DefaultContentType = "application/octet-stream"
+//});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "SEZ_Certificate")),
+//    RequestPath = "/SEZ_Certificate",
+//    ServeUnknownFileTypes = true,
+//    DefaultContentType = "application/octet-stream"
+//});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "LUT_Certificate")),
+//    RequestPath = "/LUT_Certificate",
+//    ServeUnknownFileTypes = true,
+//    DefaultContentType = "application/octet-stream"
+//});
 app.UseRouting();
 app.UseAuthentication();
 //app.UseAuthorization();

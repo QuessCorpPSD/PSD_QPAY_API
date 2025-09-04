@@ -1,16 +1,126 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
-    "RelativePath": "",
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "AddBreakDetail",
+    "RelativePath": "api/Admin/AddBreakDetail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "breakTimeDetailsUI",
+        "Type": "QPay.UI.Admin.BreakTimeDetailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "BulkEmployeeBreakAdd",
+    "RelativePath": "api/Admin/BulkEmployeeBreakAdd",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeBulkBreakRequest",
+        "Type": "QPay.API.Models.EmployeeBreakBulkModelRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "EmployeeBreakAdd",
+    "RelativePath": "api/Admin/EmployeeBreakAdd",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeBreakRequest",
+        "Type": "QPay.API.Models.EmployeeBreakModelRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetAllBreakDetail",
+    "RelativePath": "api/Admin/GetAllBreakDetail",
     "HttpMethod": "GET",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetEmployeeBreak",
+    "RelativePath": "api/Admin/GetEmployeeBreak",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeBreakRequest",
+        "Type": "QPay.API.Models.EmployeeBreakRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "PayRegisterAutoUpload",
+    "RelativePath": "api/Assignment",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payRegisterUpload",
+        "Type": "QPay.API.Models.PayRegisterUploadModel",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
+        "Type": "QPay.API.Models.PayRegisterResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "Payregisterupload",
+    "RelativePath": "api/Assignment",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestStringContents",
+        "Type": "System.Net.Http.HttpContent",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
         "StatusCode": 200
       }
     ]
@@ -27,6 +137,11 @@
         "Name": "i",
         "Type": "System.Int32",
         "IsRequired": false
+      },
+      {
+        "Name": "inputType",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -40,6 +155,22 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "AutoAllomentByUserId",
+    "RelativePath": "api/Assignment/AutoAllomentByUserId/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "QPay.API.Controller.AssignmentController",
@@ -60,7 +191,7 @@
   {
     "ContainingType": "QPay.API.Controller.AssignmentController",
     "Method": "GetAssignmentLot",
-    "RelativePath": "api/Assignment/GetAssignmentLot/{userId}",
+    "RelativePath": "api/Assignment/GetAssignmentLot/{userId}/{filter}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -68,6 +199,11 @@
       {
         "Name": "userId",
         "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "filter",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],
@@ -139,6 +275,22 @@
   },
   {
     "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "QCQueryRaise",
+    "RelativePath": "api/Assignment/QCQueryRaise",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lotStatusrequestModel",
+        "Type": "QPay.UI.Models.QCApprovedRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
     "Method": "RequestForModification",
     "RelativePath": "api/Assignment/RequestForModification",
     "HttpMethod": "POST",
@@ -148,6 +300,70 @@
       {
         "Name": "requestForModification",
         "Type": "QPay.API.Models.RequestForModificationModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "SendFeedBackMail",
+    "RelativePath": "api/Assignment/SendFeedBackMail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "feedBackMailRequest",
+        "Type": "QPay.API.Models.FeedBackMailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "UserEstimateLotValidation",
+    "RelativePath": "api/Assignment/UserEstimateLotValidation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lotValidationRequest",
+        "Type": "QPay.UI.Models.LotValidationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "UserEstimateLotValidationAdd",
+    "RelativePath": "api/Assignment/UserEstimateLotValidationAdd",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lotValidationRequest",
+        "Type": "QPay.UI.Models.LotValidationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "UserLotStatusValidation",
+    "RelativePath": "api/Assignment/UserLotStatusValidation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userLotValidationRequest",
+        "Type": "QPay.UI.Models.UserLotValidationRequest",
         "IsRequired": true
       }
     ],
@@ -181,12 +397,148 @@
   },
   {
     "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/Authendicate/ChangePassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "changePassword",
+        "Type": "QPay.UI.Admin.ChangePassword",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetAllActiveUsers",
+    "RelativePath": "api/Authendicate/GetAllActiveUsers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetAllFunctionalityHead",
+    "RelativePath": "api/Authendicate/GetAllFunctionalityHead",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetAllManager",
+    "RelativePath": "api/Authendicate/GetAllManager",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetAllTeamLead",
+    "RelativePath": "api/Authendicate/GetAllTeamLead",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
     "Method": "GetData",
     "RelativePath": "api/Authendicate/GetData",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetReporting",
+    "RelativePath": "api/Authendicate/GetReporting",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetUserById",
+    "RelativePath": "api/Authendicate/GetUserById/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "Refresh",
+    "RelativePath": "api/Authendicate/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "QPay.API.Models.TokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "UserByEmployeeId",
+    "RelativePath": "api/Authendicate/UserByEmployeeId/{employeeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "UserCreate",
+    "RelativePath": "api/Authendicate/UserCreate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "users",
+        "Type": "QPay.UI.Models.Users",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -206,6 +558,155 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QPay.API.Controller.CheckInCheckOutController",
+    "Method": "CheckIn",
+    "RelativePath": "api/CheckInCheckOut/CheckIn/{userId}/{Type}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CheckInCheckOutController",
+    "Method": "SendFeedBackMail",
+    "RelativePath": "api/CheckInCheckOut/SendFeedBackMail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "autoMailRequest",
+        "Type": "QPay.API.Models.AutoMailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetAccessType",
+    "RelativePath": "api/Common/GetAccessType",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetAllActiveRole",
+    "RelativePath": "api/Common/GetAllActiveRole",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetAllProcessCategory",
+    "RelativePath": "api/Common/GetAllProcessCategory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetFinancialYear",
+    "RelativePath": "api/Common/GetFinancialYear",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "PayRegisterDownload",
+    "RelativePath": "api/DashBoard/DownloadPayRegister",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "GetAdminDashBoard",
+    "RelativePath": "api/DashBoard/GetAdminDashBoard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "GetAdminDashBoardDetail",
+    "RelativePath": "api/DashBoard/GetAdminDashBoardDetail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminDashboardParameterlUI",
+        "Type": "QPay.UI.Dashboard.AdminDashboardParameterlUI",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "GetDashBoardByUserId",
+    "RelativePath": "api/DashBoard/GetDashBoardByUserId/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "GetPendingLot",
+    "RelativePath": "api/DashBoard/PendingLot",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[QPay.UI.Dashboard.PendingLotsUI, QPay.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "QPay.API.Controller.HomeController",
     "Method": "Get",
     "RelativePath": "api/Home",
@@ -214,6 +715,32 @@
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.PayRegisterController",
+    "Method": "Payregisterupload",
+    "RelativePath": "api/PayRegister",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payRegisterUpload",
+        "Type": "QPay.API.Models.PayRegisterUploadModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "QPay.API.Models.PayRegisterResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "QPay.API.Controller.PayRegisterController",
@@ -249,6 +776,22 @@
   },
   {
     "ContainingType": "QPay.API.Controller.PayRegisterController",
+    "Method": "OutFileDownload",
+    "RelativePath": "api/PayRegister/OutFileDownload",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerRequest",
+        "Type": "QPay.API.Models.PayRegisterQzoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.PayRegisterController",
     "Method": "PayRegisterUpload",
     "RelativePath": "api/PayRegister/PayRegisterUpload",
     "HttpMethod": "POST",
@@ -265,12 +808,2432 @@
   },
   {
     "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "DeleteSOPAnswer31",
+    "RelativePath": "api/QuestionAnswer/DeleteSOPAnswer31/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetAllDesignationByCompany",
+    "RelativePath": "api/QuestionAnswer/GetAllDesignationByCompany/{CompanyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetAllGroupByCompany",
+    "RelativePath": "api/QuestionAnswer/GetAllGroupByCompany/{CompanyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetBillingPaycode26",
+    "RelativePath": "api/QuestionAnswer/GetBillingPaycode26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCategory",
+    "RelativePath": "api/QuestionAnswer/GetCategory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCity",
+    "RelativePath": "api/QuestionAnswer/GetCity/{state_id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "state_id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetClientName26",
+    "RelativePath": "api/QuestionAnswer/GetClientName26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCompanyCode",
+    "RelativePath": "api/QuestionAnswer/GetCompanyCode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user_id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCountry",
+    "RelativePath": "api/QuestionAnswer/GetCountry",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCoverageType26",
+    "RelativePath": "api/QuestionAnswer/GetCoverageType26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetCurrency",
+    "RelativePath": "api/QuestionAnswer/GetCurrency",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
     "Method": "GetCustomerSOPQuestionAnswer",
     "RelativePath": "api/QuestionAnswer/GetCustomerSOPQuestionAnswer",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetDeductionPaycode26",
+    "RelativePath": "api/QuestionAnswer/GetDeductionPaycode26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetDesignation",
+    "RelativePath": "api/QuestionAnswer/GetDesignation/{company_code}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "company_code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetEmployeeType26",
+    "RelativePath": "api/QuestionAnswer/GetEmployeeType26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetFirstMonthPayroll",
+    "RelativePath": "api/QuestionAnswer/GetFirstMonthPayroll/{companyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "companyId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetGPAPolicy26",
+    "RelativePath": "api/QuestionAnswer/GetGPAPolicy26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetGTLIPolicy26",
+    "RelativePath": "api/QuestionAnswer/GetGTLIPolicy26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetInsuranceVertical",
+    "RelativePath": "api/QuestionAnswer/GetInsuranceVertical/{CompanyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetmarkedQuestion",
+    "RelativePath": "api/QuestionAnswer/GetmarkedQuestion/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetMartialStatus26",
+    "RelativePath": "api/QuestionAnswer/GetMartialStatus26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetNewJoinee26",
+    "RelativePath": "api/QuestionAnswer/GetNewJoinee26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetPolicyConditionByCoverageType",
+    "RelativePath": "api/QuestionAnswer/GetPolicyConditionByCoverageType/{CoverageTypeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CoverageTypeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetPolicyNoByCondition",
+    "RelativePath": "api/QuestionAnswer/GetPolicyNoByCondition/{CoverageTypeId}/{PolicyConditionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CoverageTypeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PolicyConditionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetPremiumTracker26",
+    "RelativePath": "api/QuestionAnswer/GetPremiumTracker26",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetQuestion",
+    "RelativePath": "api/QuestionAnswer/GetQuestion/{categoryId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoryId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer1",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer1/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer10",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer10/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer11",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer11/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer12",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer12/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer13",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer13/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer14",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer14/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer15",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer15/{QuestionId}/{Company_Id}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Company_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer16",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer16/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer17",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer17/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer18",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer18/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer19",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer19/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer2",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer2/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer20",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer20/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer21",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer21/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer22",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer22/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer23",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer23/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer24",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer24/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer25",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer25/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer27",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer27/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer28",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer28/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer29",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer29/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer3",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer3/{QuestionId}/{ComapnayId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "ComapnayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer30",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer30/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer31",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer31/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer32",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer32/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer33",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer33/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer34",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer34/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer35",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer35/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer36",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer36/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer37",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer37/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer38",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer38/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer39",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer39/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer4",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer4/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer40",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer40/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer41",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer41/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer5",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer5/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer6",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer6/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer7",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer7/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer8",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer8/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswer9",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswer9/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswerCLRA42",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswerCLRA42/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswerCompliance42",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswerCompliance42/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswerDesignation42",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswerDesignation42/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPAnswerMinimumwages42",
+    "RelativePath": "api/QuestionAnswer/GetSOPAnswerMinimumwages42/{QuestionId}/{CompanyId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetSOPInsurance26",
+    "RelativePath": "api/QuestionAnswer/GetSOPInsurance26/{QuestionId}/{Createdby}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Createdby",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetState",
+    "RelativePath": "api/QuestionAnswer/GetState",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "GetUserWiseCompanyCode",
+    "RelativePath": "api/QuestionAnswer/GetUserWiseCompanyCode/{UserId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "InsuranceCreate",
+    "RelativePath": "api/QuestionAnswer/InsuranceCreate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer26",
+        "Type": "QPay.UI.Models.InsuranceAdd",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "InsuranceExists",
+    "RelativePath": "api/QuestionAnswer/InsuranceExists",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer26",
+        "Type": "QPay.UI.Models.InsuranceAlreadyExists",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer1",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer1",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer1",
+        "Type": "QPay.UI.Models.Answer1",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer10",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer10",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer10",
+        "Type": "QPay.UI.Models.Answer10",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer11",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer11",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer11",
+        "Type": "QPay.UI.Models.Answer11Request",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer12",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer12",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer12",
+        "Type": "System.Collections.Generic.List\u00601[[QPay.UI.Models.Answer12, QPay.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer13",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer13",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer13",
+        "Type": "QPay.UI.Models.Answer13",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer14",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer14",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer14",
+        "Type": "QPay.UI.Models.Answer14",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer15",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer15",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer15",
+        "Type": "QPay.UI.Models.Answer15Request",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer16",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer16",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer16",
+        "Type": "QPay.UI.Models.Answer16",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer17",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer17",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer17",
+        "Type": "QPay.UI.Models.Answer17",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer18",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer18",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer18",
+        "Type": "QPay.UI.Models.Answer18",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer19",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer19",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer19",
+        "Type": "QPay.UI.Models.Answer19",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer2",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer2",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer2",
+        "Type": "QPay.UI.Models.Answer2",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer20",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer20",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer20",
+        "Type": "QPay.UI.Models.Answer20",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer21",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer21",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer21",
+        "Type": "QPay.UI.Models.Answer21",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer22",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer22",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer22",
+        "Type": "QPay.UI.Models.Answer22",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer23",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer23",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer23",
+        "Type": "QPay.UI.Models.Answer23",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer24",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer24",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer24",
+        "Type": "QPay.UI.Models.Answer24",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer25",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer25",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer25",
+        "Type": "QPay.UI.Models.Answer25",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer27",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer27",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer27",
+        "Type": "QPay.UI.Models.Answer27",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer28",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer28",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer28",
+        "Type": "QPay.UI.Models.Answer28",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer29",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer29",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer29",
+        "Type": "QPay.UI.Models.Answer29",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer3",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer3",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer3",
+        "Type": "QPay.UI.Models.Answer3",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer30",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer30",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer30",
+        "Type": "QPay.UI.Models.Answer30",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer31",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer31",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "billApplicable",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CreatedBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer31_1",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer31_1",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "billApplicable",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "QuestionId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CreatedBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer32",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer32",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer32",
+        "Type": "QPay.UI.Models.Answer32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer33",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer33",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer33",
+        "Type": "QPay.UI.Models.Answer33Request",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer34",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer34",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sr_no",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SOPId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "QuestionId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Company_Id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "State_Id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "State_Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Certificate_Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Invoice_Category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Bill_To",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Bill_To_Pin",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Ship_To",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Ship_To_Pin",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GST_Certificate_Path",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GST_No",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PAN_No",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TAN_No",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SAC_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Client_Invoice_State",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Quess_Invoice_State",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SEZ_Certificate_path",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LUT_No",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LUT_From_Date",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LUT_End_Date",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LUT_Certificate_Path",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SUB_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CreatedBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fileGST",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "fileSEZ",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "fileLUT",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer35",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer35",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer35",
+        "Type": "QPay.UI.Models.Answer35",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer36",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer36",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer36",
+        "Type": "QPay.UI.Models.Answer36",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer37",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer37",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer37",
+        "Type": "QPay.UI.Models.Answer37",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer38",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer38",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer38",
+        "Type": "QPay.UI.Models.Answer38",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer39",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer39",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer39",
+        "Type": "QPay.UI.Models.Answer39",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer4",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer4",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer4",
+        "Type": "QPay.UI.Models.Answer4Request",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer40",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer40",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer40",
+        "Type": "QPay.UI.Models.Answer40",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer41",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer41",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer41",
+        "Type": "QPay.UI.Models.Answer41",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer5",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer5",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer5",
+        "Type": "QPay.UI.Models.Answer5",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer6",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer6",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer6",
+        "Type": "QPay.UI.Models.Answer6",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer7",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer7",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer7",
+        "Type": "QPay.UI.Models.Answer7",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer8",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer8",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer8",
+        "Type": "QPay.UI.Models.Answer8",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswer9",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswer9",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer9",
+        "Type": "QPay.UI.Models.Answer9",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswerCLRA42",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswerCLRA42",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer42_4",
+        "Type": "QPay.UI.Models.Answer42_4",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswerCompliance42",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswerCompliance42",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer42_1",
+        "Type": "QPay.UI.Models.Answer42_1",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswerDesignation42",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswerDesignation42",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer42_3",
+        "Type": "QPay.UI.Models.Answer42_3",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.QuestionAnswerController",
+    "Method": "PostSOPAnswerMinimumwages42",
+    "RelativePath": "api/QuestionAnswer/PostSOPAnswerMinimumwages42",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answer42_2",
+        "Type": "QPay.UI.Models.Answer42_2",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   }
 ]

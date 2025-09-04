@@ -45,8 +45,13 @@ namespace QPay.BAL.Repository
             {
                 storeProcedure = string.Format("sp_PayregisteruploadexporttoExcel");
                 var parameter=new   DynamicParameters();
-                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameter).Result;                
-                dataTable = JsonConvert.DeserializeObject<DataSet>(res) ?? new DataSet();
+                parameter.Add("@Company_Id", companyCode);
+                parameter.Add("@Pay_Period_Id", pay_period_id);
+               // var res = this._dbRepository.GetItemsAsync(storeProcedure, parameter).Result;                
+                //dataTable = JsonConvert.DeserializeObject<DataSet>(res) ?? new DataSet();
+
+                storeProcedure = string.Format("sp_PayregisteruploadexporttoExcel");
+                dataTable = this._dbRepository.GetDataSetsAsync(companyCode, pay_period_id);
 
             }
             else
@@ -268,7 +273,8 @@ namespace QPay.BAL.Repository
         public AutoAllottmentUI AutoAllocationLots(int userId)
         {
             AutoAllottmentUI allottmentUI = new AutoAllottmentUI();
-            string storeProcedure = string.Format("SP_Auto_Allotment_Lot_process");
+            // string storeProcedure = string.Format("SP_Auto_Allotment_Lot_process");
+            const string storeProcedure = "SP_Auto_Allotment_Lot_process_Revised";
             var parameters = new DynamicParameters();
             parameters.Add("@userId", userId);
            
@@ -280,5 +286,29 @@ namespace QPay.BAL.Repository
 
             return allottmentUI;
         }
+
+        public async Task<AutoAllottmentUI> AutoAllocationByUser(int userId)
+        {
+            const string storedProcedure = "SP_Auto_Allotment_Lot_process_Revised";
+            var parameters = new DynamicParameters();
+            parameters.Add("@userId", userId);
+
+            var res = await _dbRepository.GetItemsAsync(storedProcedure, parameters);
+            if (string.IsNullOrWhiteSpace(res))
+                return null;
+
+            try
+            {
+                var allotments = JsonConvert.DeserializeObject<List<AutoAllottmentUI>>(res);
+                return allotments?.FirstOrDefault();
+            }
+            catch (JsonException ex)
+            {
+                // Optional: log the error for debugging
+                Console.Error.WriteLine($"JSON Deserialization error: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }

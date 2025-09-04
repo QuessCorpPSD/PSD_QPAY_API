@@ -44,12 +44,13 @@ namespace QPay.BAL.Repository
             BreakTimeResponse breakTimeResponse=new BreakTimeResponse();
             var parameter = new DynamicParameters();
             string storeProcedure = "SP_tbl_BreakTimeDetails_AddAndUpdate" ?? "";
-
             parameter.Add("@BreakId", breakTimeDetailsUI.BreakId);
-            parameter.Add("@Description", breakTimeDetailsUI.Description);
-            parameter.Add("@TotalMinutes", breakTimeDetailsUI.TotalMinutes);            
+            parameter.Add("@ProcessCategory", breakTimeDetailsUI.ProcessCategory);
+            parameter.Add("@Description", breakTimeDetailsUI.Description);            
+            parameter.Add("@StartTime", breakTimeDetailsUI.starttime);
+            parameter.Add("@EndTime", breakTimeDetailsUI.endtime);
             parameter.Add("@IsActive", breakTimeDetailsUI.IsActive);
-            parameter.Add("@UserId", breakTimeDetailsUI.CreatedBy);
+            parameter.Add("@UserId", breakTimeDetailsUI.CreatedBy);           
 
             var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
             if (!string.IsNullOrWhiteSpace(res))
@@ -70,11 +71,80 @@ namespace QPay.BAL.Repository
 
           
         }
+
+        public async Task<List<EmployeeBreakUI>> EmployeeBulkBreakAddUpdate(List<EmployeeBreakUI> employeeBreakUI, int userId)
+        {
+            List<EmployeeBreakUI> employeeBreaks = new List<EmployeeBreakUI>();
+            foreach (var item in employeeBreakUI)
+            {
+                var parameter = new DynamicParameters();
+                string storeProcedure = "SP_tbl_employee_BreakTimeDetails_AddAndUpdate" ?? "";
+                parameter.Add("@UserId", item.UserId);
+                parameter.Add("@BreakTypeId", item.BreakId);
+                parameter.Add("@StartTime", item.StartTime?.ToTimeSpan());
+                parameter.Add("@EndTime", item.EndTime?.ToTimeSpan());
+                parameter.Add("@remarks", item.Remarks);
+                parameter.Add("@UserBreakId", item.UserBreakId);
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+
+                    try
+                    {
+                        employeeBreaks = JsonConvert.DeserializeObject<List<EmployeeBreakUI>>(res).ToList() ?? new List<EmployeeBreakUI>();
+                    }
+                    catch (JsonException ex)
+                    {
+                        // Log exception or handle as needed
+                        Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+                        return new List<EmployeeBreakUI>();
+                    }
+                }
+
+            }
+
+
+
+
+            return employeeBreaks;
+        }
+        public async Task<List<EmployeeBreakUI>> EmployeeBreakAddUpdate(EmployeeBreakUI item)
+        {
+            List<EmployeeBreakUI> employeeBreaks = new List<EmployeeBreakUI>();
+            var parameter = new DynamicParameters();
+            string storeProcedure = "SP_tbl_employee_BreakTimeDetails_AddAndUpdate" ?? "";
+            parameter.Add("@UserId", item.UserId);
+            parameter.Add("@BreakTypeId", item.BreakId);
+            parameter.Add("@StartTime", item.StartTime?.ToTimeSpan());
+            parameter.Add("@EndTime", item.EndTime?.ToTimeSpan());
+            parameter.Add("@remarks", item.Remarks);
+            parameter.Add("@UserBreakId", item.UserBreakId);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+
+                try
+                {
+                    employeeBreaks = JsonConvert.DeserializeObject<List<EmployeeBreakUI>>(res).ToList() ?? new List<EmployeeBreakUI>();
+                }
+                catch (JsonException ex)
+                {
+                    // Log exception or handle as needed
+                    Console.WriteLine($"JSON Deserialization error: {ex.Message}");
+                    return new List<EmployeeBreakUI>();
+                }
+            }
+
+
+
+
+                return employeeBreaks;
+        }
         public async Task<List<EmployeeBreakUI>> GetEmployeeBreakByUserIdAndDate(int userId,DateTime currentDate)
         {
             List<EmployeeBreakUI> employeeBreaks = new List<EmployeeBreakUI>();
             var parameter = new DynamicParameters();
-            string storeProcedure = "SP_GET_tbl_employee_BreakTimeDetails_AddAndUpdate" ?? "";
+            string storeProcedure = "SP_GET_tbl_employee_BreakTimeDetails" ?? "";
 
             parameter.Add("@UserId", userId);
             parameter.Add("@date", currentDate);

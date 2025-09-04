@@ -8,9 +8,9 @@ namespace QPay.UI.Models
 {
    public class AutoAllottmentUI
     {
-        public int StatusCode { get; set; }
+        public int? StatusCode { get; set; }
         public string Messages { get; set; } = "";
-        public int EmployeeCode { get; set; }
+        public int? EmployeeCode { get; set; }
         public string Process_Category { get; set; } = "";
 
 

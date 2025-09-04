@@ -82,6 +82,35 @@ namespace QPay.DAL.Repository
             }
             return ds;
         }
+        public DataSet GetDataSetsAsync(int companyCode, int pay_period_id)
+        {
+            var ds = new DataSet();
+            using var connection = new SqlConnection(_connectionString);
+            {
+                using var command = new SqlCommand("[sp_PayregisteruploadexporttoExcel]", connection);
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Company_Id", companyCode);
+                    command.Parameters.AddWithValue("@Pay_Period_Id", pay_period_id);
+                   
+                    command.CommandTimeout = 1500;
+                    //if (param != null)
+                    //{
+                    //    foreach (var prop in param.GetType().GetProperties())
+                    //    {
+                    //        command.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(param) ?? DBNull.Value);
+                    //    }
+                    //}
+
+                    using var adapter = new SqlDataAdapter(command);
+                    {
+                        //   await Task.Run(() => adapter.Fill(ds));
+                        adapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
 
 
         public async Task<string> GetItemsReconAsync(string storeProcedureName, object param)
@@ -210,6 +239,8 @@ namespace QPay.DAL.Repository
                 };
             }
         }
+
+       
 
         public async Task<int> BulkInsertItemAsync(List<T> model, string procedureName)
         {

@@ -9,7 +9,11 @@
 
         public int lotNumber { get; set; }
 
+        public int revised { get; set; }
+
         public string payroll_input_type { get; set; }
+
+        public string process_category { get; set; }
     }
 
     public class PayRegisterQzoneRequest
