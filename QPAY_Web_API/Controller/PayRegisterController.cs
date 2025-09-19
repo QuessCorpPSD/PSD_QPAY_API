@@ -408,7 +408,7 @@ namespace QPay.API.Controller
 
             //var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
             //var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-            if (registerRequest.payroll_input_type == "Other Input")
+            if (registerRequest.payroll_input_type == "Other Input" || registerRequest.payroll_input_type == "Revised Other Input")
             {
                 var register = this._payRegisterRepository.GetQCOtherIncomePayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.pay_period);
                 return Ok(register);
@@ -420,11 +420,13 @@ namespace QPay.API.Controller
             }
             else
             {
-                var register = this._payRegisterRepository.ReconPayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber,registerRequest.revised,registerRequest.process_category);
+                var register = this._payRegisterRepository.ReconPayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.revised, registerRequest.process_category);
+                var increment = this._payRegisterRepository.IncrementReport(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.revised, registerRequest.process_category);
+                register.IncrementFile = increment.File;
                 return Ok(register);
             }
-            
-          
+
+
 
 
 

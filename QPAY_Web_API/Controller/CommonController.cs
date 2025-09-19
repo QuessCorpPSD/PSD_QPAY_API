@@ -16,17 +16,43 @@ namespace QPay.API.Controller
         private readonly IProcessCategoryRepository _processCategoryRepository;
         private readonly IAccesstypeRepository _accesstypeRepository;
         private readonly IFinancialYearRepository _financialYearRepository;
+        private readonly IAdminDashboardRepository _adminDashboardRepository;
 
         public CommonController(
             IRoleRepository roleRepository,
             IProcessCategoryRepository processCategoryRepository,
             IAccesstypeRepository accesstypeRepository,
-            IFinancialYearRepository financialYearRepository)
+            IFinancialYearRepository financialYearRepository,
+            IAdminDashboardRepository adminDashboardRepository)
         {
             _roleRepository = roleRepository;
             _processCategoryRepository = processCategoryRepository;
             _accesstypeRepository = accesstypeRepository;
             _financialYearRepository = financialYearRepository;
+            _adminDashboardRepository = adminDashboardRepository;
+        }
+
+        [HttpGet, Route("GetAllPayperiod/{companyId}")]
+        public async Task<IActionResult> GetAllPayperiod(int companyId)
+        {
+            var response = await _adminDashboardRepository.GetAllPayperiod(companyId);
+
+            return Ok(response);
+        }
+        [HttpGet, Route("GetAllCompanyCode/{userId}")]
+        public async Task<IActionResult> GetAllCompanyCodes(string userId)
+        {
+            var response = await _adminDashboardRepository.GetallCompanyCodes(userId);
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetCurrentPayperiod/{companyId}")]
+        public IActionResult GetCurrentPayperiod(int companyId)
+        {
+            var response = _adminDashboardRepository.GetCurrentPayperiod(companyId);
+
+            return Ok(response);
         }
 
         [HttpGet,Route("GetAllActiveRole")]

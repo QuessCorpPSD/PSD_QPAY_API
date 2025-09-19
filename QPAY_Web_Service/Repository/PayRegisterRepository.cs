@@ -61,7 +61,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@Company_ID", companyCode);
             parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
             parameters.Add("@PO_NUMBER", "");
-            parameters.Add("@INPUTNUMBER", 0);
+            parameters.Add("@INPUTNUMBER", lotNumber);
             string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
             var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!=null)
@@ -272,13 +272,14 @@ namespace QPay.BAL.Repository
         }
         public FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period)
         {
+           
             FileResponse fileResponse = new FileResponse();
             DataTable payregister_dt = new DataTable();
             var parameters = new DynamicParameters();
             parameters.Add("@Company_ID", companyCode);
             parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
             parameters.Add("@PO_NUMBER", "");
-            parameters.Add("@INPUTNUMBER", 0);
+            parameters.Add("@INPUTNUMBER", lotNumber);
             string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
             var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!=null)
@@ -375,24 +376,13 @@ namespace QPay.BAL.Repository
                             }
                             var comayName = CompanyNameByCode(companyCode);
                             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-                            //ws.Style.Border.TopBorder= XLBorderStyleValues.Thick;
-                            //ws.Style.Border.LeftBorder= XLBorderStyleValues.Thick;
-                            //ws.Style.Border.RightBorder= XLBorderStyleValues.Thick;
-                            //ws.Style.Border.BottomBorder= XLBorderStyleValues.Thick;
-                            //ws.Style.Border.RightBorderColor = XLColor.Black;
-                            //ws.Style.Border.LeftBorderColor = XLColor.Black;
-                            //ws.Style.Border.TopBorderColor = XLColor.Black;
-                            //ws.Style.Border.BottomBorderColor = XLColor.Black;
-                            //ws.Range("A1:B1").Merge();
-                            //ws.Range("A1:C1").Merge();
+                            
                             ws.Range("A1:Z1").Merge();
                             ws.Range("A2:Z2").Merge();
                             ws.Range("A3:Z3").Merge();
                             
 
-                            ws.Cell(1, 1).Value = comapny.Client_Name;
-                           // ws.Cell(1, 1).Style.Font.Bold=true;
-                          //  ws.Cell(1, 1).Style.Font.Underline=XLFontUnderlineValues.Single;
+                            ws.Cell(1, 1).Value = comapny.Client_Name;                           
                             ws.Cell(2, 1).Value ="SLAIT FOR THE MONTH OF " +pay_period;
                             ws.Cell(2, 1).Style.Font.Bold=true;
                             ws.Cell(2, 1).Style.Font.Underline=XLFontUnderlineValues.Single;
@@ -815,7 +805,7 @@ namespace QPay.BAL.Repository
 
                                             ws.Cell(1, 1).Value = comapny.Client_Name;
                                             ws.Cell(1, 1).Style.Font.Bold=true;
-                                           ws.Cell(2, 1).Value = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
+                                            ws.Cell(2, 1).Value = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
                                             ws.Cell(2, 1).Style.Font.Bold = true;
                                             var lastrow = ws.LastRowUsed().RowNumber();
 
@@ -1075,20 +1065,28 @@ namespace QPay.BAL.Repository
             if (res != null)
             {
                var external_payregister = (DataTable)JsonConvert.DeserializeObject<DataTable>(res)?? new DataTable();
-                using var workbook = new XLWorkbook();
+                if (external_payregister.Rows.Count > 0)
                 {
-                    var ws = workbook.AddWorksheet(external_payregister, "PayRegister");
-                    ws.Table(0).ShowAutoFilter = false;
-                    ws.Table(0).Theme = XLTableTheme.None;
-                    using (MemoryStream stream = new MemoryStream())
+                    using var workbook = new XLWorkbook();
                     {
-                        workbook.SaveAs(stream);
-                        var bytes = Convert.ToBase64String(stream.ToArray());
-                        //  FileResponse fileResponse = new FileResponse();
-                        fileResponse.FileName = "PayRegister.xlsx";
-                        fileResponse.File = bytes;
+                        var ws = workbook.AddWorksheet(external_payregister, "PayRegister");
+                        ws.Table(0).ShowAutoFilter = false;
+                        ws.Table(0).Theme = XLTableTheme.None;
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var bytes = Convert.ToBase64String(stream.ToArray());
+                            //  FileResponse fileResponse = new FileResponse();
+                            fileResponse.FileName = "PayRegister.xlsx";
+                            fileResponse.File = bytes;
 
+                        }
                     }
+                }
+                else
+                {
+                    fileResponse.FileName = "Pay Register not available";
+                    fileResponse.File = "No";
                 }
                
             
@@ -1136,6 +1134,59 @@ namespace QPay.BAL.Repository
 
             }
             return payRegisterUploadResponse;
+        }
+
+        public FileResponse IncrementReport(int companyCode, int pay_period_Id, int lotNumber, int revised, string processcategory)
+        {
+            FileResponse fileResponse = new FileResponse();
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", companyCode);
+            parameters.Add("@PayPeriodId", pay_period_Id);
+            parameters.Add("@LotNo", lotNumber);
+            parameters.Add("@Revised", revised);
+            string storeProcedure = "PROC_ExportIncrementDetailsLotwise";
+            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            DataTable payregister_dt = new DataTable();
+            if (res != null)
+            {
+                try
+                {
+                    payregister_dt = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
+                    if (payregister_dt != null)
+                    {
+                        if (payregister_dt.Rows.Count > 0)
+                        {
+                            using var workbook = new XLWorkbook();
+                            {
+                                var ws = workbook.AddWorksheet(payregister_dt, "Increment");
+                                ws.Table(0).ShowAutoFilter = true;
+                                ws.Table(0).Theme = XLTableTheme.None;
+                                using (MemoryStream stream = new MemoryStream())
+                                {
+                                    workbook.SaveAs(stream);
+                                    var bytes = Convert.ToBase64String(stream.ToArray());
+
+                                    fileResponse.FileName = "Increment.xlsx";
+                                    fileResponse.File = bytes;
+                                    //fileResponse = fileResponse;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            fileResponse.IncrementFile = "No";
+                        }
+                    }
+                    else
+                    {
+                        fileResponse.IncrementFile = "No";
+                    }
+
+                }
+                catch { }
+                
+            }
+            return fileResponse;
         }
 
         public FileResponse ReconPayRegister(int companyCode, int pay_period_Id, int lotNumber,int revised,string processcategory)

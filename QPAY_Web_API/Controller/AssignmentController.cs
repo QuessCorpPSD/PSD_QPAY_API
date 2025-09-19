@@ -140,6 +140,7 @@ namespace QPay.API.Controller
             var res =await this._assignment.AutoAllocationByUser(userId);
             return Ok(res);
         }
+       
 
         [HttpPost]
         [Route("QCLotVerify")]
@@ -188,14 +189,14 @@ namespace QPay.API.Controller
                 //}
                 fileResponse = lotStatusrequestModel.Payroll_Input_Type switch
                 {
-                    "Other Input" => _payRegisterRepository.GetOtherIncomePayRegister(
+                    "Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
                                         lotStatusrequestModel.Company_Id,
                                         lotStatusrequestModel.pay_period_id,
-                                        lotStatusrequestModel.lotnumber),
-                    "Revised Other Input" => _payRegisterRepository.GetOtherIncomePayRegister(
+                                        lotStatusrequestModel.lotnumber,lotStatusrequestModel.Pay_Period),
+                    "Revised Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
                     lotStatusrequestModel.Company_Id,
                     lotStatusrequestModel.pay_period_id,
-                    lotStatusrequestModel.lotnumber),
+                    lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period),
 
                     "External Payregister" => _payRegisterRepository.ExternalPayRegister(
                                         lotStatusrequestModel.Company_Id,
@@ -334,6 +335,24 @@ namespace QPay.API.Controller
             }
 
                 return Ok(allotmentLotStatus);
+        }
+        [HttpGet, Route("AllottmentRevokDetail/{userId}")]
+        public async Task<IActionResult> AllottmentRevokDetail(int userId)
+        {
+            if (userId > 0)
+            {
+             var revok= await  this._assignment.AllottmentRevokDetail(userId);
+                return Ok(revok);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost,Route("AssignmentRevok")]
+        public async Task<IActionResult> AssignmentRevok(AllotmentRevok allotmentRevok)
+        {
+            var revok = await this._assignment.AssignmentRevok(allotmentRevok);
+            return Ok(revok);
         }
 
         public async Task<PayRegisterResponse> PayRegisterAutoUpload(PayRegisterUploadModel payRegisterUpload)

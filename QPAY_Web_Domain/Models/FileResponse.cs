@@ -8,10 +8,10 @@ namespace QPay.UI.Models
 {
   public  class FileResponse
     {
-        public string FileName { get; set; }
+        public string FileName { get; set; } = "";
 
-        public string File { get; set; }
-
-        public string QZoneUpdate { get; set; }
+        public string File { get; set; } = "";
+        public string IncrementFile {  get; set; } = "";
+        public string QZoneUpdate { get; set; } = "";
     }
 }

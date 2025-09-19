@@ -72,6 +72,8 @@ namespace QPay.UI.Dashboard
 
         public DateTime? QC_Verified_DateTime { get; set; }
 
+        public DateTime? ProcessDatetime { get; set; }
+
         public string Score { get; set; } = string.Empty;
 
         public string? ReportingManager { get; set; } = string.Empty;

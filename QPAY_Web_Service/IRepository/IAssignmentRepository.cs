@@ -13,7 +13,8 @@ namespace QPay.BAL.IRepository
         AssignmentLots GetAssignmentLotByDate(int userId, string filter);
         DataTable GetInputLots(int companyCode, int pay_period_id, int lot, int inputType);
         AutoAllottmentUI AutoAllocationLots(int userId);
-
+        Task<List<AllottmentRevokRequest>> AllottmentRevokDetail(int userId);
+        Task<AutoAllottmentUI> AssignmentRevok(AllotmentRevok allotmentRevok);
         Task<AutoAllottmentUI> AutoAllocationByUser(int userId);
 
         List<AllotmentUI> GetAllotmentByCompanyCodeLot(string companyCode, string payPeriod, int lot);

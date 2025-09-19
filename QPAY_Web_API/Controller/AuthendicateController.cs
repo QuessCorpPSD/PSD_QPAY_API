@@ -49,6 +49,10 @@ namespace QPAY_Web_API.Controller
          .Where(u => u.User_Id == userId)
          .FirstOrDefault());
 
+        [HttpGet, Route("GetAllUser")]
+        public async Task<IActionResult> GetAllUser() =>
+        Ok((await _loginRepository.GetAllActiveUsers()));
+
         [AllowAnonymous]
         [HttpPost]
         [Route("UserLogin")]

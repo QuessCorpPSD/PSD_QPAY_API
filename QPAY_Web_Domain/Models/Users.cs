@@ -38,14 +38,17 @@ namespace QPay.UI.Models
         public int? isFirstlogin { get; set; }
         public int EmployeeID { get; set; }
 
-        public int? TeamLeadUserId { get; set; }
-        public string TeamLeadEmailId { get; set; } = string.Empty;
+        public int? TeamLead_User_Id { get; set; }
+        public string TeamLead_Email_Id { get; set; } = string.Empty;
+        public string TeamLeadName { get; set; } = string.Empty;
         public int? Manager_User_Id { get; set; }
         public string Manager_Email_Id { get; set; } = string.Empty;
+        public string ManagerName { get; set; } = string.Empty;
 
-        public int? Fun_Manager_User_Id { get; set; }
+        public int? Fun_Head_UserId { get; set; }
 
-        public string Fun_Manager_Email_Id { get; set; } = string.Empty;
+        public string Fun_Head_EmailId { get; set; } = string.Empty;
+        public string Fun_Manager { get; set; } = string.Empty;
 
         public string Process_Category { get; set; } = string.Empty;
 

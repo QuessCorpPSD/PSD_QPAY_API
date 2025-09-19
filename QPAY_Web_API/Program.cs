@@ -20,6 +20,11 @@ var builder = WebApplication.CreateBuilder(args);
 var logger = LogManager.Setup()
     .LoadConfigurationFromFile("nlog.config") // Loads from project root
     .GetCurrentClassLogger();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter("dd-MM-yyyy hh:mm:ss tt"));
+    });
 //builder.Logging.ClearProviders();
 //builder.Logging.AddConsole();            // Logs to console
 //builder.Logging.AddDebug();              // Logs to Visual Studio Output window

@@ -136,12 +136,12 @@ namespace QPay.BAL.Repository
                 parameters.Add("@mode", "Add");
                 parameters.Add("@CreatedBy", user.CreatedBy);
                 parameters.Add("@Process_Category", user.Process_Category);
-                parameters.Add("@TeamLead_User_Id", user.TeamLeadUserId);
-                parameters.Add("@TeamLead_Email_Id", user.TeamLeadEmailId);
+                parameters.Add("@TeamLead_User_Id", user.TeamLead_User_Id);
+                parameters.Add("@TeamLead_Email_Id", user.TeamLead_Email_Id);
                 parameters.Add("@Manager_User_Id", user.Manager_User_Id);
                 parameters.Add("@Manager_Email_Id", user.Manager_Email_Id);
-                parameters.Add("@Fun_Head_UserId", user.Fun_Manager_User_Id);
-                parameters.Add("@Fun_Head_EmailId", user.Fun_Manager_Email_Id);
+                parameters.Add("@Fun_Head_UserId", user.Fun_Head_UserId);
+                parameters.Add("@Fun_Head_EmailId", user.Fun_Head_EmailId);
                 // Call stored procedure
                 var resultJson = await _dbRepository.GetItemsAsync("sp_CreateUpdateUserDetails", parameters);
 

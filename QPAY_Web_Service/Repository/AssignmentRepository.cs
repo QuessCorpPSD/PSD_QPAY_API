@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
 using QPay.DAL.Repository;
+using QPay.UI.Admin;
 using QPay.UI.Models;
 using System.Data;
 
@@ -64,6 +65,32 @@ namespace QPay.BAL.Repository
           
             return dataTable;
         }
+
+        //public async Task<AutoAllottmentUI> AssignmentRevok(AllotmentRevok revok)
+        //{
+        //    AutoAllottmentUI autoAllottmentUI=new AutoAllottmentUI();
+        //    const string storedProcedure = "SP_Auto_Allotment_Lot_process_Revised";
+        //    var parameters = new DynamicParameters();
+        //    parameters.Add("@Company_Id", revok.Company_Id);
+        //    parameters.Add("@Pay_Period_Id", revok.Pay_Period_Id);
+        //    parameters.Add("@Lot_Number", revok.Lot_Number);
+        //    parameters.Add("@CreatedOn", revok.CreatedOn);
+        //    parameters.Add("@userId", revok.userId);
+        //    var res = await _dbRepository.GetItemsAsync(storedProcedure, parameters);
+        //    try
+        //    {
+        //        var allotments = JsonConvert.DeserializeObject<List<AutoAllottmentUI>>(res);
+        //        return allotments?.FirstOrDefault();
+        //    }
+        //    catch (JsonException ex)
+        //    {
+        //        autoAllottmentUI.StatusCode = 201;
+        //        autoAllottmentUI.Messages = ex.Message;
+        //        // Optional: log the error for debugging
+        //        Console.Error.WriteLine($"JSON Deserialization error: {ex.Message}");
+        //        return autoAllottmentUI;
+        //    }
+        //}
         public AssignmentLots GetAssignmentLotByDate(int userId,string filter)
         {
             AssignmentLots assignment = new AssignmentLots();
@@ -152,6 +179,23 @@ namespace QPay.BAL.Repository
             if (res!="")
             {
                 allotments = JsonConvert.DeserializeObject<List<AllotmentUI>>(res).ToList();
+            }
+            return allotments;
+        }
+
+        
+        public async Task<List<AllottmentRevokRequest>> AllottmentRevokDetail(int userId)
+        {
+            List<AllottmentRevokRequest> allotments = new List<AllottmentRevokRequest>();
+            string storeProcedure = string.Format("SP_User_Allotted_Detail");
+            var parameters = new DynamicParameters();
+            parameters.Add("@userId", userId);
+            
+            
+            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (res != "")
+            {
+                allotments = JsonConvert.DeserializeObject<List<AllottmentRevokRequest>>(res).ToList();
             }
             return allotments;
         }
@@ -284,6 +328,32 @@ namespace QPay.BAL.Repository
                 allottmentUI = JsonConvert.DeserializeObject<List<AutoAllottmentUI>>(res).FirstOrDefault();
             }
 
+            return allottmentUI;
+        }
+        public async Task<AutoAllottmentUI> AssignmentRevok(AllotmentRevok allotmentRevok)
+        {
+            AutoAllottmentUI allottmentUI = new AutoAllottmentUI();
+            // string storeProcedure = string.Format("SP_Auto_Allotment_Lot_process");
+            const string storeProcedure = "SP_RevokDetail";
+            var parameters = new DynamicParameters();
+            parameters.Add("@company_id", allotmentRevok.Company_Id);
+            parameters.Add("@pay_period_Id", allotmentRevok.Pay_Period_Id);
+            parameters.Add("@lot_number", allotmentRevok.Lot_Number);
+            parameters.Add("@User_Id", allotmentRevok.userId);
+            parameters.Add("@CreatedBy", allotmentRevok.CreatedBy);
+            parameters.Add("@InputLot_Id", allotmentRevok.InputLot_Id);
+
+            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            if (res != "")
+            {
+                allottmentUI = JsonConvert.DeserializeObject<List<AutoAllottmentUI>>(res).FirstOrDefault();
+            }
+            //const string  storeProcedure_audit = "sp_InputLotDetails_Audit";
+            //parameters = new DynamicParameters();
+            //parameters.Add("@CreatedBy", allotmentRevok.CreatedBy);
+            //parameters.Add("@InputLot_Id", allotmentRevok.InputLot_Id);
+            //res = await this._dbRepository.GetItemsAsync(storeProcedure_audit, parameters);
+            
             return allottmentUI;
         }
 

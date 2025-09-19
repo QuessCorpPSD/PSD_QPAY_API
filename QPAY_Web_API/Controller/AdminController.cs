@@ -18,6 +18,17 @@ namespace QPay.API.Controller
             this._adminDashboardRepository= adminDashboardRepository;
         }
 
+        [HttpPost,Route("SwapCategory")]
+        public async Task<IActionResult> SwapCategory(SwapCategoryUI swapCategoryUI)
+        {
+            var swap= await this._adminDashboardRepository.SwapCategory(swapCategoryUI);
+            if(swap==null)
+            {
+                swap.Messages = "Category not swaped";
+            }
+            return Ok(swap);
+        }
+
         [HttpPost,Route("AddBreakDetail")]
         public async Task<IActionResult> AddBreakDetail(BreakTimeDetailRequest breakTimeDetailsUI)
         {
@@ -33,6 +44,40 @@ namespace QPay.API.Controller
             };
             var res =await this._adminDashboardRepository.AddUpdateBreakDetail(breakTimeDetails);
             return Ok(res);
+        }
+        [HttpGet,Route("GetAllManager/{roleId}/{userId}")]
+        public async Task<IActionResult> GetAllManager(int roleId,int userId)
+        {
+            var manager =await this._adminDashboardRepository.GetAllManager(roleId, userId);
+            return Ok(manager);
+        }
+
+        [HttpGet, Route("GetManagerByUserId/{userId}")]
+        public async Task<IActionResult> GetManagerByUserId(int userId)
+        {
+            var manager = await this._adminDashboardRepository.GetAllUsers();
+            var selectedmanger = manager.Where(u => u.Manager_User_Id == userId).ToList();
+            return Ok(manager);
+        }
+
+        [HttpGet, Route("GetAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var users = await this._adminDashboardRepository.GetAllUsers();
+            return Ok(users);
+        }
+
+        [HttpGet, Route("GetTeamLeader/{userId}")]
+        public async Task<IActionResult> GetTeamLeader(int userId)
+        {
+            var teamleader = await this._adminDashboardRepository.GetTeamLeaderByMangerId( userId);
+            return Ok(teamleader);
+        }
+        [HttpGet, Route("GetEmployeeByUserId/{userId}")]
+        public async Task<IActionResult> GetEmployeeByUserId(int userId)
+        {
+            var employee = await this._adminDashboardRepository.GetEmployeeByTeamLeaderId(userId);
+            return Ok(employee);
         }
 
         [HttpGet,Route("GetAllBreakDetail")]

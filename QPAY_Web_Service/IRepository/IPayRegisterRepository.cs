@@ -11,6 +11,7 @@ namespace QPay.BAL.IRepository
 {
    public interface IPayRegisterRepository
     {
+        FileResponse IncrementReport(int companyCode, int pay_period_Id, int lotNumber, int revised, string processcategory);
         FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, int lotNumber,string pay_period,int revised);
         FileResponse ReconPayRegister(int companyCode, int pay_period_Id, int lotNumber, int revised, string processcategory);
         FileResponse ExternalPayRegister(int companyCode, int pay_period_Id);
