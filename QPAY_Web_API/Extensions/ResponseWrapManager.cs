@@ -72,11 +72,11 @@ namespace QPay.API.Extensions
             }
 
             // NOTE: Add any further customizations if needed here
-           
-            var sumessage = status==true ? "Success" : "API Working";
-            httpStatusCode = (HttpStatusCode)200;
+           //
+            //var sumessage = status==true ? "Success" : "API Working";
+           // httpStatusCode = (HttpStatusCode)200;
 
-            var response = new APIResponses(httpStatusCode, sumessage, data, error);
+            var response = new APIResponses(httpStatusCode, status, data, error);
             return response;
             //if(!status)
             //{

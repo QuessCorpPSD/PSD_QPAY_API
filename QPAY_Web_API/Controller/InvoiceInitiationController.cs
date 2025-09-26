@@ -8,10 +8,6 @@ using QPay.UI.Models;
 namespace QPay.API.Controller
 {
     [Route("api/[controller]")]
-
-
-
-
     [ApiController]
     public class InvoiceInitiationController : ControllerBase
     {
@@ -29,16 +25,17 @@ namespace QPay.API.Controller
         [HttpGet, Route("GetTaxTypes")]
         public async Task<IActionResult> GetTaxTypes() =>
             Ok(await this._invoiceInitiationRepository.GetTaxTypes("GetTaxTypes"));
+
         [HttpPost, Route("Search")]
-        public async Task<IActionResult> Search(InvoiceInitiationUI request)
+        public async Task<IActionResult> Search(InvoiceSearchRequest request)
         {
-          var search = await this._invoiceInitiationRepository.Search(request.Company_Id,request.Pay_Period,request.TaxTypeId);
+          var search = await this._invoiceInitiationRepository.Search(request.companyId,request.Pay_Period, request.taxtypeId);
             return Ok(search);
         }
         [HttpPost, Route("InvoiceInitiate")]
-        public async Task<IActionResult> InvoiceInitiate(InvoiceInitiationUI request)
+        public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
         {
-            string xml = XmlHelper.SerializeObjectToXml(request, "Main");
+            string xml = XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
             var result = await _invoiceInitiationRepository.InvoiceInitiate(
           request.TaxTypeId,
           xml,
@@ -49,12 +46,12 @@ namespace QPay.API.Controller
             return Ok(result);
         }
         [HttpPost, Route("ExportToExcel")]
-        public async Task<IActionResult> ExportToExcel(InvoiceInitiationUI requestModel)
+        public async Task<IActionResult> ExportToExcel(InvoiceSearchRequest requestModel)
         {
             try
             {
      
-                var InvoiceInitiateExcel = await _invoiceInitiationRepository.ExportToExcel(requestModel.Company_Id,requestModel.Pay_Period,requestModel.TaxTypeId);
+                var InvoiceInitiateExcel = await _invoiceInitiationRepository.ExportToExcel(requestModel.companyId,requestModel.Pay_Period, requestModel.taxtypeId);
 
                 if (string.IsNullOrEmpty(InvoiceInitiateExcel.File))
                 {

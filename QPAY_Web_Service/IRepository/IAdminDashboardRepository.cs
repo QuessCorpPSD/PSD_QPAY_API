@@ -16,6 +16,7 @@ namespace QPay.BAL.IRepository
         Task<AutoAllottmentUI> SwapCategory(SwapCategoryUI swapCategoryUI);
         Task<List<Users>> GetAllUsers();
         Task<List<CompanyPicker>> GetallCompanyCodes(string userId);
+        Task<List<CategoryWiseAssignmentUI>> GetCategoryLotDetails(string AssigmentType);
         List<PayperiodDD> GetCurrentPayperiod(int companyId);
         Task<List<PayperiodDD>> GetAllPayperiod(int companyId);
         Task<List<DashboardDetailUI>> GetPendingLotAsync();

@@ -295,8 +295,7 @@ namespace QPay.API.Controller
         public IActionResult PayRegister(PayRegisterRequest registerRequest)
         {
 
-            var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
-            var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
+           
             var register = this._payRegisterRepository.PayRegisterDownload(registerRequest.companycode, registerRequest.pay_period_Id,registerRequest.lotNumber, registerRequest.pay_period,0);
             return Ok(register);
             //using var workbook = new XLWorkbook();
@@ -406,11 +405,11 @@ namespace QPay.API.Controller
         public IActionResult GetReconPayRegister(PayRegisterRequest registerRequest)
         {
 
-            //var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
-            //var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
+            var comayName = _payRegisterRepository.CompanyNameByCode(registerRequest.companycode);
+            var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
             if (registerRequest.payroll_input_type == "Other Input" || registerRequest.payroll_input_type == "Revised Other Input")
             {
-                var register = this._payRegisterRepository.GetQCOtherIncomePayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.pay_period);
+                var register = this._payRegisterRepository.GetQCOtherIncomePayRegister(registerRequest.companycode, registerRequest.pay_period_Id, registerRequest.lotNumber, registerRequest.pay_period, comapny.Company_Code);
                 return Ok(register);
             }
             else if (registerRequest.payroll_input_type == "External Payregister")

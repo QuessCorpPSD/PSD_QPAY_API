@@ -280,9 +280,9 @@ namespace QPay.BAL.Repository
         public async Task<List<CompanyPicker>> GetallCompanyCodes(string userId)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@USER_ID", userId);
+            parameters.Add("@User_Id", userId);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_Get_AllPSLCompany_Code_New", parameters);
+            var res = await this._dbRepository.GetItemsAsync("SP_GetCompanyByUserId", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -362,6 +362,21 @@ namespace QPay.BAL.Repository
             }
 
             return adminDashboardDetails;
+        }
+
+        public async Task<List<CategoryWiseAssignmentUI>> GetCategoryLotDetails(string AssigmentType)
+        {
+            List<CategoryWiseAssignmentUI> categoryWiseAssignments=new List<CategoryWiseAssignmentUI>();  
+            string storeProcedure = string.Format("SP_Admin_Process_Category_Lot_Detail");
+            var parameter = new DynamicParameters();
+            parameter.Add("@AssignmentType",AssigmentType);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
+            if (res != "")
+            {
+                categoryWiseAssignments = JsonConvert.DeserializeObject<List<CategoryWiseAssignmentUI>>(res).ToList() ?? new List<CategoryWiseAssignmentUI>();
+                return categoryWiseAssignments;
+            }
+            return categoryWiseAssignments;
         }
     }
 }

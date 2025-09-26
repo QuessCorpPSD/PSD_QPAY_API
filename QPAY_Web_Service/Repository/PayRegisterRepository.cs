@@ -29,13 +29,15 @@ namespace QPay.BAL.Repository
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _config;
         private readonly string[] _grandTotalWhilteList;
+        private readonly string[] _companyCode; 
 
         public PayRegisterRepository(DbRepository dbRepository, IConfiguration config)
         {
             this._dbRepository=dbRepository;
             this._config = config;
-            this._grandTotalWhilteList = _config.GetSection("whiteListedColumn:columnName").Get<string[]>() ?? Array.Empty<string>(); 
-            
+            this._grandTotalWhilteList = _config.GetSection("whiteListedColumn:columnName").Get<string[]>() ?? Array.Empty<string>();
+            this._companyCode = _config.GetSection("OtherIncome:companyCode").Get<string[]>() ?? Array.Empty<string>();
+
 
         }
 
@@ -53,17 +55,30 @@ namespace QPay.BAL.Repository
             return "";
         }
 
-        public FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber)
+        public FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber,string company_Code)
         {
             FileResponse fileResponse = new FileResponse();
             DataTable payregister_dt = new DataTable();
             var parameters = new DynamicParameters();
-            parameters.Add("@Company_ID", companyCode);
-            parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
-            parameters.Add("@PO_NUMBER", "");
-            parameters.Add("@INPUTNUMBER", lotNumber);
-            string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            string storeProcedure = "";
+            if (company_Code != "" && _companyCode.Contains(company_Code))
+            {
+                parameters.Add("@Company_ID", companyCode);
+                parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
+                parameters.Add("@PO_NUMBER", "");
+                parameters.Add("@INPUTNUMBER", lotNumber);
+                storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
+            }
+            else
+            {
+                parameters.Add("@Company_ID", companyCode);
+                parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
+                parameters.Add("@PO_NUMBER", "");
+                parameters.Add("@INPUTNUMBER", lotNumber);
+                storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
+            }
+
+                var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!=null)
             {
                 payregister_dt =(DataTable)JsonConvert.DeserializeObject<DataTable>(res);
@@ -270,17 +285,36 @@ namespace QPay.BAL.Repository
         {
             return table.Columns.Contains(columnName);
         }
-        public FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period)
+        public FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period,string Company_Code)
         {
            
             FileResponse fileResponse = new FileResponse();
             DataTable payregister_dt = new DataTable();
             var parameters = new DynamicParameters();
-            parameters.Add("@Company_ID", companyCode);
-            parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
-            parameters.Add("@PO_NUMBER", "");
-            parameters.Add("@INPUTNUMBER", lotNumber);
-            string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
+            string storeProcedure = "";
+            if (Company_Code != "" && _companyCode.Contains(Company_Code))
+            {
+                parameters.Add("@Company_ID", companyCode);
+                parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
+                parameters.Add("@PO_NUMBER", "");
+                parameters.Add("@INPUTNUMBER", lotNumber);
+                storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
+
+            }
+            else
+            {
+                
+                parameters.Add("@Company_ID", companyCode);
+                parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
+                parameters.Add("@PayCode", "");
+                parameters.Add("@Inputno", lotNumber);
+                storeProcedure = "sp_OtherIncome_Report_Pivot_ExportToExcel";
+            }
+            //parameters.Add("@Company_ID", companyCode);
+            //parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
+            //parameters.Add("@PO_NUMBER", "");
+            //parameters.Add("@INPUTNUMBER", lotNumber);
+            //string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
             var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res!=null)
             {
@@ -346,6 +380,35 @@ namespace QPay.BAL.Repository
                                 // dtrow[column]="";
                             }
                         }
+                        double service = 0.0;
+                        double ctc = 0.0;
+                        if (payregister_dt.Columns.Contains("SERCG"))
+                        {
+                            service = payregister_dt.AsEnumerable()
+                           .Where(row => !string.IsNullOrWhiteSpace(row.Field<string>("SERCG")))
+                           .Sum(row => Convert.ToDouble(row.Field<string>("SERCG")));
+                            //if (payregister_dt.Columns["SERCG"].DataType.Name == "Double")
+                            //{
+                            //    service = payregister_dt.AsEnumerable()
+                            //        .Where(row => row.Field<double?>("SERCG").HasValue)
+                            //        .Sum(row => row.Field<double?>("SERCG").Value);
+                            //}
+                        }
+
+                        if (payregister_dt.Columns.Contains("CTC"))
+                        {
+                            //   service = payregister_dt.AsEnumerable()
+                            //.Where(row => !string.IsNullOrWhiteSpace(row.Field<string>("CTC")))
+                            //.Sum(row => Convert.ToDouble(row.Field<string>("CTC")));
+
+                            if (payregister_dt.Columns["CTC"].DataType.Name == "Double")
+                            {
+                                ctc = payregister_dt.AsEnumerable()
+                                .Where(row => row.Field<double?>("CTC").HasValue)
+                                .Sum(row => row.Field<double?>("CTC").Value);
+                            }
+                        }
+                        payregister_dt.Rows.Add(dtrow);
 
                         foreach (var item in RemoveColums)
                         {
@@ -358,22 +421,9 @@ namespace QPay.BAL.Repository
                             ws.Table(0).Theme = XLTableTheme.None;
                             ws.Row(1).InsertRowsAbove(3);
                             ws.SheetView.FreezeRows(4);
-                            ws.SheetView.FreezeColumns(6);
-                            double service = 0.0;
-                            double ctc = 0.0;
-                            if (payregister_dt.Columns.Contains("SERCG"))
-                            {
-                                service = payregister_dt.AsEnumerable()
-                                    .Where(row => row.Field<double?>("SERCG").HasValue)
-                                    .Sum(row => row.Field<double?>("SERCG").Value);
-                            }
-
-                            if (payregister_dt.Columns.Contains("CTC"))
-                            {
-                                ctc = payregister_dt.AsEnumerable()
-                                    .Where(row => row.Field<double?>("CTC").HasValue)
-                                    .Sum(row => row.Field<double?>("CTC").Value);
-                            }
+                            //ws.SheetView.FreezeColumns(6);
+                            
+                           
                             var comayName = CompanyNameByCode(companyCode);
                             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
                             
@@ -382,159 +432,84 @@ namespace QPay.BAL.Repository
                             ws.Range("A3:Z3").Merge();
                             
 
-                            ws.Cell(1, 1).Value = comapny.Client_Name;                           
-                            ws.Cell(2, 1).Value ="SLAIT FOR THE MONTH OF " +pay_period;
+                            ws.Cell(1, 1).Value = comapny.Client_Name;
+                            ws.Cell(1, 1).Style.Font.Bold = true;
+                            ws.Cell(1, 1).Style.Font.Underline = XLFontUnderlineValues.Single;
+                            ws.Cell(2, 1).Value ="ONETIME FOR THE MONTH OF " +pay_period;
                             ws.Cell(2, 1).Style.Font.Bold=true;
                             ws.Cell(2, 1).Style.Font.Underline=XLFontUnderlineValues.Single;
-                            var headerRange = ws.Range("A1:D1");
+                            var headerRange = ws.Row(4);
                             headerRange.Style.Font.Bold = true;
 
-
-                            //headerRange.Style.Font.Underline=XLFontUnderlineValues.Single;
-
-                            headerRange.Style.Border.TopBorder= XLBorderStyleValues.None;
-                            headerRange.Style.Border.LeftBorder= XLBorderStyleValues.None;
-                            headerRange.Style.Border.RightBorder= XLBorderStyleValues.None;
-                            headerRange.Style.Border.BottomBorder= XLBorderStyleValues.None;
-                            //  ws.FirstRowUsed();
+                            
                             var lastrow = ws.LastRowUsed().RowNumber();
-                            ws.Style.Font.Bold = true;
-                            //ws.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
-                            //ws.Style.Border.OutsideBorderColor = XLColor.Black;
-                           
-                            if (ctc!=null && service!=null)
+                            int lastCol = ws.LastColumnUsed().ColumnNumber();
+                            var rowRange = ws.Range(4, 1, lastrow, lastCol); // Rows 2–5, all used columns
+                            rowRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                            rowRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                            ws.Cell(lastrow, 1).Value = "Grand Total";
+                            //ws.Cell(lastrow, 1).Style.Font.Bold = true;
+                            //ws.Cell(lastrow, 1).Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                            //ws.Cell(lastrow, 1).Style.Border.OutsideBorderColor = XLColor.Black;
+                            if (ctc>0 )
                             {
                                 var Total = ctc+service;
                                 var toal_GST = Total*(18.0/100.0);
-                                
-
-                                ws.Cell(lastrow + 3, 4).Value = comapny.Client_Name;
 
 
-
-                                var clinet_cell = ws.Cell(lastrow + 3, 4);
-                                //clinet_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //clinet_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //clinet_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //clinet_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //clinet_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //clinet_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //clinet_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //clinet_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 2, 4).Value = "ONETIME FOR THE MONTH OF " + pay_period;//comapny.Client_Name;
+                                var clinet_cell = ws.Cell(lastrow + 2, 4);
                                 clinet_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 clinet_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 3, 5).Value = ctc;
-                                var ctc_cell = ws.Cell(lastrow + 3, 5);
-
-                                //ctc_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //ctc_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //ctc_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //ctc_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //ctc_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //ctc_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //ctc_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //ctc_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 2, 5).Value = ctc;
+                                var ctc_cell = ws.Cell(lastrow + 2, 5);
                                 ctc_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 ctc_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 4, 4).Value = "Service Charge:";
-                                var Service_cell = ws.Cell(lastrow + 4, 4);
-
-                                //Service_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //Service_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //Service_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //Service_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
-                                //Service_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //Service_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //Service_cell.Style.Border.LeftBorderColor = XLColor.Black;
-
-                                Service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
+                                ws.Cell(lastrow + 3, 4).Value = "Service Charge:";
+                                var Service_cell = ws.Cell(lastrow + 3, 4);
+                                Service_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 Service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 4, 5).Value = service;
-                                var service_cell = ws.Cell(lastrow + 4, 5);
-
-                                //service_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //service_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //service_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //service_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //service_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //service_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //service_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //service_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 3, 5).Value = service;
+                                var service_cell = ws.Cell(lastrow + 3, 5);
                                 service_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 service_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
 
-                                ws.Cell(lastrow + 5, 4).Value = "Sub Total";
-                                var empty_cell = ws.Cell(lastrow + 5, 4);
-
-                                //empty_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //empty_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //empty_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //empty_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //empty_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //empty_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //empty_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //empty_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 4, 4).Value = "Sub Total";
+                                var empty_cell = ws.Cell(lastrow + 4, 4);
                                 empty_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 empty_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 5, 5).Value = Total;
-                                var Total_cell = ws.Cell(lastrow + 5, 5);
-                                //Total_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //Total_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //Total_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //Total_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //Total_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //Total_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //Total_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //Total_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 4, 5).Value = Total;
+                                var Total_cell = ws.Cell(lastrow + 4, 5);                                
                                 Total_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 Total_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
 
-                                ws.Cell(lastrow + 6, 4).Value = "GST";
-                                var Total1_cell = ws.Cell(lastrow + 6, 4);
-                                //Total1_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //Total1_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //Total1_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //Total1_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //Total1_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //Total1_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //Total1_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //Total1_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 5, 4).Value = "GST";
+                                var Total1_cell = ws.Cell(lastrow + 5, 4);
                                 Total1_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 Total1_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 6, 5).Value = toal_GST;
-                                var toal_GST_cell = ws.Cell(lastrow + 6, 5);
-                                //toal_GST_cell.Style.Border.TopBorder = XLBorderStyleValues.Thick;
-                                //toal_GST_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                                //toal_GST_cell.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-                                //toal_GST_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
-                                //toal_GST_cell.Style.Border.TopBorderColor = XLColor.Black;
-                                //toal_GST_cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                //toal_GST_cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                //toal_GST_cell.Style.Border.RightBorderColor = XLColor.Black;
-
+                                ws.Cell(lastrow + 5, 5).Value = toal_GST;
+                                var toal_GST_cell = ws.Cell(lastrow + 5, 5);                                
                                 toal_GST_cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
                                 toal_GST_cell.Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                ws.Cell(lastrow + 7, 4).Value = "Total";
-                                ws.Cell(lastrow + 7, 5).Value = Total+toal_GST;
-
-                                ws.Cell(lastrow + 7, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
-                                ws.Cell(lastrow + 7, 5).Style.Border.OutsideBorderColor = XLColor.Black;
+                                ws.Cell(lastrow + 6, 4).Value = "Total";
+                                ws.Cell(lastrow + 6, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                                ws.Cell(lastrow + 6, 4).Style.Border.OutsideBorderColor = XLColor.Black;
+                                ws.Cell(lastrow + 6, 5).Value = Total+toal_GST;
+                                ws.Cell(lastrow + 6, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                                ws.Cell(lastrow + 6, 5).Style.Border.OutsideBorderColor = XLColor.Black;
 
                             }
+                            ws.Columns().AdjustToContents(); // Auto fit all columns
+                            ws.Rows().AdjustToContents();    // Auto fit all rows
                             //var usedRange = ws.RangeUsed();
 
                             //if (usedRange != null)
@@ -777,8 +752,8 @@ namespace QPay.BAL.Repository
                                             var ws = workbook.AddWorksheet(payregister_dt, "PayRegister");
                                             ws.Table(0).ShowAutoFilter = false;
                                             ws.Table(0).Theme = XLTableTheme.None;
-                                            ws.SheetView.FreezeRows(4);
-                                            ws.SheetView.FreezeColumns(2);
+                                            //ws.SheetView.FreezeRows(4);
+                                            //ws.SheetView.FreezeColumns(2);
 
                                             ws.Row(1).InsertRowsAbove(3);
                                             ws.Range("A1:Z1").Merge();
@@ -831,7 +806,7 @@ namespace QPay.BAL.Repository
                                                     if(totalsummary.Rows.Count>0)
                                                     {
 
-                                                        int row = 3;
+                                                        int row = 2;
                                                         int cell = 5;
                                                         double total=0.0;
                                                         double gst = 0.0;

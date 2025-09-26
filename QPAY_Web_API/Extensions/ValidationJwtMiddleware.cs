@@ -73,7 +73,7 @@ namespace QPay.API.Extensions
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "application/json";
 
-                var apiresponse = new APIResponses((HttpStatusCode)context.Response.StatusCode, "Authorization token is missing.", null, null);
+                var apiresponse = new APIResponses((HttpStatusCode)context.Response.StatusCode,false, null, null);
                
 
                 

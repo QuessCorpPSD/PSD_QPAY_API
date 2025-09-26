@@ -192,11 +192,11 @@ namespace QPay.API.Controller
                     "Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
                                         lotStatusrequestModel.Company_Id,
                                         lotStatusrequestModel.pay_period_id,
-                                        lotStatusrequestModel.lotnumber,lotStatusrequestModel.Pay_Period),
+                                        lotStatusrequestModel.lotnumber,lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
                     "Revised Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
                     lotStatusrequestModel.Company_Id,
                     lotStatusrequestModel.pay_period_id,
-                    lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period),
+                    lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
 
                     "External Payregister" => _payRegisterRepository.ExternalPayRegister(
                                         lotStatusrequestModel.Company_Id,

@@ -60,6 +60,12 @@ namespace QPay.API.Controller
             }
         }
 
+        [HttpGet,Route("CategoryLotDetail/{assignmentType}")]
+        public async Task<IActionResult> CategoryLotDetail(string assignmentType)
+        {
+            var status=await this._adminDashboardRepository.GetCategoryLotDetails(assignmentType);
+            return Ok(status);
+        }
 
         [HttpPost,Route("DownloadPayRegister")]
         public IActionResult PayRegisterDownload()

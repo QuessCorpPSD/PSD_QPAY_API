@@ -18,8 +18,8 @@ namespace QPay.BAL.IRepository
         string CompanyNameByCode(int company_Id);
         Task<PayRegisterResponse> PayRegisterUpload(PayRegisterUI payRegisterUI);
        // FileResponse ReconPayRegister(int companyCode, int pay_period_Id, int lotNumber);
-        FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber);
-        FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period);
+        FileResponse GetOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string Company_Code);
+        FileResponse GetQCOtherIncomePayRegister(int companyCode, int pay_period_Id, int lotNumber, string pay_period, string Company_Code);
         PayRegisterQzoneResponse GetFileNameFromQzone(int companyCode, int pay_period_Id, int lotNumber);
     }
 }
