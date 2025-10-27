@@ -44,6 +44,13 @@ namespace QPay.API.Controller
             return Ok(data);
         }
 
+        [HttpGet,Route("GetPendingLotDetail")]
+        public  async Task<IActionResult> GetPendingLotDetail()
+        {
+            var data = await this._dashboardRepository.GetLotAllottmentPendings();
+            return Ok(data);
+        }
+
         [HttpGet("PendingLot")]
         public async Task<ActionResult<List<PendingLotsUI>>> GetPendingLot()
         {

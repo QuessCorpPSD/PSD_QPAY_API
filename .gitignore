@@ -46,7 +46,6 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_API/bin
 /QPAY_Web_Domain/bin
 /QPAY_Web_Data/bin
-<<<<<<< HEAD
 /QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfo.cs
 /QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.assets.cache
 /QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.csproj.AssemblyReference.cache
@@ -61,7 +60,6 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_Domain/obj/project.nuget.cache
 /QPAY_Web_Domain/obj/QPay.UI.csproj.nuget.dgspec.json
 /QPAY_Web_Domain/obj/QPAY.UI.csproj.nuget.g.props
-=======
 *.user
 /QPAY_Web_Service/obj/Debug/net8.0/QPay.BAL.AssemblyInfo.cs
 /QPAY_Web_API/QPay.API.csproj.user
@@ -119,12 +117,10 @@ QPay.API/bin/Debug/net6.0
 /QPay_Web_Data/bin/Release/net8.0/QPay.DAL.pdb
 /QPay_Web_Data/obj/Debug/net8.0/ref/QPay.DAL.dll
 /QPay_Web_Data/obj/Debug/net8.0/refint/QPay.DAL.dll
->>>>>>> Heirarchy_01
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.AssemblyInfo.cs
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.AssemblyInfoInputs.cache
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.assets.cache
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.csproj.AssemblyReference.cache
-<<<<<<< HEAD
 /QPay_Web_Data/obj/project.assets.json
 /QPay_Web_Data/obj/project.nuget.cache
 /QPay_Web_Data/obj/QPay.DAL.csproj.nuget.dgspec.json
@@ -141,7 +137,6 @@ QPay.API/bin/Debug/net6.0
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.AssemblyInfoInputs.cache
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.assets.cache
 /QPAY_Web_API/obj/Debug/net8.0/QPay.API.csproj.AssemblyReference.cache
-=======
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.csproj.CoreCompileInputs.cache
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.csproj.FileListAbsolute.txt
 /QPay_Web_Data/obj/Debug/net8.0/QPay.DAL.dll
@@ -161,7 +156,6 @@ QPay.API/bin/Debug/net6.0
 /QPay_Web_Data/obj/Release/net8.0/QPay.DAL.csproj.AssemblyReference.cache
 /QPay_Web_Data/obj/Release/net8.0/QPay.DAL.csproj.CoreCompileInputs.cache
 /QPay_Web_Data/obj/Release/net8.0/QPay.DAL.csproj.FileListAbsolute.txt
->>>>>>> Heirarchy_01
 /QPAY_Web_API/obj/QPay.API.csproj.nuget.g.targets
 /QPAY_Web_Domain/QPay.UI.csproj.user
 /QPAY_Web_Domain/obj/Debug/net8.0/QPay.UI.assets.cache

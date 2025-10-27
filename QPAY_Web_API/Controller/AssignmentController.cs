@@ -187,7 +187,7 @@ namespace QPay.API.Controller
                 //{
                 //    fileResponse = this._payRegisterRepository.PayRegisterDownload(lotStatusrequestModel.Company_Id, lotStatusrequestModel.pay_period_id, lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period);
                 //}
-                fileResponse = lotStatusrequestModel.Payroll_Input_Type switch
+                 fileResponse = lotStatusrequestModel.Payroll_Input_Type switch
                 {
                     "Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
                                         lotStatusrequestModel.Company_Id,
@@ -292,7 +292,7 @@ namespace QPay.API.Controller
 
                     };
                     this._logger.LogInfo("DB Updated request");
-                  var  payRegisterResponse = await this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
+                    var  payRegisterResponse = await this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
                     this._logger.LogInfo("DB Updated Completed");
                     // PayRegisterAutoUpload(payRegisterUploadModel);
                     //var requestJsonContent = System.Text.Json.JsonSerializer.Serialize(payRegisterUploadModel);
@@ -335,6 +335,209 @@ namespace QPay.API.Controller
             }
 
                 return Ok(allotmentLotStatus);
+        }
+
+        [HttpPost]
+        [Route("AutoQCLotVerify")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> AutoQCLotVerify(QCApprovedRequest lotStatusrequestModel)
+        {
+            // Prevent caching at response level
+            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
+
+            AllotmentLotStatusUI allotmentLotStatus = new AllotmentLotStatusUI();
+            AllotmentLotStatusRequest lotStatusUI = new AllotmentLotStatusRequest()
+            {
+                Company_Id = lotStatusrequestModel.Company_Id,
+                pay_period_id = lotStatusrequestModel.pay_period_id,
+                lotnumber = lotStatusrequestModel.lotnumber,
+                UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                createdon = lotStatusrequestModel.createdon,
+                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+
+            };
+
+
+
+
+            if (lotStatusrequestModel.UpdateStatus == "Q")
+            {
+                this._logger.LogInfo("QC Verify Request");
+                FileResponse fileResponse = new FileResponse();
+                PayRegisterRequest payRegisterRequest = new PayRegisterRequest() { companycode = lotStatusrequestModel.Company_Id, pay_period_Id = lotStatusrequestModel.pay_period_id, lotNumber = lotStatusrequestModel.lotnumber };
+                var comayName = _payRegisterRepository.CompanyNameByCode(lotStatusrequestModel.Company_Id);
+                var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
+                
+                fileResponse = lotStatusrequestModel.Payroll_Input_Type switch
+                {
+                    "Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
+                                        lotStatusrequestModel.Company_Id,
+                                        lotStatusrequestModel.pay_period_id,
+                                        lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
+                    "Revised Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
+                    lotStatusrequestModel.Company_Id,
+                    lotStatusrequestModel.pay_period_id,
+                    lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
+
+                    "External Payregister" => _payRegisterRepository.ExternalPayRegister(
+                                        lotStatusrequestModel.Company_Id,
+                                        lotStatusrequestModel.pay_period_id),
+
+                    _ => _payRegisterRepository.PayRegisterDownload(
+                                        lotStatusrequestModel.Company_Id,
+                                        lotStatusrequestModel.pay_period_id,
+                                        lotStatusrequestModel.lotnumber,
+                                        lotStatusrequestModel.Pay_Period, 0)
+                };
+
+
+
+                if (fileResponse.File != "No")
+                {
+                    this._logger.LogInfo("Pay Register Generated");
+                    foreach (var item in lotStatusrequestModel.allotments)
+                    {
+                        QCVerifyModelRequest modelRequest = new QCVerifyModelRequest()
+                        {
+                            InputLot_Id = item.InputLot_Id,
+                            Company_Id = lotStatusrequestModel.Company_Id,
+                            pay_period_id = lotStatusrequestModel.pay_period_id,
+                            lotnumber = lotStatusrequestModel.lotnumber,
+                            UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                            Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                            createdon = lotStatusrequestModel.createdon,
+                            Remarks = item.Remarks,
+                            RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
+                            QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+
+
+                        };
+                        var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
+                    }
+                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI).Result;
+                    allotmentLotStatus.fileResponse = fileResponse;
+                    PayRegisterUploadModel payRegisterUploadModel = new PayRegisterUploadModel()
+                    {
+                        CompanyId = lotStatusrequestModel.Company_Id,
+                        CompanyCode = lotStatusrequestModel.CompanyCode,
+                        Pay_Period_id = lotStatusrequestModel.pay_period_id,
+                        Pay_Period = lotStatusrequestModel.Pay_Period,
+                        LotNumber = lotStatusrequestModel.lotnumber,
+                        FilePath = "",
+                        FileName = fileResponse.FileName,
+                        FileType = ".xlsx",
+                        LoginUser = lotStatusrequestModel.userId.ToString(),
+                        Input_type = lotStatusrequestModel.Payroll_Input_Type,
+                        Docs = fileResponse.File
+                    };
+
+                    this._logger.LogInfo("Qzone upload started");
+                    var companyPath = Path.Combine(_config["FilePath"].ToString(), payRegisterUploadModel.CompanyCode);
+                    var payperiodPath = Path.Combine(companyPath, payRegisterUploadModel.Pay_Period);
+                    this._logger.LogInfo("File path get from payperiodPath " + payperiodPath);
+                    var filePath = Path.Combine(payperiodPath, payRegisterUploadModel.LotNumber.ToString());
+                    this._logger.LogInfo("File path get from filePath " + payperiodPath);
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    var bytes = Convert.FromBase64String(payRegisterUploadModel.Docs);
+                    string fileExtention = Path.GetExtension(payRegisterUploadModel.FileName.ToUpper());
+                    string fileName = string.Format("{0}_{1}_{2}_{3}_{4}{5}",
+                      payRegisterUploadModel.CompanyCode,
+                      comapny.Client_Name,
+                      payRegisterUploadModel.Input_type,
+                      payRegisterUploadModel.LotNumber,
+                      DateTime.Now.ToString("_yyyyMMddhhmmssffff"),
+                      fileExtention);
+
+                    filePath = filePath + "\\" + fileName;
+                    this._logger.LogInfo("Folder Created");
+                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
+                    this._logger.LogInfo("File converted base64 to byte");
+                    payRegisterUploadModel.FilePath = filePath;
+
+
+                    PayRegisterUI payRegisterUI = new PayRegisterUI()
+                    {
+                        CompanyCode = payRegisterUploadModel.CompanyId,
+                        Pay_Period_id = payRegisterUploadModel.Pay_Period_id,
+                        LotNumber = payRegisterUploadModel.LotNumber,
+                        FilePath = filePath,
+                        LoginUser = payRegisterUploadModel.LoginUser,
+                        Input_type = payRegisterUploadModel.Input_type,
+                        FileName = fileName
+
+                    };
+                    this._logger.LogInfo("DB Updated request");
+                    var payRegisterResponse = await this._payRegisterRepository.PayRegisterUpload(payRegisterUI);
+                    this._logger.LogInfo("DB Updated Completed");
+                    // PayRegisterAutoUpload(payRegisterUploadModel);
+                    //var requestJsonContent = System.Text.Json.JsonSerializer.Serialize(payRegisterUploadModel);
+                    //var requestStringContents = new StringContent(requestJsonContent, Encoding.UTF8, "application/json");
+                    //var status = await Payregisterupload(requestStringContents);
+                    this._logger.LogInfo("Qzone upload completed");
+                    //if (allotmentLotStatus.QC_Verified_Status)
+                    //{
+                    //    this._assignment.AutoAllocationLots(lotStatusrequestModel.userId);
+                    //}
+                    this._logger.LogInfo("Next Lot Allocation Completed ");
+                    return Ok(allotmentLotStatus);
+                }
+                else
+                {
+                    foreach (var item in lotStatusrequestModel.allotments)
+                    {
+                        QCVerifyModelRequest modelRequest = new QCVerifyModelRequest()
+                        {
+                            InputLot_Id = item.InputLot_Id,
+                            Company_Id = lotStatusrequestModel.Company_Id,
+                            pay_period_id = lotStatusrequestModel.pay_period_id,
+                            lotnumber = lotStatusrequestModel.lotnumber,
+                            UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                            Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                            createdon = lotStatusrequestModel.createdon,
+                            Remarks = item.Remarks,
+                            RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
+                            QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+
+
+                        };
+                        var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
+                    }
+                    allotmentLotStatus.fileResponse = fileResponse;
+                }
+
+            }
+            else
+            {
+                foreach (var item in lotStatusrequestModel.allotments)
+                {
+                    QCVerifyModelRequest modelRequest = new QCVerifyModelRequest()
+                    {
+                        InputLot_Id = item.InputLot_Id,
+                        Company_Id = lotStatusrequestModel.Company_Id,
+                        pay_period_id = lotStatusrequestModel.pay_period_id,
+                        lotnumber = lotStatusrequestModel.lotnumber,
+                        UpdateStatus = lotStatusrequestModel.UpdateStatus,
+                        Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
+                        createdon = lotStatusrequestModel.createdon,
+                        Remarks = item.Remarks,
+                        RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true
+
+                    };
+                    var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
+                    allotmentLotStatus = this._assignment.GetLotStatus(lotStatusUI).Result;
+                }
+            }
+
+            return Ok(allotmentLotStatus);
         }
         [HttpGet, Route("AllottmentRevokDetail/{userId}")]
         public async Task<IActionResult> AllottmentRevokDetail(int userId)
