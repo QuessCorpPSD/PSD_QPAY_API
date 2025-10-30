@@ -1116,7 +1116,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@FilePath", payRegisterUI.FilePath);
 
             string storeProcedure = "SP_PayRegister_Upload_Process";
-            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             if (res!="")
             {
                 payRegisterUploadResponse = JsonConvert.DeserializeObject<List<PayRegisterResponse>>(res).FirstOrDefault();
