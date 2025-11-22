@@ -8,15 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.BAL.Repository;
 using QPay.UI.Admin;
+using QPay.UI.Common;
 using QPay.UI.Models;
 using QPAY_Web_API.Models;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Encodings.Web;
 
 
 namespace QPAY_Web_API.Controller
 {
-   //[Authorize]
+   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
    
@@ -26,13 +31,15 @@ namespace QPAY_Web_API.Controller
         private readonly IAssignmentRepository _assignment;
         private readonly IConfiguration _configuration;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IEmailService _emailService;
 
-        public AuthendicateController(ILoginRepository loginRepository, IAssignmentRepository assignment, IConfiguration configuration, IJwtTokenService jwtTokenService)
+        public AuthendicateController(ILoginRepository loginRepository, IAssignmentRepository assignment, IConfiguration configuration, IJwtTokenService jwtTokenService,IEmailService emailService)
         {
             this._loginRepository = loginRepository;
             this._assignment = assignment;
             _configuration = configuration;
             _jwtTokenService = jwtTokenService;
+            _emailService = emailService;
         }
 
         [HttpPost,Route("UserCreate")]
@@ -52,6 +59,34 @@ namespace QPAY_Web_API.Controller
         [HttpGet, Route("GetAllUser")]
         public async Task<IActionResult> GetAllUser() =>
         Ok((await _loginRepository.GetAllActiveUsers()));
+
+
+        public async Task<EmailSensStatus> OTPSend(string Name,string emailId)
+        {
+            int otp = RandomNumberGenerator.GetInt32(100000, 1000000);
+            string safeUserName = HtmlEncoder.Default.Encode(Name);
+
+            string html = $"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mail</title>
+</head>
+<body>
+    <h2>Hi {safeUserName}</h2>
+    <p>
+        <b>{otp}</b> {_configuration["mailContent"]}
+    </p>
+</body>
+</html>
+""";
+
+            var mail = await _emailService.SendEmailAsync(emailId, "One-Time Passcode for accessing your PSD Application", html);
+            mail.Otp = otp;
+            return mail;
+        }
+
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -76,7 +111,12 @@ namespace QPAY_Web_API.Controller
 
                     if (user is { User_Id: > 0 })
                     {
-                        var identity = new ClaimsIdentity(new[]
+
+                    var mail =await OTPSend(user.UserName, user.Mail_Id);
+
+                    user.otp = mail.Otp;
+                    user.expirytime = 3;
+                    var identity = new ClaimsIdentity(new[]
                         {
             new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
             new Claim(ClaimTypes.Role, user.Role_Id.ToString()),

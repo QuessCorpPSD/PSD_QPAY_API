@@ -67,7 +67,7 @@ namespace QPay.BAL.Repository
                 parameters.Add("@ComputerName", computerName);
 
                 // Call stored procedure
-                var resultJson = await _dbRepository.GetItemsAsync("sp_IsValidUser1", parameters);
+                var resultJson = await _dbRepository.GetItemsAsync("sp_IsValidUserPSD", parameters);
 
                 // Deserialize and return
                 if (!string.IsNullOrWhiteSpace(resultJson))

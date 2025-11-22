@@ -158,7 +158,7 @@ namespace QPay.DAL.Repository
                 using (var dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param, commandType: CommandType.StoredProcedure);
+                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param,null,commandTimeout: 1500, commandType: CommandType.StoredProcedure);
                     return result;
                 }
             }

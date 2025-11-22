@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.LoggerService;
 using QPay.API.Models;
@@ -8,6 +9,7 @@ using QPay.UI.Models;
 
 namespace QPay.API.Controller
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InvoiceInitiationController : ControllerBase

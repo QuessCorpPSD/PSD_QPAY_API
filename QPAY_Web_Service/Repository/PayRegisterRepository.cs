@@ -149,6 +149,10 @@ namespace QPay.BAL.Repository
                         {
                             payregister_dt.Columns.Remove(item);
                         }
+        
+            
+            
+        
                         using var workbook = new XLWorkbook();
                         {
                             var ws = workbook.AddWorksheet(payregister_dt, "Other Income");
@@ -394,6 +398,17 @@ namespace QPay.BAL.Repository
                                 }
                             }
                         }
+                        var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
+                                           .Where(col => payregister_dt.AsEnumerable().All(row =>
+                                                {
+                                                    var value = row[col];
+                                                     return value == null || string.IsNullOrWhiteSpace(value.ToString());
+                                                }))
+                                            .Select(col => col.ColumnName)
+                                            .ToList();
+                        foreach (var columnName in emptyColumns)
+                            payregister_dt.Columns.Remove(columnName);
+
                         double service = 0.0;
                         double ctc = 0.0;
                         if (payregister_dt.Columns.Contains("SERCG"))
@@ -737,8 +752,18 @@ namespace QPay.BAL.Repository
                             {
                                 payregister_dt.Columns.Remove(item);
                             }
+                            var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
+                                           .Where(col => payregister_dt.AsEnumerable().All(row =>
+                                           {
+                                               var value = row[col];
+                                               return value == null || string.IsNullOrWhiteSpace(value.ToString());
+                                           }))
+                                            .Select(col => col.ColumnName)
+                                            .ToList();
+                            foreach (var columnName in emptyColumns)
+                                payregister_dt.Columns.Remove(columnName);
 
-                            
+
 
                             var comayName = CompanyNameByCode(companyCode);
                             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();

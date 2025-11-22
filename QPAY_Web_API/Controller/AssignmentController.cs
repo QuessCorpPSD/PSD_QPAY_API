@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace QPay.API.Controller
 {
-   // [Authorize]
+   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
    
@@ -336,7 +336,7 @@ namespace QPay.API.Controller
 
                 return Ok(allotmentLotStatus);
         }
-
+        [AllowAnonymous]
         [HttpPost]
         [Route("AutoQCLotVerify")]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
