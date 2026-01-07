@@ -109,13 +109,14 @@ namespace QPAY_Web_API.Controller
                        loginDetailsModel.Cname
                     );
 
-                    if (user is { User_Id: > 0 })
+                    
+                if (user is { User_Id: > 0 })
                     {
 
-                    var mail =await OTPSend(user.UserName, user.Mail_Id);
+                   // var mail =await OTPSend(user.UserName, user.Mail_Id);
 
-                    user.otp = mail.Otp;
-                    user.expirytime = 3;
+                    //user.otp = mail.Otp;
+                    //user.expirytime = 3;
                     var identity = new ClaimsIdentity(new[]
                         {
             new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
@@ -157,23 +158,25 @@ namespace QPAY_Web_API.Controller
                // return Ok(user);
                 }
                 catch (Exception ex)
-                {
-                // Use ILogger in production
-              //  user.Error_Message ??= "Invalid user credentials or user not found.";
+            {
+
                 return StatusCode(500, "An error occurred while processing your request.");
-                }
+            }
         }
+
         [AllowAnonymous]
-        [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh(TokenRequest model)
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] TokenRequest model)
         {
             RefreshToken refreshToken = new RefreshToken()
             {
-                Token=model.RefreshToken
+                Token=model.RefreshToken,
+                UserId=model.User_Id
             };
             var storedToken = await _jwtTokenService.GetRefreshToken(refreshToken);
 
-            if (storedToken == null || storedToken.ExpiryDate < DateTime.UtcNow || storedToken.IsRevoked)
+            if (storedToken == null)
                 return Unauthorized();
 
             var user = (await this._loginRepository.GetAllActiveUsers())

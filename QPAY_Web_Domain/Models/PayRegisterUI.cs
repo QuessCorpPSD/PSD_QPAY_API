@@ -22,5 +22,7 @@ namespace QPay.UI.Models
         public string LoginUser { get; set; }
 
         public string Input_type { get; set; }
+
+        public string checkInSheet { get; set; }
     }
 }

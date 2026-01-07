@@ -14,5 +14,6 @@ namespace QPay.UI.Models
         public int overdue_lot { get; set; }
         public int Ontimer_lot { get; set; }
         public int NotAllotted { get; set; }
+        public int yettocome { get; set; }
     }
 }

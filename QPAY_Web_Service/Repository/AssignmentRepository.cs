@@ -52,13 +52,13 @@ namespace QPay.BAL.Repository
                 //dataTable = JsonConvert.DeserializeObject<DataSet>(res) ?? new DataSet();
 
                 storeProcedure = string.Format("sp_PayregisteruploadexporttoExcel");
-                dataTable = this._dbRepository.GetDataSetsAsync(companyCode, pay_period_id);
+                dataTable = this._dbRepository.GetDataSetsSecondaryAsync(companyCode, pay_period_id);
 
             }
             else
             {
                  storeProcedure = string.Format("InputAutomation_Custom_Report");
-                dataTable = this._dbRepository.GetDataSetAsync(companyCode, pay_period_id, lot, inputType);
+                dataTable = this._dbRepository.GetDataSetsSecondaryAsync(companyCode, pay_period_id, lot, inputType);
             }           
           
            
