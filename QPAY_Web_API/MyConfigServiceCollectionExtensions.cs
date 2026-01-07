@@ -31,7 +31,7 @@ namespace QPay.API
             services.AddSingleton<ICheckInCheckOutRepository, CheckInCheckOutRepository>();
             services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
             services.AddSingleton<IFinancialYearRepository, FinancialYearRepository>();
-            services.AddSingleton<IInvoiceInitiationRepository, InvoiceInitiationRepository>();
+            //services.AddSingleton<IInvoiceInitiationRepository, InvoiceInitiationRepository>();
 
             #endregion
 
