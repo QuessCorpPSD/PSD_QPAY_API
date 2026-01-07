@@ -2,8 +2,10 @@
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Common;
+
 using QPay.BAL.Repository;
 using QPay.BAL.Repository.Common;
+
 
 namespace QPay.API
 {
@@ -32,6 +34,7 @@ namespace QPay.API
             services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
             services.AddSingleton<IFinancialYearRepository, FinancialYearRepository>();
             services.AddSingleton<IInvoiceInitiationRepository, InvoiceInitiationRepository>();
+            
 
             #endregion
 

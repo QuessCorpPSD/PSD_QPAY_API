@@ -105,7 +105,7 @@ var app = builder.Build();
 app.UseStaticFiles();
 //app.UseStaticFiles(new StaticFileOptions
 //{
-//    FileProvider = new PhysicalFileProvider(
+//    FileProvider = new PhysicalFi`leProvider(
 //        Path.Combine(Directory.GetCurrentDirectory(), "ReimbursementPolicyUploads")),
 //    RequestPath = "/ReimbursementPolicyUploads",
 //    ServeUnknownFileTypes = true,
@@ -137,7 +137,7 @@ app.UseStaticFiles();
 //});
 app.UseRouting();
 app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<WrapperResponse>();

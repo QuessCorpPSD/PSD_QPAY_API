@@ -56,9 +56,12 @@ namespace QPay.API.Extensions
             RefreshToken refresh = new RefreshToken();
             string procedure = "SP_JWT_Token_refreshToken" ?? "";
             var parameters = new DynamicParameters();
-            parameters.Add("@Token", refreshToken.Token);
+            parameters.Add("@Token", refreshToken.Token);             
             parameters.Add("@userId", refreshToken.UserId);
-            parameters.Add("@ExpiryDate", refreshToken.ExpiryDate);
+            if (refreshToken.ExpiryDate != null)
+            {
+                parameters.Add("@ExpiryDate", refreshToken.ExpiryDate);
+            }
             parameters.Add("@ActionType", refreshToken.ActionType);
             var res =await this._dbRepository.GetItemsAsync(procedure, parameters);
             if (res != "")

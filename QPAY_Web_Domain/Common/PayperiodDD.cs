@@ -11,6 +11,11 @@ namespace QPay.UI.Common
         public int Payfrequencyid { get; set; }
         public string PaySequenceNo { get; set; } = string.Empty;
         public string PayPeriod { get; set; } = string.Empty;
+
+        public DateTime? Start_At { get; set; }
+
+        public DateTime? End_At { get; set; }
+        public string displayName => string.Format("{0} - {1}", Payfrequencyid, PayPeriod);
     }
     public class CompanyPicker
     {

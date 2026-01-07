@@ -8,7 +8,7 @@ using QPAY_Web_API.Models;
 
 namespace QPay.API.Controller
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
    

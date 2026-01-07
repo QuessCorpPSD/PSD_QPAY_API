@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace QPay.API.Controller
 {
-   // [Authorize]
+  // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
    
@@ -58,7 +58,7 @@ namespace QPay.API.Controller
         {
             //Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             //Response.Headers["Pragma"] = "no-cache";
-            //Response.Headers["Expires"] = "0";
+            //Response.Headers["Expires"] = "0";Q
             this._assignment.AutoAllocationLots(userId);
             var lots = this._assignment.GetAssignmentLotByDate(userId, filter);
             return Ok(lots);
@@ -93,6 +93,52 @@ namespace QPay.API.Controller
             var status = await this._assignment.UserLotValidation(userLotValidationRequest);
             return Ok(status);
         }
+        [HttpPost]
+        [Route("CheckINFileDownload")]
+        [HttpPost]
+        public IActionResult CheckINFileDownload(CheckINSheetUI checkINSheetUI)
+        {
+            var response = new FileResponse();
+
+            // Build directory path safely
+            string directoryPath = Path.Combine(
+                _config["FilePath"],
+                checkINSheetUI.CompanyCode,
+                checkINSheetUI.PayPeriod,
+                checkINSheetUI.LotNo.ToString(),
+                checkINSheetUI.Revised.ToString()
+            );
+
+            // Build file name
+            string fileName = $"{checkINSheetUI.CompanyCode}_{checkINSheetUI.CompanyName}_{checkINSheetUI.PayPeriod}_{checkINSheetUI.LotNo}_{checkINSheetUI.Revised}.xlsx";
+
+            // Full file path
+            string filePath = Path.Combine(directoryPath, fileName);
+
+            // Check directory + file
+            if (!Directory.Exists(directoryPath))
+            {
+                response.File = "N";
+                response.FileName = "Directory not found";
+                return Ok(response);
+            }
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                response.File = "N";
+                response.FileName = "File not found";
+                return Ok(response);
+            }
+
+            // Read file
+            byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+
+            response.File = Convert.ToBase64String(bytes);
+            response.FileName = fileName;
+
+            return Ok(response);
+        }
+
         [HttpPost,Route("QCQueryRaise")]        
         public IActionResult QCQueryRaise(QCApprovedRequest lotStatusrequestModel)
         {
@@ -105,7 +151,7 @@ namespace QPay.API.Controller
                 UpdateStatus = lotStatusrequestModel.UpdateStatus,
                 Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
                 createdon = lotStatusrequestModel.createdon,
-                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+                QC_RaiseQuery = lotStatusrequestModel.RaiseQuery
 
             };
             QCVerifyModelRequest modelRequest = new QCVerifyModelRequest()
@@ -119,7 +165,7 @@ namespace QPay.API.Controller
                 createdon = lotStatusrequestModel.createdon,
                 Remarks ="",
                 RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
-                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+                QC_RaiseQuery = lotStatusrequestModel.RaiseQuery
 
 
             };
@@ -152,6 +198,8 @@ namespace QPay.API.Controller
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
 
+           // await AutoQCLotVerify(lotStatusrequestModel);
+
             AllotmentLotStatusUI allotmentLotStatus = new AllotmentLotStatusUI();
             AllotmentLotStatusRequest lotStatusUI = new AllotmentLotStatusRequest()
             {
@@ -161,8 +209,8 @@ namespace QPay.API.Controller
                 UpdateStatus =lotStatusrequestModel.UpdateStatus,
                 Payroll_Input_Type =lotStatusrequestModel.Payroll_Input_Type,
                 createdon =lotStatusrequestModel.createdon,
-                QC_RaiseQuery=lotStatusrequestModel.QC_RaiseQuery
-               
+                QC_RaiseQuery=lotStatusrequestModel.RaiseQuery
+
             };
 
 
@@ -198,9 +246,9 @@ namespace QPay.API.Controller
                     lotStatusrequestModel.pay_period_id,
                     lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
 
-                    "External Payregister" => _payRegisterRepository.ExternalPayRegister(
-                                        lotStatusrequestModel.Company_Id,
-                                        lotStatusrequestModel.pay_period_id),
+                    //"External Payregister" => _payRegisterRepository.ExternalPayRegister(
+                    //                    lotStatusrequestModel.Company_Id,
+                    //                    lotStatusrequestModel.pay_period_id),
 
                     _ => _payRegisterRepository.PayRegisterDownload(
                                         lotStatusrequestModel.Company_Id,
@@ -213,6 +261,56 @@ namespace QPay.API.Controller
 
                 if (fileResponse.File!="No")
                 {
+                    string fileNameCheckin = string.Format("{0}_{1}_{2}_{3}_{4}{5}",
+                     lotStatusrequestModel.CompanyCode,
+                     comapny.Client_Name,
+                     lotStatusrequestModel.Pay_Period,
+                     lotStatusrequestModel.lotnumber,
+                     lotStatusrequestModel.revised,
+                     ".xlsx");
+                    //var CheckinsheetcompanyPath = Path.Combine(_config["FilePath"].ToString(), lotStatusrequestModel.CompanyCode);
+                    //var CheckInpayperiodPath = Path.Combine(CheckinsheetcompanyPath, lotStatusrequestModel.Pay_Period);
+                    //this._logger.LogInfo("File path get from payperiodPath " + CheckInpayperiodPath);
+                    //var checkInfilePath = Path.Combine(CheckInpayperiodPath, lotStatusrequestModel.lotnumber.ToString());
+                    //var filepaths =Path.Combine(checkInfilePath, lotStatusrequestModel.revised.ToString()) ;
+                    //if (!Directory.Exists(filepaths))
+                    //{
+                    //    Directory.CreateDirectory(filepaths);
+                    //}
+                    //filepaths = filepaths + "\\" + fileNameCheckin;
+                    //var checkingByte = Convert.FromBase64String(lotStatusrequestModel.CheckinFile);
+
+                    //using (var fs = new FileStream(filepaths, FileMode.Create, FileAccess.Write))
+                    //{
+                    //    fs.Write(checkingByte, 0, checkingByte.Length);
+                    //}
+
+
+                    var dirPath = Path.Combine(
+                        _config["FilePath"].ToString(),
+                        lotStatusrequestModel.CompanyCode,
+                        lotStatusrequestModel.Pay_Period,
+                        lotStatusrequestModel.lotnumber.ToString(),
+                        lotStatusrequestModel.revised.ToString()
+                    );
+
+                    Directory.CreateDirectory(dirPath);
+                    if (!Directory.Exists(dirPath))
+                    {
+                        Directory.CreateDirectory(dirPath);
+                    }
+
+                    var fullFilePath = dirPath + "\\" + fileNameCheckin;
+
+                    var bytes_checkIn = Convert.FromBase64String(lotStatusrequestModel.CheckinFile);
+
+                    //await System.IO.File.WriteAllBytesAsync(dirPath, bytes_checkIn);
+                    using (var fs = new FileStream(fullFilePath, FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(bytes_checkIn, 0, bytes_checkIn.Length);
+                    }
+
+
                     this._logger.LogInfo("Pay Register Generated");
                     foreach (var item in lotStatusrequestModel.allotments)
                     {
@@ -227,8 +325,8 @@ namespace QPay.API.Controller
                             createdon =lotStatusrequestModel.createdon,
                             Remarks=item.Remarks,
                             RequestForModification=lotStatusrequestModel.UpdateStatus=="Q" ? false : true,
-                            QC_RaiseQuery=lotStatusrequestModel.QC_RaiseQuery
-                            
+                            QC_RaiseQuery=lotStatusrequestModel.RaiseQuery
+
 
                         };
                         var QC_Status = this._assignment.QCVerfyOrModification(modelRequest);
@@ -276,6 +374,9 @@ namespace QPay.API.Controller
                     {
                         fs.Write(bytes, 0, bytes.Length);
                     }
+
+                    
+
                     this._logger.LogInfo("File converted base64 to byte");
                     payRegisterUploadModel.FilePath = filePath;
 
@@ -337,6 +438,7 @@ namespace QPay.API.Controller
                 return Ok(allotmentLotStatus);
         }
 
+       // [AllowAnonymous]
         [HttpPost]
         [Route("AutoQCLotVerify")]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
@@ -356,7 +458,7 @@ namespace QPay.API.Controller
                 UpdateStatus = lotStatusrequestModel.UpdateStatus,
                 Payroll_Input_Type = lotStatusrequestModel.Payroll_Input_Type,
                 createdon = lotStatusrequestModel.createdon,
-                QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+                QC_RaiseQuery = lotStatusrequestModel.RaiseQuery
 
             };
 
@@ -365,12 +467,13 @@ namespace QPay.API.Controller
 
             if (lotStatusrequestModel.UpdateStatus == "Q")
             {
-                this._logger.LogInfo("QC Verify Request");
+                this._logger.LogInfo("QC Verify Request "+ string.Format("{0}-{1}-{2}",lotStatusrequestModel.CompanyCode,lotStatusrequestModel.Pay_Period,lotStatusrequestModel.lotnumber));
                 FileResponse fileResponse = new FileResponse();
                 PayRegisterRequest payRegisterRequest = new PayRegisterRequest() { companycode = lotStatusrequestModel.Company_Id, pay_period_Id = lotStatusrequestModel.pay_period_id, lotNumber = lotStatusrequestModel.lotnumber };
                 var comayName = _payRegisterRepository.CompanyNameByCode(lotStatusrequestModel.Company_Id);
                 var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-                
+                this._logger.LogInfo("QC Verify Request" + lotStatusrequestModel.Payroll_Input_Type);
+                this._logger.LogInfo("Auto QC Verify");
                 fileResponse = lotStatusrequestModel.Payroll_Input_Type switch
                 {
                     "Other Input" => _payRegisterRepository.GetQCOtherIncomePayRegister(
@@ -382,9 +485,9 @@ namespace QPay.API.Controller
                     lotStatusrequestModel.pay_period_id,
                     lotStatusrequestModel.lotnumber, lotStatusrequestModel.Pay_Period, lotStatusrequestModel.CompanyCode),
 
-                    "External Payregister" => _payRegisterRepository.ExternalPayRegister(
-                                        lotStatusrequestModel.Company_Id,
-                                        lotStatusrequestModel.pay_period_id),
+                    //"External Payregister" => _payRegisterRepository.ExternalPayRegister(
+                    //                    lotStatusrequestModel.Company_Id,
+                    //                    lotStatusrequestModel.pay_period_id),
 
                     _ => _payRegisterRepository.PayRegisterDownload(
                                         lotStatusrequestModel.Company_Id,
@@ -411,7 +514,7 @@ namespace QPay.API.Controller
                             createdon = lotStatusrequestModel.createdon,
                             Remarks = item.Remarks,
                             RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
-                            QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+                            QC_RaiseQuery = lotStatusrequestModel.RaiseQuery
 
 
                         };
@@ -435,7 +538,7 @@ namespace QPay.API.Controller
                     };
 
                     this._logger.LogInfo("Qzone upload started");
-                    var companyPath = Path.Combine(_config["FilePath"].ToString(), payRegisterUploadModel.CompanyCode);
+                    var companyPath = Path.Combine(_config["ClaimDocPath"].ToString(), payRegisterUploadModel.CompanyCode);
                     var payperiodPath = Path.Combine(companyPath, payRegisterUploadModel.Pay_Period);
                     this._logger.LogInfo("File path get from payperiodPath " + payperiodPath);
                     var filePath = Path.Combine(payperiodPath, payRegisterUploadModel.LotNumber.ToString());
@@ -505,7 +608,7 @@ namespace QPay.API.Controller
                             createdon = lotStatusrequestModel.createdon,
                             Remarks = item.Remarks,
                             RequestForModification = lotStatusrequestModel.UpdateStatus == "Q" ? false : true,
-                            QC_RaiseQuery = lotStatusrequestModel.QC_RaiseQuery
+                            QC_RaiseQuery = lotStatusrequestModel.RaiseQuery
 
 
                         };

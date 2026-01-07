@@ -9,7 +9,7 @@ namespace QPay.API.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-  //  [Authorize]
+    [Authorize]
     public class CommonController : ControllerBase
     {
         private readonly IRoleRepository _roleRepository;

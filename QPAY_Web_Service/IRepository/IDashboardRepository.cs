@@ -1,4 +1,5 @@
-﻿using QPay.UI.Dashboard;
+﻿using Microsoft.AspNetCore.Mvc;
+using QPay.UI.Dashboard;
 using QPay.UI.Models;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace QPay.BAL.IRepository
     {
         DashboardUI GetAllottedLotsByUserId(int userId);
         Task<List<LotAllottmentPendingUI>> GetLotAllottmentPendings();
+        Task<List<DashBoardCompledtedUI>> GetInputLotDetail(DashboardRequestModel dashboardRequestModel);
     }
 }

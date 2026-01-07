@@ -56,6 +56,8 @@ namespace QPay.UI.Models
 
         public string? token { get; set; }
         public string? refreshtoken { get; set; }
+        public int otp { get; set; }
+        public int expirytime { get; set; }
 
         //public string Contact_Number { get; set; }
         // public string MacAddress { get; set; }
@@ -111,6 +113,8 @@ namespace QPay.UI.Models
         public string Right_Name { get; set; }
         public bool HasAccess { get; set; }
     }
+
+    
 
     [Table("tbl_LoginHistory")]
     public class LoginHistoryModel

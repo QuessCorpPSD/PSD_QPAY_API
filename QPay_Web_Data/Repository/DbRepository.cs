@@ -20,14 +20,17 @@ namespace QPay.DAL.Repository
         //DbRepository<T> 
         private readonly string _connectionString;
         private readonly string _connectionReconString;
+        private readonly string _secondaryString;
 
         public DbRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection") ?? "";
-            _connectionReconString = configuration.GetConnectionString("ReConDBConnection")??"";
+            _connectionReconString = configuration.GetConnectionString("ReConDBConnection") ?? "";
+            _secondaryString = configuration.GetConnectionString("SecondaryConnection") ?? ""; 
         }
         private IDbConnection Connection => new SqlConnection(_connectionString);
         private IDbConnection ConnectionRecon => new SqlConnection(_connectionReconString);
+        private IDbConnection ConnectionSecondary => new SqlConnection(_secondaryString);
 
         public async Task<object> QueryAsync(string query)
         {
@@ -52,10 +55,10 @@ namespace QPay.DAL.Repository
                 return TEST??"";
             }
         }
-        public DataSet GetDataSetAsync(int companyCode, int pay_period_id, int lot, int inputType)
+        public DataSet GetDataSetsSecondaryAsync(int companyCode, int pay_period_id, int lot, int inputType)
         {
             var ds = new DataSet();
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new SqlConnection(_secondaryString);
             {
                 using var command = new SqlCommand("InputAutomation_Custom_Report", connection);
                 {
@@ -82,10 +85,10 @@ namespace QPay.DAL.Repository
             }
             return ds;
         }
-        public DataSet GetDataSetsAsync(int companyCode, int pay_period_id)
+        public DataSet GetDataSetsSecondaryAsync(int companyCode, int pay_period_id)
         {
             var ds = new DataSet();
-            using var connection = new SqlConnection(_connectionString);
+            using var connection = new SqlConnection(_secondaryString);
             {
                 using var command = new SqlCommand("[sp_PayregisteruploadexporttoExcel]", connection);
                 {
@@ -158,7 +161,7 @@ namespace QPay.DAL.Repository
                 using (var dbConnection = Connection)
                 {
                     dbConnection.Open();
-                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param, commandType: CommandType.StoredProcedure);
+                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param,null,commandTimeout: 1500, commandType: CommandType.StoredProcedure);
                     return result;
                 }
             }
@@ -169,6 +172,23 @@ namespace QPay.DAL.Repository
             }
         }
 
+        public async Task<IEnumerable<T>> GetItemsSecondaryAsync<T>(string storeProcedureName, object param)
+        {
+            try
+            {
+                using (var dbConnection = ConnectionSecondary)
+                {
+                    dbConnection.Open();
+                    var result = await dbConnection.QueryAsync<T>(storeProcedureName, param, null, commandTimeout: 1500, commandType: CommandType.StoredProcedure);
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log exception if needed
+                throw new Exception("Database operation failed: " + ex.Message);
+            }
+        }
         public async Task<string> GetItemsAsync(string storeProcedureName, object param)
         {
             try
@@ -199,7 +219,37 @@ namespace QPay.DAL.Repository
                   }
                 }
 
-                // Example method to insert a new record
+        public async Task<string> GetItemsSecondaryAsync(string storeProcedureName, object param)
+        {
+            try
+            {
+                using (var dbConnection = ConnectionSecondary)
+                {
+
+                    dbConnection.Open();
+                    var result = await dbConnection.QueryAsync(storeProcedureName, param, null, commandTimeout: 1000, CommandType.StoredProcedure);
+                    var obj = JsonConvert.SerializeObject(result);
+                    return obj;
+                }
+            }
+            catch (SqlException ex)
+            {
+                // Log exception details (You can use a logging library like Serilog or NLog)
+                //Console.WriteLine($"SQL Exception: {ex.Message}");
+                //throw ex; // Rethrow the exception or return a custom error
+
+                return ex.Message;
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        return ex.Message;
+                //        // Handle other exceptions
+                //        //Console.WriteLine($"Exception: {ex.Message}");
+                //        //throw;
+            }
+        }
+
+        // Example method to insert a new record
         public async Task<DbOperationResult> InsertItemAsync<T>(T model, string procedureName)
         {
            
