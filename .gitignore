@@ -127,7 +127,7 @@ QPay.API/bin/Debug/net6.0
 /QPay_Web_Data/obj/QPay.DAL.csproj.nuget.g.props
 *.pubxml
 /QPAY_Web_API/Properties/PublishProfiles
-/QPAY_Web_Service
+
 /QPAY_Web_API/obj/project.assets.json
 /QPAY_Web_API/obj/project.nuget.cache
 /QPAY_Web_API/obj/QPay.API.csproj.nuget.dgspec.json
