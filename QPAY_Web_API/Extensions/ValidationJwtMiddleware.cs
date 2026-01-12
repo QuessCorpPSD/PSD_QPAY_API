@@ -12,7 +12,7 @@ namespace QPay.API.Extensions
     {
         private readonly RequestDelegate _next;
         private readonly string _secret;
-        private readonly string[] _whitelistedPaths = ["/api/authendicate/userlogin", "/api/authendicate/register"]; // Add your public paths here
+        private readonly string[] _whitelistedPaths = ["/api/authendicate/userlogin", "/api/authendicate/refresh"]; // Add your public paths here
 
         public ValidationJwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {

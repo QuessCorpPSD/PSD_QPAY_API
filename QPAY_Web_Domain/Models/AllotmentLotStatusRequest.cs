@@ -47,8 +47,10 @@ namespace QPay.UI.Models
         public string createdon { get; set; } = string.Empty;
         public int userId { get; set; }       
         public int revised { get; set; }
-        public string? QC_RaiseQuery { get; set; } = string.Empty;
-        public List<Allotmemet> allotments { get; set; } = new List<Allotmemet>();
+        public string? RaiseQuery { get; set; } = string.Empty;
+
+        public string? CheckinFile { get; set; } = string.Empty;
+        public List<Allotmemet>? allotments { get; set; } = new List<Allotmemet>();
       
     }
 }

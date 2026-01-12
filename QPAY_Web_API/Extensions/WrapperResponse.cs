@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 
 namespace QPay.API.Extensions
 {
@@ -49,7 +50,7 @@ namespace QPay.API.Extensions
             var readToEnd = new StreamReader(memoryStream).ReadToEnd();
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = 200;
+            context.Response.StatusCode =200;
             if (exception == null)
             {
                 // Deserializing Controller Response to an object                

@@ -26,12 +26,13 @@ namespace QPay.BAL.Repository
                 mail.Subject = subject;
                 mail.Priority=MailPriority.High;
                 mail.Body = body;
-
+                mail.IsBodyHtml = true;
                 // Configure the SMTP client
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = "qazmail.quesscorp.com";       // e.g., smtp.gmail.com
                 smtp.Port = 587;                      // Or 25, or 465 depending on your provider
-                smtp.EnableSsl = true;                // Use SSL
+                smtp.EnableSsl = true;  
+                // Use SSL
                 smtp.UseDefaultCredentials=false;
                 smtp.Credentials = new NetworkCredential("psd-appmailer@qazmail.quesscorp.com", "JbV-2e[7Wpua5Z](!jfN@K");
                 ServicePointManager.Expect100Continue = true;

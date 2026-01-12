@@ -9,7 +9,7 @@ namespace QPay.API.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-   //[Authorize]
+   [Authorize]
     public class CheckInCheckOutController : ControllerBase
     {
        private readonly ICheckInCheckOutRepository _checkInCheckOutRepository;

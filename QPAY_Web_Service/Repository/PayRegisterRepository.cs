@@ -149,6 +149,10 @@ namespace QPay.BAL.Repository
                         {
                             payregister_dt.Columns.Remove(item);
                         }
+        
+            
+            
+        
                         using var workbook = new XLWorkbook();
                         {
                             var ws = workbook.AddWorksheet(payregister_dt, "Other Income");
@@ -308,14 +312,11 @@ namespace QPay.BAL.Repository
                 parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
                 parameters.Add("@PayCode", "");
                 parameters.Add("@Inputno", lotNumber);
-                storeProcedure = "sp_OtherIncome_Report_Pivot_ExportToExcel";
+                storeProcedure = "sp_OtherIncome_Report_Pivot_ExportToExcel_PSD";
+                
             }
-            //parameters.Add("@Company_ID", companyCode);
-            //parameters.Add("@Pay_Frequency_Detail_Id", pay_period_Id);
-            //parameters.Add("@PO_NUMBER", "");
-            //parameters.Add("@INPUTNUMBER", lotNumber);
-            //string storeProcedure = "sp_OtherIncome_Report_PONUMBER_ExportToExcel";
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            
+            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
             if (res!=null)
             {
                 payregister_dt =(DataTable)JsonConvert.DeserializeObject<DataTable>(res);
@@ -331,68 +332,92 @@ namespace QPay.BAL.Repository
                         {
                             var value = lastRow[column];
 
-                            if (column.DataType.Name=="Double")
-                            {
-                                var column_Unique = GetUniqueColumnValues(payregister_dt, column.ColumnName);
-                                if (column_Unique.Count()>1 || column.ColumnName.ToLower() == ("Service_charge").ToLower())
-                                {
-                                    var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>(column));
-                                    dtrow[column]=columnsum;
-                                    if (Convert.ToString(columnsum).ToLower()==("0").ToLower())
-                                    {
-                                        RemoveColums.Add(column.ToString());
-                                    }
-                                }
-                                else
-                                {
-                                    dtrow[column]=column_Unique[0];
-                                    if (Convert.ToString(column_Unique[0]).ToLower()==("0").ToLower())
-                                    {
-                                        RemoveColums.Add(column.ToString());
-                                    }
-                                }
-                            }
-                            else if (column.DataType.Name=="Int64")
+                            if (column.ColumnName.ToLower() == ("Input_Number").ToLower())
                             {
                                 var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
-                                if (column_Unique.Count()>1)
-                                {
-                                    var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<Int64?>(column));
-                                    dtrow[column]=columnsum;
-                                    if (Convert.ToString(columnsum).ToLower()==("0").ToLower())
-                                    {
-                                        RemoveColums.Add(column.ToString());
-                                    }
-
-                                }
-                                else
-                                {
-                                    dtrow[column]=column_Unique[0];
-                                    if (Convert.ToString(column_Unique[0]).ToLower()==("0").ToLower())
-                                    {
-                                        RemoveColums.Add(column.ToString());
-                                    }
-                                }
-
+                                dtrow[column] = column_Unique[0];
                             }
                             else
                             {
-                                // dtrow[column]="";
+
+                                if (column.DataType.Name == "Double")
+                                {
+                                    var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>(column));
+                                    dtrow[column] = columnsum;
+                                    if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
+                                    {
+                                        RemoveColums.Add(column.ToString());
+                                    }
+
+                                    //var column_Unique = GetUniqueColumnValues(payregister_dt, column.ColumnName);
+                                    //if (column_Unique.Count()>1 || column.ColumnName.ToLower() == ("Service_charge").ToLower())
+                                    //{
+
+                                    //}
+                                    //else
+                                    //{
+                                    //    dtrow[column]=column_Unique[0];
+                                    //    if (Convert.ToString(column_Unique[0]).ToLower()==("0").ToLower())
+                                    //    {
+                                    //        RemoveColums.Add(column.ToString());
+                                    //    }
+                                    //}
+                                }
+                                else if (column.DataType.Name == "Int64")
+                                {
+                                    var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<Int64?>(column));
+                                    dtrow[column] = columnsum;
+                                    if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
+                                    {
+                                        RemoveColums.Add(column.ToString());
+                                    }
+
+                                    //var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
+                                    //if (column_Unique.Count()>1)
+                                    //{
+
+
+                                    //}
+                                    //else
+                                    //{
+                                    //    dtrow[column]=column_Unique[0];
+                                    //    if (Convert.ToString(column_Unique[0]).ToLower()==("0").ToLower())
+                                    //    {
+                                    //        RemoveColums.Add(column.ToString());
+                                    //    }
+                                    //}
+
+                                }
+                                else
+                                {
+                                    // dtrow[column]="";
+                                }
                             }
                         }
+                        var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
+                                           .Where(col => payregister_dt.AsEnumerable().All(row =>
+                                                {
+                                                    var value = row[col];
+                                                     return value == null || string.IsNullOrWhiteSpace(value.ToString());
+                                                }))
+                                            .Select(col => col.ColumnName)
+                                            .ToList();
+                        foreach (var columnName in emptyColumns)
+                            payregister_dt.Columns.Remove(columnName);
+
                         double service = 0.0;
                         double ctc = 0.0;
                         if (payregister_dt.Columns.Contains("SERCG"))
                         {
-                            service = payregister_dt.AsEnumerable()
-                           .Where(row => !string.IsNullOrWhiteSpace(row.Field<string>("SERCG")))
-                           .Sum(row => Convert.ToDouble(row.Field<string>("SERCG")));
-                            //if (payregister_dt.Columns["SERCG"].DataType.Name == "Double")
-                            //{
-                            //    service = payregister_dt.AsEnumerable()
-                            //        .Where(row => row.Field<double?>("SERCG").HasValue)
-                            //        .Sum(row => row.Field<double?>("SERCG").Value);
-                            //}
+                            // service = payregister_dt.AsEnumerable()
+                            //.Where(row => !string.IsNullOrWhiteSpace(row.Field<string>("SERCG")))
+                            //.Sum(row => Convert.ToDouble(row.Field<string>("SERCG")));
+                            if (payregister_dt.Columns["SERCG"].DataType.Name == "Double")
+                            {
+                                service = payregister_dt.AsEnumerable()
+                                    .Where(row => row.Field<double?>("SERCG").HasValue)
+                                    .Sum(row => row.Field<double?>("SERCG").Value);
+                            }
                         }
 
                         if (payregister_dt.Columns.Contains("CTC"))
@@ -587,7 +612,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@Company_Id", companyCode);
                 parameters.Add("@Pay_Period_Id", pay_period_Id);
                 parameters.Add("@Lot_number", lotNumber);
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
             if (res != null)
             {
 
@@ -609,12 +634,21 @@ namespace QPay.BAL.Repository
             var parameters = new DynamicParameters();
             parameters.Add("@Company_Id", companyCode);
             parameters.Add("@Pay_Period_Id", pay_period_Id);
-            parameters.Add("@Lot_No", lotNumber);
-            //parameters.Add("@Revised", revised);
-            parameters.Add("@isInvoice", 0);
+            
+            string storeProcedure = "";
+            if (lotNumber!=0)
+            {
+                parameters.Add("@Lot_No", lotNumber);
+                parameters.Add("@isInvoice", 0);
+                storeProcedure = "sp_PayRegister_LotWise";
+                
+            }
+            else
+            {
+                storeProcedure = "sp_PayRegister";
+            }
 
-            string storeProcedure = "sp_PayRegister_LotWise";
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
             if (res!=null)
             {
                 try
@@ -683,20 +717,7 @@ namespace QPay.BAL.Repository
                                     {
                                         RemoveColums.Add(column.ToString());
                                     }
-                                    //var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
-                                    //if (column_Unique.Count()>1)
-                                    //{
-
-
-                                    //}
-                                    //else
-                                    //{
-                                    //    dtrow[column]=column_Unique[0];
-                                    //    if (Convert.ToString(column_Unique[0]).ToLower()==("0").ToLower())
-                                    //    {
-                                    //        RemoveColums.Add(column.ToString());
-                                    //    }
-                                    //}
+                                   
 
                                 }
                                 else
@@ -704,27 +725,24 @@ namespace QPay.BAL.Repository
                                     dtrow[column]="";
                                 }
                             }
-                            //var service = 0.0;
-                           // var ctc = 0.0;// payregister_dt.AsEnumerable().Sum(row => row.Field<double?>("TOTAL COST TO COMPANY"));
-                             //service = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>("Service_charge"));
-                            //if (payregister_dt.Columns.Contains("Service_charge"))
-                            //{
-                            //    service = payregister_dt.AsEnumerable()
-                            //        .Sum(row => row.Field<double?>("Service_charge") ?? 0);
-                            //}
-                            //if (payregister_dt.Columns.Contains("TOTAL COST TO COMPANY"))
-                            //{
-                            //    ctc = payregister_dt.AsEnumerable()
-                            //        .Sum(row => row.Field<double?>("TOTAL COST TO COMPANY") ?? 0);
-                            //}
-                            payregister_dt.Rows.Add(dtrow);
-                            // Process the value as needed
+                           
+                            payregister_dt.Rows.Add(dtrow);                            
                             foreach (var item in RemoveColums)
                             {
                                 payregister_dt.Columns.Remove(item);
                             }
+                            var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
+                                           .Where(col => payregister_dt.AsEnumerable().All(row =>
+                                           {
+                                               var value = row[col];
+                                               return value == null || string.IsNullOrWhiteSpace(value.ToString());
+                                           }))
+                                            .Select(col => col.ColumnName)
+                                            .ToList();
+                            foreach (var columnName in emptyColumns)
+                                payregister_dt.Columns.Remove(columnName);
 
-                            
+
 
                             var comayName = CompanyNameByCode(companyCode);
                             var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
@@ -1099,10 +1117,9 @@ namespace QPay.BAL.Repository
             parameters.Add("@Input_type", payRegisterUI.Input_type);
             parameters.Add("@LoginUser", payRegisterUI.LoginUser);
             parameters.Add("@FileName", payRegisterUI.FileName);
-            parameters.Add("@FilePath", payRegisterUI.FilePath);
-
+            parameters.Add("@FilePath", payRegisterUI.FilePath);            
             string storeProcedure = "SP_PayRegister_Upload_Process";
-            var res =await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             if (res!="")
             {
                 payRegisterUploadResponse = JsonConvert.DeserializeObject<List<PayRegisterResponse>>(res).FirstOrDefault();

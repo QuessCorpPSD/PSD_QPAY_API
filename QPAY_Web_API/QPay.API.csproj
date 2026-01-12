@@ -7,6 +7,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="GST_Certificate\**" />
+    <Compile Remove="LUT_Certificate\**" />
+    <Compile Remove="PayRegister\**" />
+    <Compile Remove="ReimbursementPolicyUploads\**" />
+    <Compile Remove="SEZ_Certificate\**" />
+    <Content Remove="GST_Certificate\**" />
+    <Content Remove="LUT_Certificate\**" />
+    <Content Remove="PayRegister\**" />
+    <Content Remove="ReimbursementPolicyUploads\**" />
+    <Content Remove="SEZ_Certificate\**" />
+    <EmbeddedResource Remove="GST_Certificate\**" />
+    <EmbeddedResource Remove="LUT_Certificate\**" />
+    <EmbeddedResource Remove="PayRegister\**" />
+    <EmbeddedResource Remove="ReimbursementPolicyUploads\**" />
+    <EmbeddedResource Remove="SEZ_Certificate\**" />
+    <None Remove="GST_Certificate\**" />
+    <None Remove="LUT_Certificate\**" />
+    <None Remove="PayRegister\**" />
+    <None Remove="ReimbursementPolicyUploads\**" />
+    <None Remove="SEZ_Certificate\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
@@ -18,15 +41,6 @@
     <ProjectReference Include="..\QPay_Web_Data\QPay.DAL.csproj" />
     <ProjectReference Include="..\QPAY_Web_Domain\QPay.UI.csproj" />
     <ProjectReference Include="..\QPAY_Web_Service\QPay.BAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="GST_Certificate\" />
-    <Folder Include="LUT_Certificate\" />
-    <Folder Include="SEZ_Certificate\" />
-    <Folder Include="ReimbursementPolicyUploads\" />
-    <Folder Include="PayRegister\Processed\" />
-    <Folder Include="PayRegister\Unprocessed\" />
   </ItemGroup>
 
 </Project>

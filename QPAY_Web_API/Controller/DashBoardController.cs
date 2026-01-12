@@ -10,7 +10,7 @@ namespace QPay.API.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class DashBoardController : ControllerBase
     {
         private readonly IDashboardRepository _dashboardRepository;
@@ -42,6 +42,21 @@ namespace QPay.API.Controller
         {
             var data = await this._adminDashboardRepository.GetAdminDashboardDetail(adminDashboardParameterlUI);
             return Ok(data);
+        }
+
+        [HttpGet,Route("GetPendingLotDetail")]
+        public  async Task<IActionResult> GetPendingLotDetail()
+        {
+            var data = await this._dashboardRepository.GetLotAllottmentPendings();
+            return Ok(data);
+        }
+
+        [HttpPost,Route("GetInputLotCompletedDetail")]
+        public  async Task<IActionResult> GetInputLotCompletedDetail(DashboardRequestModel dashboardRequestModel)
+        {
+            var completed =await this._dashboardRepository.GetInputLotDetail(dashboardRequestModel);
+
+            return Ok(completed);
         }
 
         [HttpGet("PendingLot")]
