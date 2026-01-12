@@ -2,8 +2,8 @@
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
-using QPay.BAL.Repository.Common;
 using QPay.UI.Models.Customer;
 
 namespace QPay.API.Controller.Customer

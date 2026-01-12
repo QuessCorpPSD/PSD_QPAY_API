@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
+using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
-using QPay.BAL.Repository.Common;
 using QPay.UI.Models;
 using QPay.UI.Models.Customer;
 using System.Data;

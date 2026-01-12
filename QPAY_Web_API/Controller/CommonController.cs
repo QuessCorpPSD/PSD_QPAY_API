@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Common;
-using QPay.BAL.Repository.Common;
 
 namespace QPay.API.Controller
 {
@@ -74,13 +73,13 @@ namespace QPay.API.Controller
         public async Task<IActionResult> GetFinancialYear() =>
          Ok(await this._financialYearRepository.GetFinancialYears());
 
-        [HttpGet, Route("GetAllCompanyCode/{userId}")]
-        public async Task<IActionResult> GetAllCompanyCode(int userId)
-        {
-            var response = await _icompanyCode.GetallCompanyCodes(userId);
+        //[HttpGet, Route("GetAllCompanyCode/{userId}")]
+        //public async Task<IActionResult> GetAllCompanyCode(int userId)
+        //{
+        //    var response = await _icompanyCode.GetallCompanyCodes(userId);
 
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
 
         [HttpGet, Route("GetMapNamebyCompany/{companyId}")]
         public async Task<IActionResult> GetMapNamebyCompany(int companyId)

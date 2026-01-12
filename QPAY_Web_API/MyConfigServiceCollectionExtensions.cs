@@ -5,6 +5,7 @@ using QPay.BAL.IRepository.Common;
 
 using QPay.BAL.Repository;
 using QPay.BAL.Repository.Common;
+using QPay.IRepository.Repository.Common;
 
 
 namespace QPay.API
@@ -50,6 +51,8 @@ namespace QPay.API
             services.AddSingleton<IProcessCategoryRepository, ProcessCategoryRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IAccesstypeRepository, AccesstypeRepository>();
+            services.AddScoped<ICommonRepository, CommonRepository>();
+
             #endregion
         }
     }

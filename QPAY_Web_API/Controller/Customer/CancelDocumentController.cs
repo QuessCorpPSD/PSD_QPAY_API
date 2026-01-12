@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.API.Models;
+using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
-using QPay.BAL.Repository.Common;
 using QPay.UI.Models.Customer;
 
 namespace QPay.API.Controller.Customer
