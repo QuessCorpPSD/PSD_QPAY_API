@@ -47,7 +47,7 @@ namespace QPay.UI.Models.Invoice
             public string? Map_Name { get; set; }
             public string? Error_Message { get; set; }
             public int? Invoice_Category_Id { get; set; }
-
+            public int? State_Id { get; set; }
             public int? Spilt_Type_Id { get; set; }
         }
 
