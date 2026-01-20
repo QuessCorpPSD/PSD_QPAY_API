@@ -23,6 +23,5 @@ namespace QPay.BAL.IRepository.Common
         Task<List<Paycodes>> GetPaycodes();
         Task<List<StateUI>> GetAllState();
         Task<List<CityUI>> GetCityByStateId(int stateId);
-
     }
 }

@@ -1,13 +1,17 @@
-﻿using ClosedXML.Excel;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.LoggerService;
-using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
-using QPay.UI.Models.Invoice;
 using SelectPdf;
 using System.Data;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Web;
+using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Core;
+using QPay.UI.Models.Invoice;
+using ClosedXML.Excel;
+using QPay.BAL.IRepository.Common;
 
 namespace QPay.API.Controller.Invoice
 {
@@ -249,7 +253,7 @@ namespace QPay.API.Controller.Invoice
         //}
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(GstInvoiceCreateRequest request)
+        public async Task<IActionResult> Create(DAL.Repository.GstInvoiceCreateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

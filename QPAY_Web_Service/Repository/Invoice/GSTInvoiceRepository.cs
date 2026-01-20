@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static QPay.UI.Models.Invoice.Invoice;
 
 namespace QPay.BAL.Repository.Invoice
 {

@@ -21,4 +21,11 @@ namespace QPay.UI.Common
         public DateTime LastModifiedOn { get; set; }
         public string ModifiedByUserName { get; set; } = string.Empty;
     }
+
+    public class RequestResponse
+    {
+        public string response { get; set; } = string.Empty;
+        public List<string> errors { get; set; } = new List<string>();
+    }
+
 }
