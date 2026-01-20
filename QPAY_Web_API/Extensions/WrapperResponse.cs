@@ -40,8 +40,10 @@ namespace QPay.API.Extensions
                 exception = ex;
             }
 
+
             // Resetting Context Body Response
             context.Response.Body = currentBody;
+            
 
             // Setting Memory Stream Position to Beginning
             memoryStream.Seek(0, SeekOrigin.Begin);

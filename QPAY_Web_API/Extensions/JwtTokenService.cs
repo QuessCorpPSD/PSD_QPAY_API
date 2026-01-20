@@ -58,10 +58,11 @@ namespace QPay.API.Extensions
             var parameters = new DynamicParameters();
             parameters.Add("@Token", refreshToken.Token);             
             parameters.Add("@userId", refreshToken.UserId);
-            if (refreshToken.ExpiryDate != null)
-            {
-                parameters.Add("@ExpiryDate", refreshToken.ExpiryDate);
-            }
+            parameters.Add("@ExpiryDate", refreshToken.ExpiryDate);
+            //if (refreshToken.ExpiryDate != null)
+            //{
+
+            //}
             parameters.Add("@ActionType", refreshToken.ActionType);
             var res =await this._dbRepository.GetItemsAsync(procedure, parameters);
             if (res != "")
