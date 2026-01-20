@@ -1,4 +1,5 @@
-﻿using QPay.API.Extensions;
+﻿using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Billing;
@@ -19,6 +20,7 @@ using QPay.BAL.Repository.Process;
 using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.Tools;
 using QPay.IRepository.Repository.Common;
+using QPAY_Web_API.Controller;
 
 
 namespace QPay.API
@@ -40,14 +42,14 @@ namespace QPay.API
             services.AddSingleton<IEmailService, EmailService>();
 
             #region Dependencies  PSD DI       
-
+            
             services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
             services.AddSingleton<IAssignmentRepository, AssignmentRepository>();
             services.AddSingleton<IBillableDaysRepository, BillableDaysRepository>();
             services.AddSingleton<ICheckInCheckOutRepository, CheckInCheckOutRepository>();
             services.AddSingleton<IDashboardRepository, DashboardRepository>();
             services.AddSingleton<IFinancialYearRepository, FinancialYearRepository>();
-            services.AddSingleton<IInvoiceInitiationRepository, InvoiceInitiationRepository>();
+            services.AddSingleton<BAL.IRepository.IInvoiceInitiationRepository, BAL.Repository.InvoiceInitiationRepository>();
             services.AddTransient<ILoginRepository, LoginRepository>();
             services.AddTransient<IPayRegisterRepository, PayRegisterRepository>();
             services.AddTransient<Itbl_InputLot_DetailsRepository, Itbl_InputLot_DetailsRepository>();
@@ -67,7 +69,7 @@ namespace QPay.API
             #endregion
 
             #region Dependencies Billing DI (Depdency Injection) 
-            services.AddScoped<ISapBookClosureRepository, ISapBookClosureRepository>();
+            services.AddScoped<ISapBookClosureRepository, SapBookClosureRepository>();
             services.AddScoped<IGenericUploadRepository, GenericUploadRepository>();
 
             #endregion
@@ -93,7 +95,7 @@ namespace QPay.API
             services.AddScoped<IEntityRepository, EntityRepository>();
             services.AddScoped<IESIRepository, ESIRepository>();
             services.AddScoped<IFormulaRepository, FormulaRepository>();
-            services.AddScoped<IGstRepository, IGstRepository>();
+            services.AddScoped<IGstRepository, GstRepository>();
             services.AddScoped<IInvoiceLegalEntityRepository, InvoiceLegalEntityRepository>();
             services.AddScoped<ILWFRepository, LWFRepository>();
             services.AddScoped<IMaterialCodeRepository, MaterialCodeRepository>();
