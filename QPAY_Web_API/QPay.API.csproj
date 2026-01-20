@@ -35,6 +35,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageReference Include="NLog" Version="6.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.2" />
+    <PackageReference Include="QRCoder" Version="1.7.0" />
+    <PackageReference Include="Select.Pdf.NetCore" Version="25.2.0" />
+	  <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,75 +9,84 @@ namespace QPay.API.Extensions
         /// Request Delegate field to invoke HTTP Context
         /// </summary>
         private readonly RequestDelegate _next;
-        public WrapperResponse(RequestDelegate next) => _next = next;        
+        public WrapperResponse(RequestDelegate next) => _next = next;
         public async Task Invoke(HttpContext context)
         {
-            
-            // Storing Context Body Response
-            var currentBody = context.Response.Body;
+            var originalBody = context.Response.Body;
 
-            // Using MemoryStream to hold Controller Response
             using var memoryStream = new MemoryStream();
             context.Response.Body = memoryStream;
 
-            // Passing call to Controller
-            //await _next(context);
             Exception exception = null;
+
             try
             {
                 await _next(context);
             }
-            catch (AccessViolationException avEx)
-            {
-                //_logger.LogError($"A new violation exception has been thrown: {avEx}");
-                //await HandleExceptionAsync(httpContext, avEx);
-                exception = avEx;
-            }
             catch (Exception ex)
             {
-                //_logger.LogError($"Something went wrong: {ex}");
-                //await HandleExceptionAsync(httpContext, ex);
                 exception = ex;
             }
 
-
-            // Resetting Context Body Response
-            context.Response.Body = currentBody;
-            
-
-            // Setting Memory Stream Position to Beginning
+            // Move stream to start
             memoryStream.Seek(0, SeekOrigin.Begin);
 
-            // Read Memory Stream data to the end
-            var readToEnd = new StreamReader(memoryStream).ReadToEnd();
+            var contentType = context.Response.ContentType;
+
+            // 🔥 If response is NOT JSON — skip wrapper
+            if (!string.IsNullOrEmpty(contentType) &&
+                (contentType.Contains("application/pdf")
+                 || contentType.Contains("application/octet-stream")
+                 || contentType.Contains("application/zip")
+                 || contentType.Contains("image/")
+                 || contentType.Contains("text/csv")))
+            {
+                // Write raw bytes back
+                context.Response.Body = originalBody;
+                await memoryStream.CopyToAsync(originalBody);
+                return;
+            }
+
+            // --- JSON WRAPPER LOGIC BEGINS HERE ---
+
+            context.Response.Body = originalBody;
+
+            string bodyText = new StreamReader(memoryStream).ReadToEnd();
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode =200;
+
             if (exception == null)
             {
-                // Deserializing Controller Response to an object                
-                //var result = JsonSerializer.Deserialize(readToEnd, typeof(object));
+                object? result = null;
 
-                var result = string.IsNullOrEmpty(readToEnd) ? null : JsonSerializer.Deserialize(readToEnd, typeof(object));
+                if (!string.IsNullOrWhiteSpace(bodyText))
+                {
+                    try
+                    {
+                        result = JsonSerializer.Deserialize(bodyText, typeof(object));
+                    }
+                    catch
+                    {
+                        // If failed to deserialize → do NOT wrap
+                        await context.Response.WriteAsync(bodyText);
+                        return;
+                    }
+                }
 
-                // Invoking Customizations Method to handle Custom Formatted Response
                 var response = ResponseWrapManager.ResponseWrapper(result, context);
+                if (context.Response.StatusCode != 204)
+                {
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                }
 
-                // returing response to caller
-                //await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
-
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
             else
             {
-                
-                var response = ResponseWrapManager.ResponseWrapper(null, context, exception.InnerException);
-
-                // returing response to caller
-                //await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
-
+                var response = ResponseWrapManager.ResponseWrapper(exception, context, exception.InnerException);
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
         }
+
     }
 }
+

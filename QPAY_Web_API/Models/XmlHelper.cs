@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace QPay.API.Models
 {
@@ -14,6 +16,31 @@ namespace QPay.API.Models
                 xmlSerializer.Serialize(stringWriter, obj);
                 return stringWriter.ToString();
             }
+        }
+    }
+    public static class XmlHelper2
+    {
+        public static string SerializeObjectToXml<T>(T value)
+        {
+            var settings = new XmlWriterSettings
+            {
+                OmitXmlDeclaration = true,   // remove <?xml version="1.0" ...?>
+                Indent = false,
+                Encoding = new UTF8Encoding(false)
+            };
+
+            var xmlSerializer = new XmlSerializer(typeof(T));
+
+            // Remove namespaces
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");   // VERY IMPORTANT: no namespace
+
+            using var stringWriter = new StringWriter();
+            using var xmlWriter = XmlWriter.Create(stringWriter, settings);
+
+            xmlSerializer.Serialize(xmlWriter, value, ns);
+
+            return stringWriter.ToString();
         }
     }
 }

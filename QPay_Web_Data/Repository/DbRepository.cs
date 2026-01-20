@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using QPay.UI.Common;
 using QPay.UI.Models;
 using System;
 using System.Collections;
@@ -12,6 +13,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static QPay.UI.Customer.Company;
 
 namespace QPay.DAL.Repository
 {
@@ -392,6 +394,355 @@ namespace QPay.DAL.Repository
         //        throw;
         //    }
         //}
+
+        public DataSet ExecuteStoredProcedureToDataSetAsync(
+           string storedProcedureName,
+           Dictionary<string, object> parameters,
+           int commandTimeout = 1000)
+        {
+            var ds = new DataSet();
+
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                using (var command = new SqlCommand(storedProcedureName, connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = commandTimeout;
+
+                    // Add parameters dynamically
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+
+                    using (var adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(ds); // run in background
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                // Log SQL specific exception
+                throw new Exception($"SQL Error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                // Log general exception
+                throw new Exception($"Error executing stored procedure: {ex.Message}", ex);
+            }
+
+            return ds;
+        }
+        public DataTable ExecuteStoredProcedureToDataTableAsync(
+           string storedProcedureName,
+           Dictionary<string, object> parameters,
+           int commandTimeout = 1000)
+        {
+            var ds = new DataTable();
+
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                using (var command = new SqlCommand(storedProcedureName, connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = commandTimeout;
+
+                    // Add parameters dynamically
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+
+                    using (var adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(ds); // run in background
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                // Log SQL specific exception
+                throw new Exception($"SQL Error: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                // Log general exception
+                throw new Exception($"Error executing stored procedure: {ex.Message}", ex);
+            }
+
+            return ds;
+        }
+        public DataSet ClientAddressExport(int userId)
+        {
+            var ds = new DataSet();
+            using var connection = new SqlConnection(_connectionString);
+            {
+                using var command = new SqlCommand("Proc_ManageClientAddress", connection);
+                {
+                    command.CommandTimeout = 0;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Action", "Export");
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@PageNo", 1);
+                    command.Parameters.AddWithValue("@PageSize", 999999);
+
+                    using var adapter = new SqlDataAdapter(command);
+                    {
+                        adapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
+
+        public CompanyDetails GetAllCompanyDefaultBindData()//
+        {
+            CompanyDetails objCompanyRelatedData = new CompanyDetails();
+            int i = 1;
+            bool tableexists = true;
+
+            using var connection = new SqlConnection(_connectionString);
+            {
+                try
+                {
+                    connection.Open();
+                    using var command = new SqlCommand("sp_GetAllCompanyDefaultBindData", connection);
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@mode", 1);
+                        command.Parameters.AddWithValue("@Value", 1);
+                        command.CommandTimeout = 1500;
+
+                        objCompanyRelatedData.GetEntityName = new List<EnumModel>();
+                        objCompanyRelatedData.GetBankName = new List<EnumModel>();
+                        objCompanyRelatedData.GetCompanyName = new List<EnumModel>();
+                        objCompanyRelatedData.GetSegmentName = new List<EnumModel>();
+                        objCompanyRelatedData.GetSubSegmentName = new List<EnumModel>();
+                        objCompanyRelatedData.GetFinancialYear = new List<EnumModel>();
+                        objCompanyRelatedData.GetAllCity = new List<EnumModel>();
+                        objCompanyRelatedData.GetAllState = new List<EnumModel>();
+                        objCompanyRelatedData.GetAllRegion = new List<EnumModel>();
+                        objCompanyRelatedData.GetCompanyGroupCode = new List<EnumModel>();
+                        objCompanyRelatedData.GetPfCode = new List<EnumModel>();
+                        objCompanyRelatedData.GetCompanyType = new List<EnumModel>();
+                        objCompanyRelatedData.GetReimbPayment = new List<EnumModel>();
+                        objCompanyRelatedData.GetPayrollWithDecimal = new List<EnumModel>();
+                        objCompanyRelatedData.GetPfCategory = new List<EnumModel>();
+                        objCompanyRelatedData.GetServiceFeeWithDecimal = new List<EnumModel>();
+                        objCompanyRelatedData.GetBankAdvice = new List<EnumModel>();
+                        objCompanyRelatedData.GetVerticals = new List<EnumModel>();
+                        objCompanyRelatedData.GetServiceChargeClubbing = new List<EnumModel>();
+                        objCompanyRelatedData.GetBillingCompanyCodeList = new List<EnumModel>();
+
+                        using var adapter = new SqlDataAdapter(command);
+                        {
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.HasRows || tableexists)
+                                {
+                                    while (reader.Read())
+                                    {
+                                        EnumModel item = new EnumModel();
+                                        switch (i)
+                                        {
+                                            case 1:
+                                                item.Name = Convert.ToString(reader["Client_code"]);
+                                                item.Value = Convert.ToString(reader["Client_Name"]);
+                                                objCompanyRelatedData.GetCompanyName.Add(item);
+                                                break;
+
+                                            case 2:
+                                                item.Name = Convert.ToString(reader["Entity_Name"]);
+                                                item.Value = Convert.ToString(reader["Entity_Id"]);
+                                                objCompanyRelatedData.GetEntityName.Add(item);
+                                                break;
+
+                                            case 3:
+                                                item.Name = Convert.ToString(reader["Bank_Name"]);
+                                                item.Value = Convert.ToString(reader["Bank_Id"]);
+                                                objCompanyRelatedData.GetBankName.Add(item);
+                                                break;
+
+                                            case 4:
+                                                item.Name = Convert.ToString(reader["Segment_name"]);
+                                                item.Value = Convert.ToString(reader["Segment_id"]);
+                                                objCompanyRelatedData.GetSegmentName.Add(item);
+                                                break;
+
+                                            case 5:
+                                                item.Name = Convert.ToString(reader["Financial_Year_Name"]);
+                                                item.Value = Convert.ToString(reader["Financial_Year_Id"]);
+                                                objCompanyRelatedData.GetFinancialYear.Add(item);
+                                                break;
+
+                                            case 6:
+                                                item.Name = Convert.ToString(reader["CITY_NAME"]);
+                                                item.Value = Convert.ToString(reader["CITY_ID"]);
+                                                objCompanyRelatedData.GetAllCity.Add(item);
+                                                break;
+
+                                            case 7:
+                                                item.Name = Convert.ToString(reader["State_Name"]);
+                                                item.Value = Convert.ToString(reader["State_Id"]);
+                                                objCompanyRelatedData.GetAllState.Add(item);
+                                                break;
+                                            case 8:
+                                                item.Name = Convert.ToString(reader["Region_Name"]);
+                                                item.Value = Convert.ToString(reader["Region_Id"]);
+                                                objCompanyRelatedData.GetAllRegion.Add(item);
+                                                break;
+
+                                            case 9:
+                                                item.Name = Convert.ToString(reader["CompanyGroupCode"]);
+                                                item.Value = Convert.ToString(reader["CompanyGroupId"]);
+                                                objCompanyRelatedData.GetCompanyGroupCode.Add(item);
+                                                break;
+
+                                            case 10:
+                                                item.Name = Convert.ToString(reader["PfCode"]);
+                                                item.Value = Convert.ToString(reader["Id"]);
+                                                objCompanyRelatedData.GetPfCode.Add(item);
+                                                break;
+                                            case 11:
+                                                item.Name = Convert.ToString(reader["CompanyType"]);
+                                                item.Value = Convert.ToString(reader["CompanyTypeId"]);
+                                                objCompanyRelatedData.GetCompanyType.Add(item);
+                                                break;
+                                            case 12:
+                                                item.Name = Convert.ToString(reader["GEN_vDescription"]);
+                                                item.Value = Convert.ToString(reader["GEN_iID"]);
+                                                objCompanyRelatedData.GetReimbPayment.Add(item);
+                                                break;
+                                            case 13:
+                                                item.Name = Convert.ToString(reader["GEN_vDescription"]);
+                                                item.Value = Convert.ToString(reader["GEN_iID"]);
+                                                objCompanyRelatedData.GetPayrollWithDecimal.Add(item);
+                                                break;
+                                            case 14:
+                                                item.Name = Convert.ToString(reader["GEN_vDescription"]);
+                                                item.Value = Convert.ToString(reader["GEN_iID"]);
+                                                objCompanyRelatedData.GetPfCategory.Add(item);
+                                                break;
+                                            case 15:
+                                                item.Name = Convert.ToString(reader["GEN_vDescription"]);
+                                                item.Value = Convert.ToString(reader["GEN_iID"]);
+                                                objCompanyRelatedData.GetServiceFeeWithDecimal.Add(item);
+                                                break;
+                                            case 16:
+                                                item.Name = Convert.ToString(reader["SubSegment_name"]);
+                                                item.Value = Convert.ToString(reader["SubSegment_id"]);
+                                                objCompanyRelatedData.GetSubSegmentName.Add(item);
+                                                break;
+                                            case 17:
+                                                item.Name = Convert.ToString(reader["BankAdvice"]);
+                                                item.Value = Convert.ToString(reader["BankAdviceId"]);
+                                                objCompanyRelatedData.GetBankAdvice.Add(item);
+                                                break;
+                                            case 18:
+                                                item.Name = Convert.ToString(reader["Vertical_Name"]);
+                                                item.Value = Convert.ToString(reader["Vertical_Id"]);
+                                                objCompanyRelatedData.GetVerticals.Add(item);
+                                                break;
+                                            case 19:
+                                                item.Name = Convert.ToString(reader["ServiceChargeClubbing_Text"]);
+                                                item.Value = Convert.ToString(reader["ServiceChargeClubbing_Id"]);
+                                                objCompanyRelatedData.GetServiceChargeClubbing.Add(item);
+                                                break;
+                                            case 20:
+                                                item.Name = Convert.ToString(reader["Company_Code"]);
+                                                item.Value = Convert.ToString(reader["Company_Id"]);
+                                                objCompanyRelatedData.GetBillingCompanyCodeList.Add(item);
+                                                break;
+                                        }
+
+
+                                    }
+                                    tableexists = reader.NextResult();
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    connection.Close();
+                    var a = e;
+                }
+                return objCompanyRelatedData;
+            }
+
+        }
+
+        public DataSet CostCenterExport(string? CostCenterMapName)
+        {
+            var ds = new DataSet();
+            using var connection = new SqlConnection(_connectionString);
+            {
+                using var command = new SqlCommand("Proc_GetAllCostCenterMappingDetailsExportToExcel", connection);
+                {
+                    command.CommandTimeout = 0;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@CostCenterMapname", CostCenterMapName);
+
+                    using var adapter = new SqlDataAdapter(command);
+                    {
+                        adapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
+
+        public DataSet DepartmentExport(int companyId)
+        {
+            var ds = new DataSet();
+            using var connection = new SqlConnection(_connectionString);
+            {
+                using var command = new SqlCommand("sp_GetAllDepartmentDetailExportToExcel", connection);
+                {
+                    command.CommandTimeout = 0;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@CompanyId", companyId);
+
+                    using var adapter = new SqlDataAdapter(command);
+                    {
+                        adapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
+
+        public DataSet DesignationExport(int companyId)
+        {
+            var ds = new DataSet();
+            using var connection = new SqlConnection(_connectionString);
+            {
+                using var command = new SqlCommand("sp_GetAllDesignationDetailExportToExcel", connection);
+                {
+                    command.CommandTimeout = 0;
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@CompanyId", companyId);
+
+                    using var adapter = new SqlDataAdapter(command);
+                    {
+                        adapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
 
     }
 }
