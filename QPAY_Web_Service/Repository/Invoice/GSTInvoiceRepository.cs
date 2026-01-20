@@ -238,10 +238,11 @@ namespace QPay.BAL.Repository.Invoice
 
         public async Task<List<UI.Models.Invoice.InvoiceTypeUI>> GetGSTInvoiceType()
         {
-            string storeProcedure = "[dbo].[SP_GET_INVOICE_TYPE]" ?? "";
+            string storeProcedure = "[dbo].[USP_CommonDropDowns]" ?? "";
             var parameter = new DynamicParameters();
+            parameter.Add("@Action", "GetInvoiceType");
 
-            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+        var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
 
             if (string.IsNullOrWhiteSpace(res))
             {

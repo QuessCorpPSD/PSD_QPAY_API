@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Office.Word;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository.Common;
 using QPay.DAL.Repository;
@@ -139,10 +141,11 @@ namespace QPay.IRepository.Repository.Common
             return new List<AllPayperiod>();
         }
 
-        public async Task<List<StateUI>> GetAllState()
+        public async Task<List<StateUI>> GetAllState(int companyid)
         {
             string storeProcedure = "[dbo].[sp_GetAllStates]" ?? "";
             var parameter = new DynamicParameters();
+            //parameter.Add("@CompanyId", companyid);
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
 
             if (string.IsNullOrWhiteSpace(res))
@@ -185,6 +188,34 @@ namespace QPay.IRepository.Repository.Common
                 // log the error if you have logging available
                 // _logger.LogError(ex, "Failed to deserialize POQuantityUI response");
                 return new List<CityUI>();
+            }
+
+        }
+
+        public async Task<List<CityName>> GetAutoEntityLocation(int CompanyId)
+        {
+            string storeProcedure = "[dbo].[USP_CommonDropDowns]" ?? "";
+            var parameter = new DynamicParameters();
+           parameter.Add("@CompanyId", CompanyId);
+            parameter.Add("@Description", "");
+           parameter.Add("@Action", "GetAutoEntityLocation");
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<CityName>(); // return empty object if no result
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<CityName>>(res);
+                return list?.ToList() ?? new List<CityName>();
+            }
+            catch (JsonException ex)
+            {
+                // log the error if you have logging available
+                // _logger.LogError(ex, "Failed to deserialize POQuantityUI response");
+                return new List<CityName>();
             }
 
         }

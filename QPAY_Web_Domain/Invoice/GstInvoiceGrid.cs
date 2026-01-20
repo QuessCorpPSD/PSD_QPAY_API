@@ -10,7 +10,9 @@ namespace QPay.UI.Models.Invoice
     {
             public int? Invoice_Id { get; set; }
             public string Invoice_Number { get; set; } = "";
-            public int? Company_Id { get; set; }
+
+        public string IRN_Status { get; set; } = "";
+        public int? Company_Id { get; set; }
             public string Company_Code { get; set; } = "";
             public int? Cost_Center_Mapping_Id { get; set; }
             public string Map_Name { get; set; } = "";
@@ -21,7 +23,7 @@ namespace QPay.UI.Models.Invoice
             public string Pay_Period { get; set; } = "";
             public int? Invoice_Type_Id { get; set; }
             public string InvoiceType { get; set; } = "";
-            public DateTime? Invoice_Date { get; set; }
+            public string? Invoice_Date { get; set; }
             public string Particulars { get; set; } = "";
 
             public decimal? Amount { get; set; }
@@ -43,8 +45,8 @@ namespace QPay.UI.Models.Invoice
             public bool? IsLocked { get; set; }
             public int? Group_Detail_Id { get; set; }
             public string Group_Name { get; set; } = "";
-
-            public string? Crn_Number { get; set; }
+        public string? Irn_Number { get; set; }
+        public string? Crn_Number { get; set; }
             public string Crn_IRN_Status { get; set; } = "";
             public string Crn_IRN_Number { get; set; } = "";
             public DateTime? Crn_IRN_Cancel_Date { get; set; }
@@ -214,8 +216,8 @@ namespace QPay.UI.Models.Invoice
         public int Financial_Year_Id { get; set; }
         public int Pay_Period_Id { get; set; }
         public int Invoice_Type_Id { get; set; }
-        public DateTime Invoice_Date { get; set; }
-        public DateTime Invoice_Due_Date { get; set; }
+        public string Invoice_Date { get; set; }
+        public string Invoice_Due_Date { get; set; }
         public string Particulars { get; set; } = "";
         public decimal Amount { get; set; }
         public int StateId { get; set; }

@@ -8,6 +8,8 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.Common;
 using QPay.BAL.Repository.Customer;
 using QPay.BAL.Repository.GlobalMaster;
+using QPay.BAL.IRepository.Invoice;
+using QPay.BAL.Repository.Invoice;
 using QPay.IRepository.Repository.Common;
 
 
@@ -91,7 +93,7 @@ namespace QPay.API
            
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
-
+            services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
 
         }
     }

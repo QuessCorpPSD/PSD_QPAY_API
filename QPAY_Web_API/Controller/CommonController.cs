@@ -88,6 +88,14 @@ namespace QPay.API.Controller
 
             return Ok(response);
         }
+
+        [HttpGet, Route("GetAutoEntityLocation/{CompanyId}")]
+        public async Task<IActionResult> GetAutoEntityLocation(int CompanyId)
+        {
+            var response = await _icompanyCode.GetAutoEntityLocation(CompanyId);
+
+            return Ok(response);
+        }
         [HttpGet, Route("GetAllInputType")]
         public async Task<IActionResult> GetAllInputType()
         {
@@ -135,10 +143,10 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
-        [HttpGet, Route("GetAllState")]
-        public async Task<IActionResult> GetAllState()
+        [HttpGet, Route("GetAllState/{CompanyId}")]
+        public async Task<IActionResult> GetAllState(int CompanyId)
         {
-            var state = await this._icompanyCode.GetAllState();
+            var state = await this._icompanyCode.GetAllState(CompanyId);
             return Ok(state);
         }
 

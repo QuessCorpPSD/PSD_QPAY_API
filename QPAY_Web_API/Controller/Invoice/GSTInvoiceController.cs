@@ -1,13 +1,24 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using QPay.API.LoggerService;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
 using QPay.UI.Models.Invoice;
+using QRCoder;
 using SelectPdf;
 using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Web;
+
 
 namespace QPay.API.Controller.Invoice
 {
@@ -33,58 +44,197 @@ namespace QPay.API.Controller.Invoice
         [HttpGet, Route("GetGSTInvoice/{userId}")]
         public async Task<IActionResult> GetGSTInvoice(int userId) =>
             Ok(await this._gstinvoiceRepository.GetGSTInvoice(userId));
-
-        [HttpGet]
-        [Route("Download/{invoiceId}")]
-        public async Task<IActionResult> Download(int invoiceId)
+        [HttpPost]
+        [Route("BulkDownload")]
+        public ActionResult BulkDownload([FromBody] BulkInvoices bulkInvoices)
         {
-            if (invoiceId <= 0)
-                return Ok("Invalid Invoice Id");
+            string[] DownloadIds = bulkInvoices.invoiceIds.Select(id => id.ToString()).ToArray();
+            MemoryStream outputMemStream = new MemoryStream();
+            ZipOutputStream zipStream = new ZipOutputStream(outputMemStream);
 
-            string fileName;
-            string invoiceHtml;
-            bool applyDigitalSignature;
-            bool isHeaderFooter;
-            string QRImageText;
-            string QRImageBase64 = "";
-            string dateToDs;
+            zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
+            byte[] bytes = null;
 
-            DataSet ds = GetInvoiceData(invoiceId);
+            // loops through the PDFs I need to create
 
-            invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
-            fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
+            foreach (var invoicedetails in DownloadIds)
+            {
+                string[] idetails = invoicedetails.Split('|');
+                int invoiceId = Convert.ToInt32(idetails[0]);
+                //string companyCode = idetails[1];
+                //string payPeriod = idetails[2];
+                string fileName;
+                string invoiceHtml;
+                bool applyDigitalSignature;
+                bool isHeaderFooter;
+                string QRImageText;
+                string QRImageBase64 = "";
+                string dateToDs;
+                bool isIRNGenerated;
 
-            invoiceHtml = invoiceHtml.Replace("[QR_Image_Text]", QRImageBase64);
+                DataSet ds = GetInvoiceData(Convert.ToInt32(invoiceId));
 
-            byte[] pdf = GetInvoicePdf(invoiceHtml, fileName);
+                invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
+                fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
+                applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
+                                        && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
+                isHeaderFooter = ds.Tables[0].Columns.Contains("IsHeaderFooter")
+                                 && Convert.ToBoolean(ds.Tables[0].Rows[0]["IsHeaderFooter"]);
+                isIRNGenerated = ds.Tables[0].Columns.Contains("IRN")
+                           && Convert.ToBoolean(ds.Tables[0].Rows[0]["IRN"]);
+                QRImageText = ds.Tables.Count > 1 && ds.Tables[1].Columns.Contains("QR_Image_Text")
+                              ? ds.Tables[1].Rows[0]["QR_Image_Text"].ToString()
+                              : "";
 
-            string dirPath = _configuration["GstInvoiceForOtherApp"].ToString();
+                if (!string.IsNullOrEmpty(QRImageText))
+                    QRImageBase64 = GenerateQRCodeBase64String(QRImageText);
 
-            byte[] fileBytes = DownloadToFolder(pdf, dirPath, fileName);
+                invoiceHtml = invoiceHtml.Replace("[QR_Image_Text]", QRImageBase64);
 
-            return File(fileBytes, "application/pdf", fileName);
+                dateToDs = ds.Tables[1].Rows[0]["date_to_ds"].ToString();
+                var newEntry = new ZipEntry(fileName);
+                newEntry.DateTime = DateTime.Now;
+
+                zipStream.PutNextEntry(newEntry);
+
+                byte[] pdf = GetInvoicePdf(invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, fileName);
+
+                string dirPath = _configuration["CertificatePath"].ToString();
+
+                byte[] fileBytes = DownloadToFolder(pdf, dirPath, fileName);
+                MemoryStream inStream = new MemoryStream(fileBytes);
+                StreamUtils.Copy(inStream, zipStream, new byte[4096]);
+                inStream.Close();
+                zipStream.CloseEntry();
+
+            }
+
+            zipStream.IsStreamOwner = false;    // False stops the Close also Closing the underlying stream.
+            zipStream.Close();          // Must finish the ZipOutputStream before using outputMemStream.
+
+            outputMemStream.Position = 0;
+
+            return File(outputMemStream.ToArray(), "application/octet-stream", "Invoices.zip");
         }
 
-
-        public static byte[] DownloadToFolder(byte[] byteToWrite, string dirPath, string fileName)
+        private byte[] GetInvoicePdf(string invoiceHtml, string dateToDs, bool applyDigitalSignature = false, bool IsHeaderFooter = false, bool isIRNGenerated = false, string fileName = default(string))
         {
             try
             {
-                if (!Directory.Exists(dirPath))
-                    Directory.CreateDirectory(dirPath);
+                HtmlToPdf converter = new HtmlToPdf();
+                string certPath = _configuration["CertificatePath"].ToString();
+                string signapi = _configuration["SignApiUrl"].ToString();
+                
+                string watermarkText = _configuration["WatermarkText"].ToString();
 
-                string fullPath = Path.Combine(dirPath, fileName);
+                if (IsHeaderFooter == true)
+                {
+                    string FilePath = _configuration["PDFHeaderImg"].ToString();
+                    string PDFFootertext = _configuration["PDFFootertext"].ToString();
 
-                if (System.IO.File.Exists(fullPath))
-                    System.IO.File.Delete(fullPath);
+                    string imgFile = System.IO.Path.Combine(FilePath);
+                    // header settings
+                    converter.Options.DisplayHeader = true;
+                    converter.Header.DisplayOnFirstPage = true;
+                    converter.Header.DisplayOnOddPages = true;
+                    converter.Header.DisplayOnEvenPages = true;
+                    converter.Header.Height = 80;
+                    // create image element from file path with real image size
+                    PdfImageSection headerHtml = new PdfImageSection(500, 0, 80, imgFile);
+                    converter.Header.Add(headerHtml);
+                    // header settings
+                    converter.Options.DisplayFooter = true;
+                    converter.Footer.DisplayOnFirstPage = true;
+                    converter.Footer.DisplayOnOddPages = true;
+                    converter.Footer.DisplayOnEvenPages = true;
+                    converter.Footer.Height = 80;
+                    //HttpUtility.HtmlDecode
+                    string Footertext = HttpUtility.HtmlDecode(PDFFootertext).ToString();
+                    PdfHtmlSection footerHtml = new PdfHtmlSection(50, 0, Footertext, string.Empty);
+                    footerHtml.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
+                    converter.Footer.Add(footerHtml);
+                }
 
-                System.IO.File.WriteAllBytes(fullPath, byteToWrite);
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(invoiceHtml);
+                byte[] pdf = doc.Save();
+                doc.Close();
+                string pfxFile = Path.Combine(certPath, "Certificate.pfx");
+                string pfxPassword = "Pradeep@123";
 
-                return byteToWrite;
+                if (isIRNGenerated == false)
+                {
+                    pdf = DigitalSignature.AddSingleDiagonalWatermark(pdf, watermarkText, fontSize: 35, transparency: 35);
+                }
+                // string tempPdfPath = Path.Combine(Path.GetTempPath(), "temp.pdf");
+                //System.IO.File.WriteAllBytes(tempPdfPath, pdf);
+
+                // // 4. Sign PDF using PFX
+
+                //pdf = DigitalSignature.SignPdfDocument(pdf, pfxFile, pfxPassword,
+                //   reason: "Approved",
+                //   location: "Chennai",
+                //   contactInfo: "qa@example.com");
+
+
+
+                if (applyDigitalSignature)
+
+                {
+
+                    // pdf = DocumentSigner.DigitallySignPDFFileAdvanced(pdf, certPath, dateToDs);
+
+
+                    Task<byte[]> task = Task.Run(async () => await CallSignApi(signapi, certPath, dateToDs, pdf));
+
+                    pdf = task.Result;
+
+
+                }
+                return pdf;
             }
-            catch
+            catch { return null; }
+        }
+
+
+        public async Task<Byte[]> CallSignApi(string url, string certPath, string dsDate, byte[] pdfBytes)
+        {
+            var request = new
             {
-                return null;
+                PdfBase64 = Convert.ToBase64String(pdfBytes),
+                CertPath = certPath,
+                DsToDate = dsDate,
+                //WaterMarkImagePath=watermarkImagePath
+            };
+
+            string jsonString = JsonConvert.SerializeObject(request);
+            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json")
+                );
+
+                // TLS 1.2
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
+                HttpResponseMessage response = await httpClient.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
+                byte[] signedPdfBytes = await response.Content.ReadAsByteArrayAsync();
+                return signedPdfBytes;
+            }
+        }
+        private string GenerateQRCodeBase64String(string qrcodeText)
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrcodeText, QRCodeGenerator.ECCLevel.Q);
+                using (QRCode qrCode = new QRCode(qrCodeData))
+                using (Bitmap qrBitmap = qrCode.GetGraphic(20))
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    qrBitmap.Save(ms, ImageFormat.Png);
+                    return Convert.ToBase64String(ms.ToArray());
+                }
             }
         }
 
@@ -95,70 +245,74 @@ namespace QPay.API.Controller.Invoice
             return (ds);
         }
 
-        private byte[] GetInvoicePdf(string invoiceHtml, string fileName = default(string))
+        public static byte[] DownloadToFolder(byte[] byteToWrite, string dirPath, string fileName)
         {
-            HtmlToPdf converter = new HtmlToPdf();
-
-            PdfDocument doc = converter.ConvertHtmlString(invoiceHtml);
-
-            byte[] pdf = doc.Save();
-
-            doc.Close();
-
-            return pdf;
-        }
-
-
-        [HttpPost]
-        [Route("BulkDownload")]
-        public ActionResult BulkDownload([FromBody] BulkInvoices bulkInvoices)
-        {
-            string[] DownloadIds = bulkInvoices.invoiceIds.Select(id => id.ToString()).ToArray();
-            MemoryStream outputMemStream = new MemoryStream();
-            ZipOutputStream zipStream = new ZipOutputStream(outputMemStream);
-
-            zipStream.SetLevel(3);
-            byte[] bytes = null;
-
-            foreach (var invoicedetails in DownloadIds)
+            try
             {
-                string[] idetails = invoicedetails.Split('|');
-                string invoiceId = idetails[0];
-                string fileName;
-                string invoiceHtml;
-                bool applyDigitalSignature;
-                bool isHeaderFooter;
-                string QRImageText;
-                string QRImageBase64 = "";
-                string dateToDs;
+                if (!Directory.Exists(dirPath))
+                    Directory.CreateDirectory(dirPath);
 
-                DataSet ds = GetInvoiceData(Convert.ToInt32(invoiceId));
+                string fullPath = System.IO.Path.Combine(dirPath, fileName);
 
-                invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
-                fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
-                var newEntry = new ZipEntry(fileName);
-                newEntry.DateTime = DateTime.Now;
+                if (System.IO.File.Exists(fullPath))
+                    System.IO.File.Delete(fullPath);
 
-                zipStream.PutNextEntry(newEntry);
+                System.IO.File.WriteAllBytes(fullPath, byteToWrite);
 
-                byte[] pdf = GetInvoicePdf(invoiceHtml, fileName);
-
-                string dirPath = _configuration["GstInvoiceForOtherApp"].ToString();
-
-                byte[] fileBytes = DownloadToFolder(pdf, dirPath, fileName);
-                MemoryStream inStream = new MemoryStream(fileBytes);
-                StreamUtils.Copy(inStream, zipStream, new byte[4096]);
-                inStream.Close();
-                zipStream.CloseEntry();
+                return byteToWrite; // No need to re-read
             }
-
-            zipStream.IsStreamOwner = false;    // False stops the Close also Closing the underlying stream.
-            zipStream.Close();          // Must finish the ZipOutputStream before using outputMemStream.
-
-            outputMemStream.Position = 0;
-
-            return File(outputMemStream.ToArray(), "application/octet-stream", "Invoices.zip");
+            catch
+            {
+                return null;
+            }
         }
+        [EnableCors("CorsPolicy")]
+        [HttpGet]
+        [Route("Download/{invoiceId}")]
+        public async Task<IActionResult> Download(int invoiceId)
+        {
+            if (invoiceId <= 0)
+                return BadRequest("Invalid Invoice Id");
+
+            string fileName;
+            string invoiceHtml;
+            bool applyDigitalSignature;
+            bool isHeaderFooter;
+            string QRImageText;
+            string QRImageBase64 = "";
+            string dateToDs;
+            bool isIRNGenerated;
+
+            DataSet ds = GetInvoiceData(invoiceId);
+
+            invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
+            fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
+            applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
+                                    && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
+            isHeaderFooter = ds.Tables[0].Columns.Contains("IsHeaderFooter")
+                             && Convert.ToBoolean(ds.Tables[0].Rows[0]["IsHeaderFooter"]);
+            isIRNGenerated = ds.Tables[0].Columns.Contains("IRN")
+                             && Convert.ToBoolean(ds.Tables[0].Rows[0]["IRN"]);
+            QRImageText = ds.Tables.Count > 1 && ds.Tables[1].Columns.Contains("QR_Image_Text")
+                          ? ds.Tables[1].Rows[0]["QR_Image_Text"].ToString()
+                          : "";
+
+            if (!string.IsNullOrEmpty(QRImageText))
+                QRImageBase64 = GenerateQRCodeBase64String(QRImageText);
+
+            invoiceHtml = invoiceHtml.Replace("[QR_Image_Text]", QRImageBase64);
+
+            dateToDs = ds.Tables[1].Rows[0]["date_to_ds"].ToString();
+
+            byte[] pdf = GetInvoicePdf(invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, fileName);
+            var stream = new MemoryStream(pdf);
+            stream.Position = 0;
+
+            return File(stream, "application/pdf", fileName);
+
+         
+        }
+
 
         [HttpPost]
         [Route("PostCancelReject")]

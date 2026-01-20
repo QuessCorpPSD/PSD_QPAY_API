@@ -1,6 +1,4 @@
-﻿
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
@@ -15,42 +13,51 @@ using System.Text;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-//LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
+/* ============================
+   LOGGING (NLog)
+============================ */
 var logger = LogManager.Setup()
-    .LoadConfigurationFromFile("nlog.config") // Loads from project root
+    .LoadConfigurationFromFile("nlog.config")
     .GetCurrentClassLogger();
+
+/* ============================
+   CONTROLLERS & JSON
+============================ */
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter("dd-MM-yyyy hh:mm:ss tt"));
+        options.JsonSerializerOptions.Converters
+            .Add(new DateTimeConverter("dd-MM-yyyy hh:mm:ss tt"));
     });
-//builder.Logging.ClearProviders();
-//builder.Logging.AddConsole();            // Logs to console
-//builder.Logging.AddDebug();              // Logs to Visual Studio Output window
-//builder.Logging.AddEventLog();
 
-// Optional: set minimum log level
-//builder.Logging.SetMinimumLevel(LogLevel.Information);
-// Access IConfiguration from the builder
+/* ============================
+   CONFIG & SERVICES
+============================ */
 IConfiguration configuration = builder.Configuration;
+
 builder.Services.AddConfig(configuration);
-builder.Services.AddControllers();
 builder.Services.AddSingleton<DbRepository>();
 builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
-//builder.Services.AddTransient<ILoginRepository, LoginRepository>();
-
 builder.Services.AddServices();
 builder.Services.AddHttpContextAccessor();
-
-
-
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddMemoryCache();
+SelectPdf.GlobalProperties.LicenseKey = builder.Configuration["SelectPdfLicenseKey"];
+/* ============================
+   JWT AUTHENTICATION
+============================ */
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
+
+var jwtSettings = builder.Configuration
+    .GetSection("JwtSettings")
+    .Get<JwtSettings>();
+
+builder.Services.AddSingleton(jwtSettings);
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -67,12 +74,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
 
-        // Optional: log reason for failure
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
             {
-                Console.WriteLine("Token failed: " + context.Exception.Message);
+                Console.WriteLine("❌ Token failed: " + context.Exception.Message);
                 return Task.CompletedTask;
             },
             OnTokenValidated = context =>
@@ -82,85 +88,71 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
 builder.Services.AddAuthorization();
 
+/* ============================
+   CORS (ANGULAR)
+============================ */
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy",
-        builder => builder
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        );
+    options.AddPolicy("CorsPolicy", policy =>
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    );
 });
+
+/* ============================
+   FILE UPLOAD LIMIT
+============================ */
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 1073741824; // 1 GB = 1024 * 1024 * 1024 bytes
+    options.MultipartBodyLengthLimit = 1073741824; // 1 GB
 });
-// Add services to the container.
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-builder.Services.AddSingleton(jwtSettings);
+
+/* ============================
+   BUILD APP
+============================ */
 var app = builder.Build();
-//app.UseMiddleware<ValidationJwtMiddleware>();
+
+/* ============================
+   MIDDLEWARE PIPELINE
+============================ */
+
+app.UseHttpsRedirection();
+
 app.UseStaticFiles();
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFi`leProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "ReimbursementPolicyUploads")),
-//    RequestPath = "/ReimbursementPolicyUploads",
-//    ServeUnknownFileTypes = true,
-//    DefaultContentType = "application/octet-stream"
-//});
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "GST_Certificate")),
-//    RequestPath = "/GST_Certificate",
-//    ServeUnknownFileTypes = true,
-//    DefaultContentType = "application/octet-stream"
-//});
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "SEZ_Certificate")),
-//    RequestPath = "/SEZ_Certificate",
-//    ServeUnknownFileTypes = true,
-//    DefaultContentType = "application/octet-stream"
-//});
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "LUT_Certificate")),
-//    RequestPath = "/LUT_Certificate",
-//    ServeUnknownFileTypes = true,
-//    DefaultContentType = "application/octet-stream"
-//});
+
 app.UseRouting();
+
+/* ✅ CORS MUST BE HERE */
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+/* Optional Response Wrapper */
+app.UseMiddleware<WrapperResponse>();
+
+/* ============================
+   CONTROLLERS
+============================ */
 app.MapControllers();
 
-app.UseMiddleware<WrapperResponse>();
-app.UseCors("CorsPolicy");
-app.MapFallbackToFile("index.html");
-app.UseHttpsRedirection();
-//app.UseExceptionHandler(errorApp =>
-//{
-//    errorApp.Run(async context =>
-//    {
-//        context.Response.StatusCode = 500;
-//        context.Response.ContentType = "application/json";
+/* ============================
+   ROUTING
+============================ */
+app.MapControllerRoute(
+    name: "default",
+    pattern: "api/{controller}/{action}/{id?}");
 
-//        var error = context.Features.Get<IExceptionHandlerPathFeature>();
-//        if (error != null)
-//        {
-//            await context.Response.WriteAsync(JsonSerializer.Serialize(new
-//            {
-//                error = error.Error.Message
-//            }));
-//        }
-//    });
-//});
+app.MapFallbackToFile("index.html");
+
+/* ============================
+   NO-CACHE HEADERS
+============================ */
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -170,6 +162,7 @@ app.UseStaticFiles(new StaticFileOptions
         ctx.Context.Response.Headers.Append("Expires", "0");
     }
 });
+
 app.Use(async (context, next) =>
 {
     context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
@@ -179,9 +172,4 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "api/{controller}/{action}/{id?}");
 app.Run();
-
-

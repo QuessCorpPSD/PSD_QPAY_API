@@ -29,6 +29,11 @@ namespace QPay.UI.Common
         public int mapNameId { get; set; }
         public string mapName { get; set; } = string.Empty;
     }
+    public class CityName
+    {
+        public int City_Id { get; set; }
+        public string City_Name { get; set; } = string.Empty;
+    }
     public class InputTypeDD
     {
         public int inputId { get; set; }
