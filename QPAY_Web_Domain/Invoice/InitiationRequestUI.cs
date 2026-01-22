@@ -86,4 +86,59 @@ namespace QPay.UI.Invoice
         public int? InvoiceType { get; set; }
         public string ActionType { get; set; } = "";
     }
+
+    public class InvoiceDetailModel
+    {
+        public int? InvoiceType { get; set; }
+        public string ActionType { get; set; } = "";
+        public int? userId { get; set; }
+    }
+
+    public class InvoiceDashboardDto
+    {
+        //public int? SerialNo { get; set; }
+        //public string? ReqNo { get; set; }
+        //public string? CompanyCode { get; set; }
+        //public string? PayPeriod { get; set; }
+        //public string? MapName { get; set; }
+
+        //public int? EmployeeHeadCount { get; set; }
+        //public decimal? NetCTC { get; set; }
+        //public decimal? NetPay { get; set; }
+
+        //public string? InvoiceCategory { get; set; }
+        //public string? InvoiceType { get; set; }
+        //public string? StateName { get; set; }
+
+        //public string? RequestedBy { get; set; }
+        //public string? RequestedDate { get; set; }
+
+        //public string? InitiationRemarks { get; set; }
+        //public string? AssignedTo { get; set; }
+
+        //public string? RejectedOn { get; set; }
+        //public string? RejectedBy { get; set; }
+
+        //public string? InvoiceCreatedOn { get; set; }
+
+        public int? Serial_No { get; set; }
+        public string Req_No { get; set; } = "";
+        public string Company_Code { get; set; } = "";
+        public string Pay_Period { get; set; } = "";
+        public string Map_name { get; set; } = "";
+        public int? Employee_Head_Count { get; set; }
+        public string Net_CTC { get; set; } = "";
+        public string NetPay { get; set; } = "";
+        public string Invoice_Category { get; set; } = "";
+        public string Invoice_Type { get; set; } = "";
+        public string State_name { get; set; } = "";
+        public int? RequestedBy { get; set; }
+        public string RequestedDate { get; set; } = "";
+        public string Initiation_Remarks { get; set; } = "";
+        public string AssignedTo { get; set; } = "";
+        public string Rejected_On { get; set; } = "";
+        public string Rejected_By { get; set; } = "";
+        public string InvoiceCreatedOn { get; set; } = "";
+    }
+
 }
