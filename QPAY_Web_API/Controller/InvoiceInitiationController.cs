@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QPay.API.Extensions;
 using QPay.API.LoggerService;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
@@ -41,6 +42,24 @@ namespace QPay.API.Controller
             var invoicesearch = await this._invoiceInitiationRepository.InitiationSearch(initiationRequestModel);
             return Ok(invoicesearch);
         }
+
+        [HttpPost, Route("InitiationSearchAllot")]
+        public async Task<IActionResult> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel)
+      {
+            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
+            return Ok(invoicesearch);
+        }
+
+        [HttpPost]
+        [Route("GetAllInvoiceAllotDetails")]
+        public async Task<IActionResult> GetAllInvoiceAllotDetails(InvoiceDetailModel invoiceDetailModel)
+        {
+            var ds = await this._invoiceInitiationRepository.GetAllInvoiceAllotDetails(invoiceDetailModel);
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+
+
         [HttpPost, Route("InitiationSearchExport")]
         public async Task<IActionResult> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
         {

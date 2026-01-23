@@ -86,6 +86,33 @@ namespace QPay.BAL.Repository
             return list?.ToList() ?? new List<InitiationRequestUI>();
         }
 
+        public async Task<List<InitiationRequestUI>> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel)
+        {
+            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
+            parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
+            parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);
+
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
+            return list?.ToList() ?? new List<InitiationRequestUI>();
+        }
+
+        public async Task<List<InvoiceDashboardDto>> GetAllInvoiceAllotDetails(InvoiceDetailModel invoiceDetailModel)
+        {
+            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
+            parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
+            parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);
+
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<InvoiceDashboardDto>>(res);
+            return list?.ToList() ?? new List<InvoiceDashboardDto>();
+        }
+
+
         public async Task<FileResponse> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
         {
             string storeProcedure = "[dbo].[SP_Invoice_Initiation_search]" ?? "";
