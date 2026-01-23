@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
 using QPay.DAL.Repository;
+using QPay.UI.Admin;
 using QPay.UI.Common;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
@@ -88,12 +89,16 @@ namespace QPay.BAL.Repository
 
         public async Task<List<InitiationRequestUI>> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel)
         {
+            ///Allottment
+            var param = new DynamicParameters();
+            param.Add("@UserId", invoiceDetailModel.userId);
+            var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
+
             string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
             parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
-            parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);
-
+            parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);            
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
             var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
             return list?.ToList() ?? new List<InitiationRequestUI>();
@@ -143,6 +148,7 @@ namespace QPay.BAL.Repository
 
         public async Task<InvoiceInitiationUI> InvoiceInitiate(int? TaxTypeId, string xml, string action, int userId)
         {
+            InvoiceInitiationUI invoiceInitiationUI = new InvoiceInitiationUI();
             string storeProcedure = "[dbo].[Proc_ManageGstInvoiceInitiate_Online]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@xmlInput", xml ?? (object)DBNull.Value);
@@ -150,11 +156,25 @@ namespace QPay.BAL.Repository
             parameter.Add("@CreatedBy", userId);
             try
             {
-                var res = await _dbRepository.GetItemsAsync<InvoiceInitiationUI>(storeProcedure, parameter);
-                return res?.FirstOrDefault() ?? new InvoiceInitiationUI
+                var res =await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+                if(res!=null)
                 {
-                    Error_Message = "GST Invoice not Initiated" //string.Empty
-                };
+                    var invoice= JsonConvert.DeserializeObject<List<InvoiceInitiationUI>>(res).FirstOrDefault();
+                    if(invoice.Error_Message == "GST Invoice Initiated Successfully")
+                    {
+                        var param=new DynamicParameters();
+                        param.Add("@UserId", userId);
+                        var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", parameter);
+                    }
+                    return invoice;
+                }
+                else
+                {
+                    invoiceInitiationUI.Error_Message = "Invoice Geneated falied";
+                    return invoiceInitiationUI;
+                }
+               
+
             }
             catch(Exception ex)
             {
