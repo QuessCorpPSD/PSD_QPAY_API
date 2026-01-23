@@ -10,6 +10,7 @@ namespace QPay.UI.Invoice
     public class InitiationRequestUI
     {
         public int? Serial_No {  get; set; }
+        public string? Req_No { get; set; } = "";
         public int? Company_Id { get; set; }
         public int? Pay_Period_Id { get; set; }
         public  int? Employee_Id { get; set; }
@@ -96,31 +97,6 @@ namespace QPay.UI.Invoice
 
     public class InvoiceDashboardDto
     {
-        //public int? SerialNo { get; set; }
-        //public string? ReqNo { get; set; }
-        //public string? CompanyCode { get; set; }
-        //public string? PayPeriod { get; set; }
-        //public string? MapName { get; set; }
-
-        //public int? EmployeeHeadCount { get; set; }
-        //public decimal? NetCTC { get; set; }
-        //public decimal? NetPay { get; set; }
-
-        //public string? InvoiceCategory { get; set; }
-        //public string? InvoiceType { get; set; }
-        //public string? StateName { get; set; }
-
-        //public string? RequestedBy { get; set; }
-        //public string? RequestedDate { get; set; }
-
-        //public string? InitiationRemarks { get; set; }
-        //public string? AssignedTo { get; set; }
-
-        //public string? RejectedOn { get; set; }
-        //public string? RejectedBy { get; set; }
-
-        //public string? InvoiceCreatedOn { get; set; }
-
         public int? Serial_No { get; set; }
         public string Req_No { get; set; } = "";
         public string Company_Code { get; set; } = "";

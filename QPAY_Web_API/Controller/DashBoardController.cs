@@ -89,5 +89,12 @@ namespace QPay.API.Controller
 
             return Ok(fileResponse);
         }
+
+        [HttpGet, Route("SaveInvoiceAllotEdit/{reqNo}/{userId}")]
+        public async Task<IActionResult> SaveInvoiceAllotEdit(string reqNo,int userId)
+        {
+            var status = await this._dashboardRepository.SaveInvoiceAllotEdit(reqNo, userId);
+            return Ok(status);
+        }
     }
 }

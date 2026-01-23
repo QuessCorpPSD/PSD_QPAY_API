@@ -14,5 +14,6 @@ namespace QPay.BAL.IRepository
         DashboardUI GetAllottedLotsByUserId(int userId);
         Task<List<LotAllottmentPendingUI>> GetLotAllottmentPendings();
         Task<List<DashBoardCompledtedUI>> GetInputLotDetail(DashboardRequestModel dashboardRequestModel);
+        Task<string> SaveInvoiceAllotEdit(string reqNo, int userId);
     }
 }

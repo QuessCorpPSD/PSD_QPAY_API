@@ -80,5 +80,21 @@ namespace QPay.BAL.Repository
             }
             return dashboardUI;
         }
+
+        public async Task<string> SaveInvoiceAllotEdit(string refNo, int userId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@RefNo", refNo);
+            parameters.Add("@UserId", userId);
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_InvoiceAllotEdit", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+        }
     }
 }
