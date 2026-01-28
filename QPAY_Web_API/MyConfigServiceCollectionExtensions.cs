@@ -188,6 +188,11 @@ namespace QPay.API
 
             #endregion
 
+            #region Dependencies Input Aggregator (Depdency Injection) 
+            services.AddScoped<IInputAggregatorRepository, InputAggregatorRepository>();
+
+            #endregion
+
         }
     }
 
