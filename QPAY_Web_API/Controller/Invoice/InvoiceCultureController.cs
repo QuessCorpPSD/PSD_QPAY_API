@@ -59,25 +59,49 @@ namespace QPay.API.Controller.Invoice
             return Ok(response);
         }
 
-        [HttpGet, Route("GetMapNameByService/{companyId}")]
-        public async Task<IActionResult> GetMapNameByService(int companyId)
-        {
-            var response = await _InvoiceCulture.GetMapNameByService(companyId);
-            return Ok(response);
-        }
+        //[HttpGet, Route("GetMapNameByService/{companyId}")]
+        //public async Task<IActionResult> GetMapNameByService(int companyId)
+        //{
+        //    var response = await _InvoiceCulture.GetMapNameByService(companyId);
+        //    if (response.Tables[0].Rows.Count > 0)
+        //    {
+        //        var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+        //        return Ok(_outputResponse);
+        //    }
+        //    else
+        //    {
+        //        return Ok(new { StatusCode = "400", Message = "No Paycode Assigned to this Company" });
+        //    }
+        //}
 
         [HttpGet, Route("GetAllPayCodeFromCompany/{companyId}")]
         public async Task<IActionResult> GetAllPayCodeFromCompany(int companyId)
         {
             var response = await _InvoiceCulture.GetAllPayCodeFromCompany(companyId);
-            return Ok(response);
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No Paycode Assigned to this Company" });
+            }
         }
 
         [HttpGet, Route("GetAllPayCodeFromCompanyOI/{companyId}")]
         public async Task<IActionResult> GetAllPayCodeFromCompanyOI(int companyId)
         {
             var response = await _InvoiceCulture.GetAllPayCodeFromCompanyOI(companyId);
-            return Ok(response);
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No Paycode Assigned to this Company" });
+            }
         }
 
         //Proc_GetAllPayCodeFromCompanyOtherincomePayCode
