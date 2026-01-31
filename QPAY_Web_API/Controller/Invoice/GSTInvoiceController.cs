@@ -1,13 +1,16 @@
-﻿using ClosedXML.Excel;
+﻿using Azure;
+using ClosedXML.Excel;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QPay.API.Extensions;
 using QPay.API.LoggerService;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
+using QPay.UI.Invoice;
 using QPay.UI.Models.Invoice;
 using QRCoder;
 using SelectPdf;
@@ -427,5 +430,150 @@ namespace QPay.API.Controller.Invoice
         public async Task<IActionResult> GetGSTNetDeductionType() =>
            Ok(await this._gstinvoiceRepository.GetGSTNetDeductionType());
 
+        [HttpPost, Route("GetAllInvoiceCancelDetails")]
+        public async Task<IActionResult> GetAllInvoiceCancelDetails([FromBody] CancelRequest request)
+        {
+            var ds = await this._gstinvoiceRepository.GetAllInvoiceCancelDetails(request.Company_Id, request.PayPeriod_Id);
+
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+        [HttpPost, Route("BulkApproveInvoice")]
+        public async Task<IActionResult> BulkApproveInvoice([FromBody] InvoiceCancelApprovalRequest request)
+        {
+            // Call repository
+            var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
+
+            // Only process credit note IRNs for SUCCESS invoices from backend
+            if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
+            {
+                string bulkInvoiceIds = string.Join(",", ds.CreditnoteInvoices.InvoiceIds);
+
+                // Prepare payload for credit note IRN generation
+                var invoiceDetails = InitiateCreditNoteIRN(bulkInvoiceIds, request.userId);
+
+                string JsonString = JsonConvert.SerializeObject(invoiceDetails);
+
+                try
+                {
+                    await CallFynamicsAPIForCreditNote(JsonString, bulkInvoiceIds, request.userId);
+                }
+                catch (Exception ex)
+                {
+                    // Log error, mark partial success
+                    _logger.LogError(ex + "Credit note API call failed");
+                    ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
+                    ds.Message += " | Credit note API call failed";
+                }
+            }
+
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+
+
+        public async Task<EInvoiceCancel> InitiateCreditNoteIRN(
+    string invoiceIds,
+    string userId)
+        {
+            return await _gstinvoiceRepository.GetEInvoiceData(
+                invoiceIds,
+                userId,
+                "GetEInvoiceCreditNoteData"
+            );
+        }
+
+        public async Task<string> CallFynamicsAPIForCreditNote(
+        string jsonString,
+        string invoiceIds,
+        string userId)
+        {
+            string message = "";
+
+            try
+            {
+                string responseText = "";
+                int statusCode;
+                string responseMessage = "";
+                string responseXml = "";
+
+                string batchApiLink = _configuration["BatchApiLink"];
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Accept
+                        .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // TLS 1.2
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                    // ⚠️ Only if required (not recommended for prod)
+                    ServicePointManager.ServerCertificateValidationCallback =
+                        delegate { return true; };
+
+                    var httpContent = new StringContent(
+                        jsonString,
+                        Encoding.UTF8,
+                        "application/json");
+
+                    var httpResponse = await httpClient.PostAsync(batchApiLink, httpContent);
+
+                    statusCode = (int)httpResponse.StatusCode;
+                    responseMessage = httpResponse.ReasonPhrase;
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        responseText = await httpResponse.Content.ReadAsStringAsync();
+
+                        // Convert JSON → XML
+                        var xmlDoc = JsonConvert.DeserializeXmlNode(responseText, "Response");
+                        responseXml = xmlDoc?.InnerXml ?? "";
+                    }
+                    else
+                    {
+                        responseText = "Connection Failure";
+                    }
+                    message = await SaveBatchResponse(
+                        statusCode,
+                        responseMessage,
+                        responseText,
+                        responseXml,
+                        invoiceIds,
+                        "CreditNoteSaveBatchResponse",
+                        userId);
+                }
+            }
+            catch (Exception ex)
+            {
+                message = $"CallFynamicsAPI Error: {ex.Message}";
+            }
+
+            return message;
+        }
+
+        public async Task<string> SaveBatchResponse(
+     int statusCode,
+     string responseMessage,
+     string response,
+     string responseXml,
+     string invoiceIds,
+     string mode,
+     string userId)
+        {
+            var message = await _gstinvoiceRepository.SaveBatchResponse(
+                statusCode,
+                responseMessage,
+                response,
+                responseXml,
+                invoiceIds,
+                mode,
+                userId
+            );
+
+            return message;
+        }
+
+
     }
 }
+

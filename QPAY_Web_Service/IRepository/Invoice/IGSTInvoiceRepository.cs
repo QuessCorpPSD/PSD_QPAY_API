@@ -1,4 +1,5 @@
-﻿using QPay.UI.Models.Invoice;
+﻿using QPay.UI.Invoice;
+using QPay.UI.Models.Invoice;
 using System.Data;
 
 namespace QPay.BAL.IRepository.Invoice
@@ -14,5 +15,11 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<BillingTypeUI>> GetGSTBillableType();
         Task<List<CtcDeductionUI>> GetGSTCtcDeductionType();
         Task<List<NewDeductionUI>> GetGSTNetDeductionType();
+        Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriod);
+        Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
+        Task<EInvoiceCancel> GetEInvoiceData(string invoiceIds, string UserId, string Action);
+        Task<string> SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
+
+
     }
 }

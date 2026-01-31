@@ -1,10 +1,14 @@
-﻿using Dapper;
+﻿using Azure;
+using Azure.Core;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
 using QPay.UI.Common;
+using QPay.UI.Invoice;
+using QPay.UI.Models;
 using QPay.UI.Models.Invoice;
 using System;
 using System.Collections.Generic;
@@ -16,6 +20,7 @@ using System.Threading.Tasks;
 namespace QPay.BAL.Repository.Invoice
 {
     public class GSTInvoiceRepository : IGSTInvoiceRepository
+
     {
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _config;
@@ -330,5 +335,385 @@ namespace QPay.BAL.Repository.Invoice
                 return new List<NewDeductionUI>();
             }
         }
+        public async Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriodId)
+        {
+
+
+            string storeProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@Action", "GetInvoiceCancelDetails");
+            parameter.Add("@Company_Id", companyId);
+            parameter.Add("@Pay_Period_Id", payPeriodId);
+
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<InvoiceCancelGrid>();
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<InvoiceCancelGrid>>(res);
+                return list?.ToList() ?? new List<InvoiceCancelGrid>();
+            }
+            catch (JsonException ex)
+            {
+                return new List<InvoiceCancelGrid>();
+            }
+        }
+        public async Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request)
+        {
+            var response = new InvoiceCancelResponse();
+
+            try
+            {
+                if (request?.invoice_Id == null || !request.invoice_Id.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No invoices selected";
+                    return response;
+                }
+
+                string storeProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]";
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@Action", "GetIrnCancellationData");
+                parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
+                parameter.Add("@Company_Id", request.CompanyId);
+                parameter.Add("@Pay_Period_Id", request.PayPeriodId);
+                parameter.Add("@QzoneUserId", request.userId);
+
+                var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+                if (string.IsNullOrWhiteSpace(res))
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No response from database";
+                    return response;
+                }
+
+                var invoiceResults = JsonConvert.DeserializeObject<List<InvoiceCancelResult>>(res);
+
+                if (invoiceResults == null || !invoiceResults.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No invoices processed";
+                    return response;
+                }
+
+                response.InvoiceResults = invoiceResults;
+
+                // ✅ Only include backend-approved Invoice IDs for credit note
+                foreach (var result in invoiceResults)
+                {
+                    if (result.Status?.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        response.CreditnoteInvoices.InvoiceIds.Add(result.Invoice_Id);
+                    }
+                }
+
+                // Failed invoices
+                var failedInvoices = invoiceResults
+                    .Where(x => x.Status?.Equals("FAILED", StringComparison.OrdinalIgnoreCase) == true)
+                    .ToList();
+
+                if (failedInvoices.Any() && response.CreditnoteInvoices.InvoiceIds.Any())
+                {
+                    response.Status = "PARTIAL_SUCCESS";
+                    response.Message = "Some invoices failed: " +
+                        string.Join(" | ", failedInvoices.Select(x => $"Invoice {x.Invoice_No}: {x.Error_Message}"));
+                }
+                else if (failedInvoices.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = string.Join(" | ", failedInvoices.Select(x => $"Invoice {x.Invoice_No}: {x.Error_Message}"));
+                }
+                else
+                {
+                    response.Status = "SUCCESS";
+                    response.Message = "Invoices approved successfully";
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Status = "FAILED";
+                response.Message = "Error while approving invoices: " + ex.Message;
+                return response;
+            }
+        }
+
+
+        Task<List<GstInvoiceGrid>> IGSTInvoiceRepository.GetGSTInvoice(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        DataSet IGSTInvoiceRepository.GetInvoiceData(int invoiceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> IGSTInvoiceRepository.PostCancelReject(string xmlString, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        //Task<string> IGSTInvoiceRepository.Create(GstInvoiceCreateRequest request)
+        //{
+        //    throw new NotImplementedException();
+        //}  
+
+
+        public async Task<List<EInvoiceCancel>> GetEInvoiceData(
+    string invoiceIds,
+    string userId,
+    string action)
+        {
+            var result = new EInvoiceCancel
+            {
+                docs = new List<Docs>()
+            };
+
+            string storedProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", action ?? string.Empty, DbType.String, ParameterDirection.Input);
+            parameters.Add("@QzoneUserId", userId ?? string.Empty, DbType.String, ParameterDirection.Input);
+            parameters.Add("@InvoiceIds", invoiceIds ?? string.Empty, DbType.String, ParameterDirection.Input);
+
+            try
+            {
+                // Call the repository and get a wrapped response
+                var res = await _dbRepository.GetItemsAsync(storedProcedure, parameters);
+
+                if (string.IsNullOrWhiteSpace(res))
+                    return null;
+
+                try
+                {
+                    var response = JsonConvert.DeserializeObject<List<EInvoiceCancel>>(res);
+                    //return response.ToList();
+
+                    foreach (var item in response)
+                    {
+
+                        var header = item;
+
+                    result.client_id = Convert.ToString(header.client_id);
+                    result.client_hash = Convert.ToString(header.client_hash);
+                    result.pan = Convert.ToString(header.pan);
+                    result.ip_addr = Convert.ToString(header.ip_addr);
+                    result.file_type = Convert.ToString(header.file_type);
+
+                    // ---------------------------
+                    // Group by Invoice / Doc_No
+                    // ---------------------------
+                    foreach (var grp in item.GroupBy(r => r.Doc_No))
+                    {
+                        var first = grp.First();
+                        var docs = new Docs();
+
+                        #region Version
+                        docs.Version = Convert.ToString(first.Version);
+                        #endregion
+
+                        #region Transaction Details
+                        docs.TranDtls = new TranDtls
+                        {
+                            Tran_TaxSch = Convert.ToString(first.Tran_TaxSch),
+                            Tran_SupTyp = Convert.ToString(first.Tran_SupTyp),
+                            Tran_RegRev = Convert.ToString(first.Tran_RegRev),
+                            Tran_Typ = Convert.ToString(first.Tran_Typ),
+                            Tran_Ecmgstin = Convert.ToString(first.Tran_Ecmgstin),
+                            Tran_IgstOnIntra = Convert.ToString(first.Tran_IgstOnIntra)
+                        };
+                        #endregion
+
+                        #region Document Details
+                        docs.DocDtls = new DocDtls
+                        {
+                            Doc_Typ = Convert.ToString(first.Doc_Typ),
+                            Doc_No = Convert.ToString(first.Doc_No),
+                            Doc_Dt = Convert.ToString(first.Doc_Dt),
+                            Doc_FY = Convert.ToString(first.Doc_FY)
+                        };
+                        #endregion
+
+                        #region Seller Details
+                        docs.SellerDtls = new SellerDtls
+                        {
+                            Seller_Gstin = Convert.ToString(first.Seller_Gstin),
+                            Seller_LglNm = Convert.ToString(first.Seller_LglNm),
+                            Seller_TrdNm = Convert.ToString(first.Seller_TrdNm),
+                            Seller_Addr1 = Convert.ToString(first.Seller_Addr1),
+                            Seller_Addr2 = Convert.ToString(first.Seller_Addr2),
+                            Seller_Loc = Convert.ToString(first.Seller_Loc),
+                            Seller_Pin = Convert.ToInt32(first.Seller_Pin),
+                            Seller_Stcd = Convert.ToInt32(first.Seller_Stcd),
+                            Seller_Ph = Convert.ToInt64(first.Seller_Ph),
+                            Seller_Em = Convert.ToString(first.Seller_Em)
+                        };
+                        #endregion
+
+                        #region Buyer Details
+                        docs.BuyerDtls = new BuyerDtls
+                        {
+                            Buyer_GSTIN = Convert.ToString(first.Buyer_GSTIN),
+                            Buyer_LglNm = Convert.ToString(first.Buyer_LglNm),
+                            Buyer_TrdNm = Convert.ToString(first.Buyer_TrdNm),
+                            Buyer_POS = Convert.ToString(first.Buyer_POS),
+                            Buyer_Addr1 = Convert.ToString(first.Buyer_Addr1),
+                            Buyer_Addr2 = Convert.ToString(first.Buyer_Addr2),
+                            Buyer_Loc = Convert.ToString(first.Buyer_Loc),
+                            Buyer_Pin = Convert.ToInt32(first.Buyer_Pin),
+                            Buyer_Stcd = Convert.ToInt32(first.Buyer_Stcd),
+                            Buyer_Ph = Convert.ToInt64(first.Buyer_Ph),
+                            Buyer_Em = Convert.ToString(first.Buyer_Em)
+                        };
+                        #endregion
+
+                        #region Dispatch + Shipping
+                        docs.DispDtls = new DispDtls
+                        {
+                            Dispatch_Fr_Nm = Convert.ToString(first.Dispatch_Fr_Nm),
+                            Dispatch_Fr_Addr1 = Convert.ToString(first.Dispatch_Fr_Addr1),
+                            Dispatch_Fr_Addr2 = Convert.ToString(first.Dispatch_Fr_Addr2),
+                            Dispatch_Fr_Loc = Convert.ToString(first.Dispatch_Fr_Loc),
+                            Dispatch_Fr_Pin = Convert.ToInt32(first.Dispatch_Fr_Pin),
+                            Dispatch_Fr_Stcd = Convert.ToInt32(first.Dispatch_Fr_Stcd),
+                            Dispatch_Fr_Ph = Convert.ToInt64(first.Dispatch_Fr_Ph),
+                            Dispatch_Fr_Em = Convert.ToString(first.Dispatch_Fr_Em)
+                        };
+
+                        docs.ShipDtls = new ShipDtls
+                        {
+                            Ship_To_Gstin = Convert.ToString(first.Ship_To_Gstin),
+                            Ship_To_LglNm = Convert.ToString(first.Ship_To_LglNm),
+                            Ship_To_TrdNm = Convert.ToString(first.Ship_To_TrdNm),
+                            Ship_To_Addr1 = Convert.ToString(first.Ship_To_Addr1),
+                            Ship_To_Addr2 = Convert.ToString(first.Ship_To_Addr2),
+                            Ship_To_Loc = Convert.ToString(first.Ship_To_Loc),
+                            Ship_To_Pin = Convert.ToInt32(first.Ship_To_Pin),
+                            Ship_To_Stcd = Convert.ToInt32(first.Ship_To_Stcd),
+                            Ship_To_Ph = Convert.ToInt64(first.Ship_To_Ph),
+                            Ship_To_Em = Convert.ToString(first.Ship_To_Em)
+                        };
+                        #endregion
+
+                        #region Item Details
+                        docs.ItemList = new List<ItemList>();
+
+                        foreach (var row in grp)
+                        {
+                            var item = new ItemList
+                            {
+                                Item_SlNo = Convert.ToInt32(row.Item_SlNo),
+                                Item_PrdDesc = Convert.ToString(row.Item_PrdDesc),
+                                Item_IsServc = Convert.ToString(row.Item_IsServc),
+                                Item_HsnCd = Convert.ToString(row.Item_HsnCd),
+                                Item_Qty = Convert.ToInt32(row.Item_Qty),
+                                Item_Unit = Convert.ToString(row.Item_Unit),
+                                Item_TotItemVal = Convert.ToString(row.Item_TotItemVal),
+                                Ref11 = Convert.ToString(row.Ref11),
+                                Ref12 = Convert.ToString(row.Ref12),
+                                Ref13 = Convert.ToString(row.Ref13),
+                                Ref14 = Convert.ToString(row.Ref14),
+                                Ref15 = Convert.ToString(row.Ref15),
+                                AttribDtls = new List<AttribDtls>(),
+                                BchDtls = new List<BchDtls>()
+                            };
+
+                            item.AttribDtls.Add(new AttribDtls
+                            {
+                                Attrib_SlNo = Convert.ToInt32(row.Attrib_SlNo),
+                                Attrib_Nm = Convert.ToString(row.Attrib_Nm),
+                                Attrib_Val = Convert.ToString(row.Attrib_Val)
+                            });
+
+                            item.BchDtls.Add(new BchDtls
+                            {
+                                Bch_SlNo = Convert.ToInt32(row.Bch_SlNo),
+                                Bch_Nm = Convert.ToString(row.Bch_Nm),
+                                Bch_ExpDt = Convert.ToString(row.Bch_ExpDt),
+                                Bch_WrDt = Convert.ToString(row.Bch_WrDt)
+                            });
+
+                            docs.ItemList.Add(item);
+                        }
+                        #endregion
+
+                        #region Value / Pay / Ref / EWB / CustomRefs
+                        docs.ValDtls = new ValDtls
+                        {
+                            Doc_TotInvVal = Convert.ToString(first.Doc_TotInvVal)
+                        };
+
+                        docs.PayDtls = new PayDtls
+                        {
+                            Payee_Nm = Convert.ToString(first.Payee_Nm)
+                        };
+
+                        docs.RefDtls = new RefDtls
+                        {
+                            Ref_InvRmk = Convert.ToString(first.Ref_InvRmk)
+                        };
+
+                        docs.EwbDtls = new EwbDtls
+                        {
+                            Ewb_TransID = Convert.ToString(first.Ewb_TransID)
+                        };
+
+                        docs.CustomRefs = new CustomRefs
+                        {
+                            Ref01 = Convert.ToString(first.Ref01)
+                        };
+                        #endregion
+
+                        result.docs.Add(docs);
+                    }
+                }
+
+
+            
+            catch (JsonException ex)
+            {
+                // Optional: log the error for debugging
+                Console.Error.WriteLine($"JSON Deserialization error: {ex.Message}");
+                return null;
+            }
+        }
+            return result;
+        }
+
+
+        public async Task<string> SaveBatchResponse(
+     int statusCode,
+     string responseMessage,
+     string response,
+     string responseXml,
+     string invoiceIds,
+     string mode,
+     string userId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = mode,
+                ["@StatusCode"] = statusCode,
+                ["@ResponseMessage"] = responseMessage,
+                ["@Response"] = response,
+                ["@XmlData"] = responseXml,
+                ["@InvoiceIds"] = invoiceIds,
+                ["@QzoneUserId"] = userId
+            };
+
+            return await _dbRepository.GetItemsAsync(
+                "Proc_ManageEInvoice_NewUI",
+                parameters
+            );
+        }
+
     }
 }
