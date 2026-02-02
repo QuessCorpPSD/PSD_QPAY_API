@@ -35,12 +35,18 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageReference Include="NLog" Version="6.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.2" />
+	  <PackageReference Include="Select.HtmlToPdf.NetCore" Version="25.2.0" />
+	  <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\QPay_Web_Data\QPay.DAL.csproj" />
     <ProjectReference Include="..\QPAY_Web_Domain\QPay.UI.csproj" />
     <ProjectReference Include="..\QPAY_Web_Service\QPay.BAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controller\Separation\" />
   </ItemGroup>
 
 </Project>

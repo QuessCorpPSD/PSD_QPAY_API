@@ -6,14 +6,21 @@ namespace QPAY_Web_API.Models
     {
        public HttpStatusCode StatusCode { get; set; }
 
-        public bool Message { get; set; } 
+        public string Message { get; set; } 
 
         public object Data { get; set; } = new object();
 
         public ErrorDetails Error { get; set; } = new ErrorDetails();
 
+        //public APIResponses(HttpStatusCode statusCode, string message, object data, ErrorDetails error)
+        //{
+        //    StatusCode = statusCode;
+        //    Message = message;
+        //    Data = data;
+        //    Error = error;
+        //}
 
-        public APIResponses(HttpStatusCode statusCode, bool message, object data, ErrorDetails error)
+        public APIResponses(HttpStatusCode statusCode, string message, object data, ErrorDetails error)
         {
             StatusCode=statusCode;
             Message=message;

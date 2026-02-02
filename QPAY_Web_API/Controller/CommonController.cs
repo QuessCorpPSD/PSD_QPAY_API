@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Common;
-using QPay.BAL.Repository.Common;
 
 namespace QPay.API.Controller
 {
@@ -17,19 +16,22 @@ namespace QPay.API.Controller
         private readonly IAccesstypeRepository _accesstypeRepository;
         private readonly IFinancialYearRepository _financialYearRepository;
         private readonly IAdminDashboardRepository _adminDashboardRepository;
+        private readonly ICommonRepository _icompanyCode;
 
         public CommonController(
             IRoleRepository roleRepository,
             IProcessCategoryRepository processCategoryRepository,
             IAccesstypeRepository accesstypeRepository,
             IFinancialYearRepository financialYearRepository,
-            IAdminDashboardRepository adminDashboardRepository)
+            IAdminDashboardRepository adminDashboardRepository,
+            ICommonRepository icompanyCode)
         {
             _roleRepository = roleRepository;
             _processCategoryRepository = processCategoryRepository;
             _accesstypeRepository = accesstypeRepository;
             _financialYearRepository = financialYearRepository;
             _adminDashboardRepository = adminDashboardRepository;
+            _icompanyCode = icompanyCode;
         }
 
         [HttpGet, Route("GetAllPayperiod/{companyId}")]
@@ -70,5 +72,75 @@ namespace QPay.API.Controller
         [HttpGet, Route("GetFinancialYear")]
         public async Task<IActionResult> GetFinancialYear() =>
          Ok(await this._financialYearRepository.GetFinancialYears());
+
+        //[HttpGet, Route("GetAllCompanyCode/{userId}")]
+        //public async Task<IActionResult> GetAllCompanyCode(int userId)
+        //{
+        //    var response = await _icompanyCode.GetallCompanyCodes(userId);
+
+        //    return Ok(response);
+        //}
+
+        [HttpGet, Route("GetMapNamebyCompany/{companyId}")]
+        public async Task<IActionResult> GetMapNamebyCompany(int companyId)
+        {
+            var response = await _icompanyCode.GetMapNamebyCompany(companyId);
+
+            return Ok(response);
+        }
+        [HttpGet, Route("GetAllInputType")]
+        public async Task<IActionResult> GetAllInputType()
+        {
+            var result = await _icompanyCode.GetAllInputType();
+
+            return Ok(result);
+        }
+        [HttpPost, Route("GetLotwisePSDStatus")]
+        public async Task<IActionResult> GetLotwisePSDStatus([FromForm] int companyId, [FromForm] int payPeriodId, [FromForm] int lotNumber, [FromForm] string Payroll_Input_Type)
+        {
+
+            var response = await _icompanyCode.GetLotwisePSDStatus(companyId, payPeriodId, lotNumber, Payroll_Input_Type);
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetSitesByCompanyId/{companyId}")]
+        public async Task<IActionResult> GetSitesByCompanyId(int companyId)
+        {
+            var response = await _icompanyCode.GetSitesByCompanyId(companyId);
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetCityByCompanyCode/{CompanyCode}/{Group_Id}")]
+        public async Task<IActionResult> GetCityByCompanyCode(string CompanyCode, int Group_Id)
+        {
+            var response = await _icompanyCode.GetCityByCompanyCode(CompanyCode, Group_Id);
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetPayPeriod")]
+        public async Task<IActionResult> GetPayPeriod()
+        {
+            var response = await _icompanyCode.GetPayPeriod();
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetPaycodes")]
+        public async Task<IActionResult> GetPaycodes()
+        {
+            var response = await _icompanyCode.GetPaycodes();
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetAllState")]
+        public async Task<IActionResult> GetAllState()
+        {
+            var state = await this._icompanyCode.GetAllState();
+            return Ok(state);
+        }
+
     }
 }
