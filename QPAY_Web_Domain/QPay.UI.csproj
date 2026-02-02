@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\InvoiceInitiationUI.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="System.Data.OleDb" Version="10.0.2" />
   </ItemGroup>
 
 </Project>

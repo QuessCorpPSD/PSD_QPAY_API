@@ -1,5 +1,6 @@
 ﻿using QPay.UI.Invoice;
 using QPay.UI.Models;
+using QPay.UI.Models.Invoice;
 
 namespace QPay.API.Models
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QPay.UI.Models
+namespace QPay.UI.Models.Invoice
 {
     public class InvoiceInitiationUI
     {

@@ -46,4 +46,8 @@
     <ProjectReference Include="..\QPAY_Web_Service\QPay.BAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controller\Separation\" />
+  </ItemGroup>
+
 </Project>

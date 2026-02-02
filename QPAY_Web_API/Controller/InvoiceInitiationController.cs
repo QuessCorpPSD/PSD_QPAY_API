@@ -7,6 +7,7 @@ using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
+using QPay.UI.Models.Invoice;
 
 namespace QPay.API.Controller
 {
@@ -69,7 +70,7 @@ namespace QPay.API.Controller
         [HttpPost, Route("InvoiceInitiate")]
         public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
         {
-            string xml = XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
+            string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
             var result = await _invoiceInitiationRepository.InvoiceInitiate(
           request.TaxTypeId,
           xml,

@@ -1,6 +1,7 @@
 ﻿using QPay.API.Models;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
+using QPay.UI.Models.Invoice;
 using System;
 using System.Collections.Generic;
 using System.Data;
