@@ -23,6 +23,7 @@ using ICSharpCode.SharpZipLib.Core;
 using QPay.UI.Models.Invoice;
 using ClosedXML.Excel;
 using QPay.BAL.IRepository.Common;
+using Microsoft.AspNetCore.Cors;
 
 
 namespace QPay.API.Controller.Invoice
