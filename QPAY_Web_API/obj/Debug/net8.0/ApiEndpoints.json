@@ -59,6 +59,37 @@
   },
   {
     "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetAllManager",
+    "RelativePath": "api/Admin/GetAllManager/{roleId}/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetAllUser",
+    "RelativePath": "api/Admin/GetAllUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
     "Method": "GetEmployeeBreak",
     "RelativePath": "api/Admin/GetEmployeeBreak",
     "HttpMethod": "POST",
@@ -68,6 +99,70 @@
       {
         "Name": "employeeBreakRequest",
         "Type": "QPay.API.Models.EmployeeBreakRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetEmployeeByUserId",
+    "RelativePath": "api/Admin/GetEmployeeByUserId/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetManagerByUserId",
+    "RelativePath": "api/Admin/GetManagerByUserId/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "GetTeamLeader",
+    "RelativePath": "api/Admin/GetTeamLeader/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AdminController",
+    "Method": "SwapCategory",
+    "RelativePath": "api/Admin/SwapCategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "swapCategoryUI",
+        "Type": "QPay.UI.Admin.SwapCategoryUI",
         "IsRequired": true
       }
     ],
@@ -158,6 +253,38 @@
   },
   {
     "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "AllottmentRevokDetail",
+    "RelativePath": "api/Assignment/AllottmentRevokDetail/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "AssignmentRevok",
+    "RelativePath": "api/Assignment/AssignmentRevok",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "allotmentRevok",
+        "Type": "QPay.UI.Models.AllotmentRevok",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
     "Method": "AutoAllomentByUserId",
     "RelativePath": "api/Assignment/AutoAllomentByUserId/{userId}",
     "HttpMethod": "GET",
@@ -167,6 +294,22 @@
       {
         "Name": "userId",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.AssignmentController",
+    "Method": "AutoQCLotVerify",
+    "RelativePath": "api/Assignment/AutoQCLotVerify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lotStatusrequestModel",
+        "Type": "QPay.UI.Models.QCApprovedRequest",
         "IsRequired": true
       }
     ],
@@ -459,6 +602,16 @@
   },
   {
     "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
+    "Method": "GetAllUser",
+    "RelativePath": "api/Authendicate/GetAllUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPAY_Web_API.Controller.AuthendicateController",
     "Method": "GetData",
     "RelativePath": "api/Authendicate/GetData",
     "HttpMethod": "GET",
@@ -616,6 +769,38 @@
   },
   {
     "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetAllCompanyCodes",
+    "RelativePath": "api/Common/GetAllCompanyCode/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetAllPayperiod",
+    "RelativePath": "api/Common/GetAllPayperiod/{companyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "companyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
     "Method": "GetAllProcessCategory",
     "RelativePath": "api/Common/GetAllProcessCategory",
     "HttpMethod": "GET",
@@ -626,12 +811,44 @@
   },
   {
     "ContainingType": "QPay.API.Controller.CommonController",
+    "Method": "GetCurrentPayperiod",
+    "RelativePath": "api/Common/GetCurrentPayperiod/{companyId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "companyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.CommonController",
     "Method": "GetFinancialYear",
     "RelativePath": "api/Common/GetFinancialYear",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "CategoryLotDetail",
+    "RelativePath": "api/DashBoard/CategoryLotDetail/{assignmentType}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "assignmentType",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -688,6 +905,16 @@
   },
   {
     "ContainingType": "QPay.API.Controller.DashBoardController",
+    "Method": "GetPendingLotDetail",
+    "RelativePath": "api/DashBoard/GetPendingLotDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.DashBoardController",
     "Method": "GetPendingLot",
     "RelativePath": "api/DashBoard/PendingLot",
     "HttpMethod": "GET",
@@ -714,6 +941,96 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "ExportToExcel",
+    "RelativePath": "api/InvoiceInitiation/ExportToExcel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestModel",
+        "Type": "QPay.API.Models.InvoiceSearchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "GetTaxTypes",
+    "RelativePath": "api/InvoiceInitiation/GetTaxTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "InitiationSearch",
+    "RelativePath": "api/InvoiceInitiation/InitiationSearch",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "initiationRequestModel",
+        "Type": "QPay.UI.Invoice.InitiationRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "InitiationSearchExport",
+    "RelativePath": "api/InvoiceInitiation/InitiationSearchExport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "initiationRequestModel",
+        "Type": "QPay.UI.Invoice.InitiationRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "InvoiceInitiate",
+    "RelativePath": "api/InvoiceInitiation/InvoiceInitiate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QPay.API.Models.InvoiceInitiateRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QPay.API.Controller.InvoiceInitiationController",
+    "Method": "Search",
+    "RelativePath": "api/InvoiceInitiation/Search",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "QPay.API.Models.InvoiceSearchRequest",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
