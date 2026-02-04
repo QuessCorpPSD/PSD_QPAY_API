@@ -21,12 +21,13 @@ namespace QPay.BAL.IRepository
         Task<DataSet> QuessAttributeMaster();
         Task<DataSet> ClientAttributes(int? companyId);
         Task<DataSet> Search(int? companyId);
+        Task<DataSet> billableReport(int? companyId, int? payPeriodId);
 
         Task<RequestResponse> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy);
 
         Task<RequestResponse> AttributesMappingUpload(IFormFile file, [FromForm] string CreatedBy);
 
-        Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy);
+        Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId);
 
     }
 }

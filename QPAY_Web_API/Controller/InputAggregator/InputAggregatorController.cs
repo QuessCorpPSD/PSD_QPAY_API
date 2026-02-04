@@ -95,13 +95,29 @@ namespace QPay.API.Controller.InputAggregator
 
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string CreatedBy)
+        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
         {
             if (file == null || file.Length == 0)
                 return Ok("File is missing.");
 
-            var result = await _IRepository.Upload(file, CreatedBy);
+            var result = await _IRepository.Upload(file, CreatedBy, CompanyId);
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("billableReport/{companyId}/{payPeriodId}")]
+        public async Task<IActionResult> billableReport(int? companyId, int? payPeriodId)
+        {
+            var response = await _IRepository.billableReport(companyId, payPeriodId);
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
         }
 
         #endregion for billing report generation

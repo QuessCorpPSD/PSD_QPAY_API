@@ -297,7 +297,7 @@ namespace QPay.BAL.Repository
             return dataSet;
         }
 
-        public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy)
+        public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
         {
             RequestResponse poDetails = new RequestResponse();
 
@@ -332,33 +332,52 @@ namespace QPay.BAL.Repository
                     poDetails.response = "Excel sheet is empty or not formatted correctly.";
                     return poDetails;
                 }
-                DataSet dscolumns = new DataSet();
-                foreach (DataTable dt in ds.Tables)
-                {
-                    DataTable newTable = dt.Clone();
+                //DataSet dscolumns = new DataSet();
+                //foreach (DataTable dt in ds.Tables)
+                //{
+                //    DataTable newTable = dt.Clone();
 
-                    if (dt.Rows.Count > 0)
-                        newTable.ImportRow(dt.Rows[0]);
+                //    if (dt.Rows.Count > 0)
+                //        newTable.ImportRow(dt.Rows[0]);
 
-                    dscolumns.Tables.Add(newTable);
-                }
+                //    dscolumns.Tables.Add(newTable);
+                //}
 
                 DataTable dtToSerilize = new DataTable();
                 dtToSerilize = ds.Tables[0];
 
+                // List<string> columnValues = dtToSerilize.AsEnumerable().Select(r => r.Field<string>("Remittance_DimCWSFinClientInvoice_InvoiceNumber0Grouping")).ToList();
+                List<string> selectedColumns = GetSelectedColumns(); // your logic
+
+                DataTable result = new DataTable();
+
+                foreach (string col in selectedColumns)
+                {
+                    result.Columns.Add(col, dtToSerilize.Columns[col].DataType);
+                }
+
+                foreach (DataRow row in dtToSerilize.Rows)
+                {
+                    DataRow newRow = result.NewRow();
+                    foreach (string col in selectedColumns)
+                    {
+                        newRow[col] = row[col];
+                    }
+                    result.Rows.Add(newRow);
+                }
+                DataSet dscolumns = new DataSet();
+                dscolumns.Tables.Add(result);
                 // Convert DataTable to XML
                 using var xmlWriter = new StringWriter();
-                using var xmlWriter2 = new StringWriter();
 
-                ds.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
-                dscolumns.WriteXml(xmlWriter2, XmlWriteMode.IgnoreSchema);
+                dscolumns.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
                 string xmlInput = xmlWriter.ToString();
-                string xmlInput2 = xmlWriter2.ToString();
 
-                string storeProcedure = "";
+                string storeProcedure = @"Proc_Upload_InputAggregator";
                 var parameters = new DynamicParameters();
                 parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@CreatedBy", CreatedBy);
+                parameters.Add("@Company_Id", CompanyId);
                 var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
@@ -367,7 +386,7 @@ namespace QPay.BAL.Repository
                         var resultList = JsonConvert.DeserializeObject<List<ResponseModel>>(res);
                         var message = resultList?.FirstOrDefault()?.Error_Message ?? string.Empty;
                         if (!string.IsNullOrWhiteSpace(message) &&
-                            message.Contains("Row(s) Uploaded Successfully."))
+                            message.Contains("Successfully"))
                         {
                             poDetails.response = message;
                         }
@@ -394,6 +413,31 @@ namespace QPay.BAL.Repository
                 poDetails.response = "File not found";
             }
             return poDetails;
+        }
+
+        public List<string> GetSelectedColumns()
+        {
+            // Implement your logic to get the list of selected columns
+            return new List<string>
+            {
+               "Remittance_DimCWSFinClientInvoice_InvoiceNumber0Grouping",
+                "details_DimCWSFinAssignment_AssignmentNumber_WithOutLink",
+                "details_DimCWSFinMiscFee_TransactionNumber",
+                "details_WeekStarting_DimCWSFinDateView_ActualDate",
+                "details_WeekEnding_DimCWSFinDateView_ActualDate",
+                "details_FactCWSFinAssignmentRegister_InvoicedGrossFormatted"
+            };
+        }
+
+
+        public async Task<DataSet> billableReport(int? companyId, int? payPeriodId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Company_Id"] = companyId,
+                ["@Pay_Period_Id"] = payPeriodId,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Search_billabledays_Upload", parameters, 1500);
         }
 
     }
