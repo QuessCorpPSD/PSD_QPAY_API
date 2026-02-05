@@ -19,6 +19,7 @@ using static Azure.Core.HttpHeader;
 namespace QPay.BAL.Repository.Invoice
 {
     public class InvoiceInitiationRepository : IInvoiceInitiationRepository
+
     {
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _config;
@@ -71,7 +72,17 @@ namespace QPay.BAL.Repository.Invoice
             //    Error_Message = string.Empty
             //};
         }
+        public async Task<List<RemarksResponse>> getRemarksByReqNo(string? ReqNo)
+        {
+            string storeProcedure = "[dbo].[sp_GetAllRemarksByReqNo]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@ReqNo", ReqNo ?? (object)DBNull.Value);
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<RemarksResponse>>(res);
+            return list?.ToList() ?? new List<RemarksResponse>();
+        }
 
+        
 
         public async Task<List<InitiationRequestUI>> InitiationSearch(InitiationRequestModel initiationRequestModel)
         {
@@ -207,6 +218,15 @@ namespace QPay.BAL.Repository.Invoice
             }
 
             return fileResponse;
+        }
+        public async Task<List<RemarksResponse>> getRemarksByReqNo(RequestModel requestModel)
+        {
+            string storeProcedure = "[dbo].[sp_GetAllRemarksByReqNo]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@ReqNo", requestModel.Req_No);
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<RemarksResponse>>(res);
+            return list?.ToList() ?? new List<RemarksResponse>();
         }
     }
 }

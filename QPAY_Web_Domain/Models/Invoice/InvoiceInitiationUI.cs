@@ -156,6 +156,22 @@ namespace QPay.UI.Models.Invoice
         public int? userId { get; set; }
     }
 
+    public class RequestModel
+    {
+        public string Req_No { get; set; } = "";
+    }
+
+    public class RemarksResponse
+    {
+        public string Req_No { get; set; } = "";
+        public string Invoice_remarks { get; set; } = "";
+
+        public string Remarks_GivenBy { get; set; } = "";
+        public string InvoiceType { get; set; } = "";
+        public string Time { get; set; } = "";
+    }
+
+
     public class InvoiceDashboardDto
     {
         public int? Serial_No { get; set; }
