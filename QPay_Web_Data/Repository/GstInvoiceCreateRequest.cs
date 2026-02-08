@@ -110,4 +110,11 @@ namespace QPay.DAL.Repository
         public string? CALCRG { get; set; }
         public string? CALRT { get; set; }
     }
-}
+
+    public class GstInvoiceEditRequest
+    {
+        public string? Action { get; set; }
+        public string? UserId { get; set; }
+        public string? Invoice_Id { get; set; }
+    }
+    }

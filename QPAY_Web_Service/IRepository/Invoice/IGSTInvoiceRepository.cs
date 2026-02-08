@@ -22,5 +22,11 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<BillingTypeUI>> GetGSTBillableType();
         Task<List<CtcDeductionUI>> GetGSTCtcDeductionType();
         Task<List<NewDeductionUI>> GetGSTNetDeductionType();
+        Task<List<GetGstRateUI>> GetGstRates(GetGstRateRequest request);
+        Task<string> GetParticulars(SendRequest request);
+        Task<string> GetInvoiceStatus(InvoiceStatusUI request);
+        Task<List<PayPeriodUI>> GetPayPeriod(PayPeriodRequest request);
+        Task<string> Edit(GstInvoiceEditRequest request);
+
     }
 }

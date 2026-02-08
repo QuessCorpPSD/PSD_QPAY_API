@@ -143,12 +143,19 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
-        [HttpGet, Route("GetAllState/{CompanyId}")]
-        public async Task<IActionResult> GetAllState(int CompanyId)
+        [HttpGet, Route("GetAllState")]
+        public async Task<IActionResult> GetAllState()
         {
-            var state = await this._icompanyCode.GetAllState(CompanyId);
+            var state = await this._icompanyCode.GetAllState();
             return Ok(state);
         }
+        [HttpGet, Route("GetClientGstStateList/{companyId}")]
+        public async Task<IActionResult> GetClientGstStateList(int companyId)
+        {
+            var state = await this._icompanyCode.GetClientGstStateList(companyId);
+            return Ok(state);
+        }
+        
 
     }
 }
