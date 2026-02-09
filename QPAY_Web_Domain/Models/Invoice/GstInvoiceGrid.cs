@@ -99,6 +99,55 @@ namespace QPay.UI.Models.Invoice
     }
 
 
+    public class GetGstRateUI
+    {
+        public decimal CGST_Percentage { get; set; } = 0;
+        public decimal SGST_Percentage { get; set; } = 0;
+        public decimal UTGST_Percentage { get; set; } = 0;
+        public decimal IGST_Percentage { get; set; } = 0;
+    }
+
+    public class GetGstRateRequest
+    {
+        public string Company_Id { get; set; } = string.Empty;
+       
+        public string Cost_Center_Mapping_Id { get; set; } = string.Empty;
+        public string Group_Detail_id { get; set; } = string.Empty;
+        public string StateId { get; set; } = string.Empty;
+        public string Invoice_Date { get; set; } = string.Empty;
+        public string Invoice_Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        
+    }
+    public class SendRequest
+    {
+        public string Company_Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+
+    }
+
+    public class InvoiceStatusUI
+    {
+        public string Action { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string Invoice_Id { get; set; } = string.Empty;
+
+    }
+
+    public class PayPeriodRequest
+    {
+        public string Company_Id { get; set; } = string.Empty;
+        public string Financial_Year_Id { get; set; } = string.Empty;
+
+    }
+
+    public class PayPeriodUI
+    {
+        public string Pay_Frequency_Detail_Id { get; set; } = string.Empty;
+        public string Pay_Period { get; set; } = string.Empty;
+
+    }
+
     //public class GstInvoiceCreateRequest
     //{
     //    public string? Action { get; set; }

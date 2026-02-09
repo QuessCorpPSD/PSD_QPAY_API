@@ -1,29 +1,30 @@
 ﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
+using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.API.LoggerService;
+using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
+using QPay.DAL.Repository;
+using QPay.UI.Models.Invoice;
 using QPay.UI.Models.Invoice;
 using QRCoder;
 using SelectPdf;
 using System.Data;
 using System.Drawing;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
-using System.Drawing.Imaging;
-using System.Drawing;
 using System.Web;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Core;
-using QPay.UI.Models.Invoice;
-using ClosedXML.Excel;
-using QPay.BAL.IRepository.Common;
-using Microsoft.AspNetCore.Cors;
 
 
 namespace QPay.API.Controller.Invoice
@@ -416,14 +417,17 @@ namespace QPay.API.Controller.Invoice
             var response = await _gstinvoiceRepository.Create(request);
             return Ok(response);
         }
-
+       
         [HttpGet, Route("GetGSTInvoiceType")]
         public async Task<IActionResult> GetGSTInvoiceType() =>
     Ok(await this._gstinvoiceRepository.GetGSTInvoiceType());
 
-        [HttpGet, Route("GetGSTBillableType")]
+        [HttpPost, Route("GetGSTBillableType")]
         public async Task<IActionResult> GetGSTBillable_Type() =>
            Ok(await this._gstinvoiceRepository.GetGSTBillableType());
+        [HttpPost, Route("GetInvoiceStatus")]
+        public async Task<IActionResult> GetInvoiceStatus(InvoiceStatusUI request) =>
+       Ok(await this._gstinvoiceRepository.GetInvoiceStatus(request));
 
         [HttpGet, Route("GetGSTCtcDeductionType")]
         public async Task<IActionResult> GetGSTCtcDeductionType() =>
@@ -432,6 +436,34 @@ namespace QPay.API.Controller.Invoice
         [HttpGet, Route("GetGSTNetDeductionType")]
         public async Task<IActionResult> GetGSTNetDeductionType() =>
            Ok(await this._gstinvoiceRepository.GetGSTNetDeductionType());
+       
+        [HttpPost, Route("GetGstRates")]
+        public async Task<IActionResult> GetGstRates(GetGstRateRequest request) =>
+      Ok(await this._gstinvoiceRepository.GetGstRates(request));
+
+
+        [HttpPost, Route("GetParticulars")]
+        public async Task<IActionResult> GetParticulars(SendRequest request) =>
+     Ok(await this._gstinvoiceRepository.GetParticulars(request));
+
+        [HttpPost, Route("GetPayPeriod")]
+        public async Task<IActionResult> GetPayPeriod(PayPeriodRequest request) =>
+  Ok(await this._gstinvoiceRepository.GetPayPeriod(request));
+
+
+        [HttpPost, Route("Edit")]
+        public async Task<IActionResult> Edit(GstInvoiceEditRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _gstinvoiceRepository.Edit(request);
+
+            if (response == null)
+                return NotFound("Invoice not found");
+
+            return Ok(response);
+        }
 
     }
 }

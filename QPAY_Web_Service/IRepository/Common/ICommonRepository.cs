@@ -21,8 +21,10 @@ namespace QPay.BAL.IRepository.Common
         Task<List<UI.Common.City>> GetCityByCompanyCode(string CompanyCode, int Group_Id);
         Task<List<AllPayperiod>> GetPayPeriod();
         Task<List<Paycodes>> GetPaycodes();
-        Task<List<StateUI>> GetAllState(int companyId);
+        Task<List<StateUI>> GetAllState();
         Task<List<CityUI>> GetCityByStateId(int stateId);
         Task<List<CityName>> GetAutoEntityLocation(int CompanyId);
+        Task<List<StateResponse>> GetClientGstStateList(int companyId);
+        
     }
 }

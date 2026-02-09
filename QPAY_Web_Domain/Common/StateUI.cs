@@ -31,4 +31,11 @@ namespace QPay.UI.Common
         
 
     }
-}
+    public class StateResponse
+    {
+        public int? StateId { get; set; }
+
+        public string State_Name { get; set; } = "";
+    }
+
+    }

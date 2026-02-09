@@ -141,7 +141,7 @@ namespace QPay.IRepository.Repository.Common
             return new List<AllPayperiod>();
         }
 
-        public async Task<List<StateUI>> GetAllState(int companyid)
+        public async Task<List<StateUI>> GetAllState()
         {
             string storeProcedure = "[dbo].[sp_GetAllStates]" ?? "";
             var parameter = new DynamicParameters();
@@ -163,6 +163,32 @@ namespace QPay.IRepository.Repository.Common
                 // log the error if you have logging available
                 // _logger.LogError(ex, "Failed to deserialize POQuantityUI response");
                 return new List<StateUI>();
+            }
+
+        }
+        public async Task<List<StateResponse>> GetClientGstStateList(int companyid)
+        {
+            string storeProcedure = "[dbo].[Proc_ManageClientGst]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@CompanyId", companyid);
+            parameter.Add("@Action", "Get");
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<StateResponse>(); // return empty object if no result
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<StateResponse>>(res);
+                return list?.ToList() ?? new List<StateResponse>();
+            }
+            catch (JsonException ex)
+            {
+                // log the error if you have logging available
+                // _logger.LogError(ex, "Failed to deserialize POQuantityUI response");
+                return new List<StateResponse>();
             }
 
         }

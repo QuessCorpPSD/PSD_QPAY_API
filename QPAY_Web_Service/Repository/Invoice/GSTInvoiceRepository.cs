@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using Azure.Core;
+using Dapper;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
@@ -76,7 +78,7 @@ namespace QPay.BAL.Repository.Invoice
             parameters.Add("@UserId", userId);
             parameters.Add("@CreatedBy", userId);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice_newUI", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -202,6 +204,21 @@ namespace QPay.BAL.Repository.Invoice
             return "Failed";
         }
 
+        public async Task<string> Edit(GstInvoiceEditRequest request)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", request.Action);
+            parameters.Add("@UserId", request.UserId);
+            parameters.Add("@Invoice_Id", request.Invoice_Id, DbType.Int32, ParameterDirection.InputOutput);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "Failed";
+        }
 
         //public async Task<GstInvoiceCreateResponse> Create(GstInvoiceCreateRequest request)
         //{
@@ -329,6 +346,91 @@ namespace QPay.BAL.Repository.Invoice
             catch (JsonException ex)
             {
                 return new List<NewDeductionUI>();
+            }
+        }
+        public async Task<List<GetGstRateUI>> GetGstRates(GetGstRateRequest request)
+        {
+            string storeProcedure = "[dbo].[Proc_ManageGstInvoice_newUI]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@Action", "GetGstRates");
+            parameter.Add("@StateId", request.StateId);
+              parameter.Add("@Company_Id", request.Company_Id);
+            parameter.Add("@Cost_Center_Mapping_Id",request.Cost_Center_Mapping_Id);
+            parameter.Add("@Group_Detail_Id",request.Group_Detail_id);
+            parameter.Add("@Invoice_Date",request.Invoice_Date);
+            parameter.Add("@Invoice_Id", request.Invoice_Id);
+            parameter.Add("@UserId", request.UserId);
+
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<GetGstRateUI>();
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<GetGstRateUI>>(res);
+                return list?.ToList() ?? new List<GetGstRateUI>();
+            }
+            catch (JsonException ex)
+            {
+                return new List<GetGstRateUI>();
+            }
+        }
+        public async Task<string> GetParticulars(SendRequest request)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "GetParticulars");
+            parameters.Add("@Company_Id", request.Company_Id);
+            parameters.Add("@UserId", request.UserId);
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice_newUI", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+
+        }
+
+        public async Task<string> GetInvoiceStatus(InvoiceStatusUI request)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", request.Action);
+            parameters.Add("@Invoice_Id", request.Invoice_Id);
+            parameters.Add("@UserId", request.UserId);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageInvoiceStatus", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+        }
+
+        public async Task<List<PayPeriodUI>> GetPayPeriod(PayPeriodRequest request)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Company_Id", request.Company_Id);
+            parameters.Add("@Financial_Year_Id", request.Financial_Year_Id);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManagePayPeriod", parameters);
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<PayPeriodUI>();
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<PayPeriodUI>>(res);
+                return list?.ToList() ?? new List<PayPeriodUI>();
+            }
+            catch (JsonException ex)
+            {
+                return new List<PayPeriodUI>();
             }
         }
     }
