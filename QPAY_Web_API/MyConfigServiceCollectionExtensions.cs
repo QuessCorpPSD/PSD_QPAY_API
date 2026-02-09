@@ -200,7 +200,8 @@ namespace QPay.API
            
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
-            services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
+            services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>(); 
+                services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
 
         }
     }

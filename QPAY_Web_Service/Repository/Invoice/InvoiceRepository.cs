@@ -499,6 +499,32 @@ namespace QPay.BAL.Repository.Invoice
             }
             return invoiceDetails;
         }
+        public async Task<List<BillingDashboard>> BillingDashboard(int userId)
+        {
+            List<BillingDashboard> billingDashboards = new List<BillingDashboard>();
+            var parameter = new DynamicParameters();
+            parameter.Add("@UserId", userId);
+
+            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard", parameter);
+            if(res.Any())
+            {
+                billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };
+            }
+            return billingDashboards;
+        }
+
+        public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@RequestId", requestId);
+
+            var result = await _dbRepository
+                .GetItemsAsync("SP_PROC_DraftInvoice_EmployeeByRequestId", parameters);
+
+            return result != null && result.Any()
+                ? JsonConvert.DeserializeObject<DataTable>(result) ?? new DataTable()
+                : new DataTable();
+        }
 
         public async Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
            [FromForm] string payperiodId, [FromForm] string CreatedBy)

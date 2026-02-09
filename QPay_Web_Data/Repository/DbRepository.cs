@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QPay.UI.Common;
 using QPay.UI.Customer;
+using QPay.UI.Invoice;
 using QPay.UI.Models;
 using System;
 using System.Collections;
@@ -212,7 +213,307 @@ namespace QPay.DAL.Repository
                 //throw;
             }
         }
+        public EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action)
+        {
+            EInvoice getvalue = new EInvoice();
+            getvalue.docs = new List<Docs>();
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                using var command = new SqlCommand("Proc_ManageEInvoice_NewUI", connection);
 
+                command.CommandTimeout = 0;
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Action", Action);
+                command.Parameters.AddWithValue("@QzoneUserId", UserId);
+                command.Parameters.AddWithValue("@InvoiceIds", invoiceIds);
+
+                connection.Open();
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    #region API Header Details
+                    Docs getvaluedocs = new Docs();
+                    getvalue.client_id = Convert.ToString(reader["client_id"]);
+                    getvalue.client_hash = Convert.ToString(reader["client_hash"]);
+                    getvalue.pan = Convert.ToString(reader["pan"]);
+                    getvalue.ip_addr = Convert.ToString(reader["ip_addr"]);
+                    getvalue.file_type = Convert.ToString(reader["file_type"]);
+                    getvaluedocs.Version = Convert.ToString(reader["Version"]);
+                    #endregion
+
+                    #region Transaction Details
+                    TranDtls lstTranDtls = new TranDtls();
+                    lstTranDtls.Tran_TaxSch = Convert.ToString(reader["Tran_TaxSch"]);
+                    lstTranDtls.Tran_SupTyp = Convert.ToString(reader["Tran_SupTyp"]);
+                    lstTranDtls.Tran_RegRev = Convert.ToString(reader["Tran_RegRev"]);
+                    lstTranDtls.Tran_Typ = Convert.ToString(reader["Tran_Typ"]);
+                    lstTranDtls.Tran_Ecmgstin = Convert.ToString(reader["Tran_Ecmgstin"]);
+                    lstTranDtls.Tran_IgstOnIntra = Convert.ToString(reader["Tran_IgstOnIntra"]);
+                    #endregion
+
+                    #region Document Details
+                    DocDtls lstDocDtls = new DocDtls();
+                    lstDocDtls.Doc_Typ = Convert.ToString(reader["Doc_Typ"]);
+                    lstDocDtls.Doc_No = Convert.ToString(reader["Doc_No"]);
+                    lstDocDtls.Doc_Dt = Convert.ToString(reader["Doc_Dt"]);
+                    lstDocDtls.Doc_FY = Convert.ToString(reader["Doc_FY"]);
+                    #endregion
+
+                    #region Seller Details
+                    SellerDtls lstSellerDtls = new SellerDtls();
+                    lstSellerDtls.Seller_Gstin = Convert.ToString(reader["Seller_Gstin"]);
+                    lstSellerDtls.Seller_LglNm = Convert.ToString(reader["Seller_LglNm"]);
+                    lstSellerDtls.Seller_TrdNm = Convert.ToString(reader["Seller_TrdNm"]);
+                    lstSellerDtls.Seller_Addr1 = Convert.ToString(reader["Seller_Addr1"]);
+                    lstSellerDtls.Seller_Addr2 = Convert.ToString(reader["Seller_Addr2"]);
+                    lstSellerDtls.Seller_Loc = Convert.ToString(reader["Seller_Loc"]);
+                    lstSellerDtls.Seller_Pin = Convert.ToInt32(reader["Seller_Pin"]);
+                    lstSellerDtls.Seller_Stcd = Convert.ToInt32(reader["Seller_Stcd"]);
+                    lstSellerDtls.Seller_Ph = Convert.ToInt64(reader["Seller_Ph"]);
+                    lstSellerDtls.Seller_Em = Convert.ToString(reader["Seller_Em"]);
+                    #endregion
+
+                    #region Buyer Details
+                    BuyerDtls lstBuyerDtls = new BuyerDtls();
+                    lstBuyerDtls.Buyer_GSTIN = Convert.ToString(reader["Buyer_GSTIN"]);
+                    lstBuyerDtls.Buyer_LglNm = Convert.ToString(reader["Buyer_LglNm"]);
+                    lstBuyerDtls.Buyer_TrdNm = Convert.ToString(reader["Buyer_TrdNm"]);
+                    lstBuyerDtls.Buyer_POS = Convert.ToString(reader["Buyer_POS"]);
+                    lstBuyerDtls.Buyer_Addr1 = Convert.ToString(reader["Buyer_Addr1"]);
+                    lstBuyerDtls.Buyer_Addr2 = Convert.ToString(reader["Buyer_Addr2"]);
+                    lstBuyerDtls.Buyer_Loc = Convert.ToString(reader["Buyer_Loc"]);
+                    lstBuyerDtls.Buyer_Pin = Convert.ToInt32(reader["Buyer_Pin"]);
+                    lstBuyerDtls.Buyer_Stcd = Convert.ToInt32(reader["Buyer_Stcd"]);
+                    lstBuyerDtls.Buyer_Ph = Convert.ToInt64(reader["Buyer_Ph"]);
+                    lstBuyerDtls.Buyer_Em = Convert.ToString(reader["Buyer_Em"]);
+                    #endregion
+
+                    #region Dispatch Details
+                    DispDtls lstDispDtls = new DispDtls();
+                    lstDispDtls.Dispatch_Fr_Nm = Convert.ToString(reader["Dispatch_Fr_Nm"]);
+                    lstDispDtls.Dispatch_Fr_Addr1 = Convert.ToString(reader["Dispatch_Fr_Addr1"]);
+                    lstDispDtls.Dispatch_Fr_Addr2 = Convert.ToString(reader["Dispatch_Fr_Addr2"]);
+                    lstDispDtls.Dispatch_Fr_Loc = Convert.ToString(reader["Dispatch_Fr_Loc"]);
+                    lstDispDtls.Dispatch_Fr_Pin = Convert.ToInt32(reader["Dispatch_Fr_Pin"]);
+                    lstDispDtls.Dispatch_Fr_Stcd = Convert.ToInt32(reader["Dispatch_Fr_Stcd"]);
+                    lstDispDtls.Dispatch_Fr_Ph = Convert.ToInt64(reader["Dispatch_Fr_Ph"]);
+                    lstDispDtls.Dispatch_Fr_Em = Convert.ToString(reader["Dispatch_Fr_Em"]);
+                    #endregion
+
+                    #region Shipping Details
+                    ShipDtls lstShipDtls = new ShipDtls();
+                    lstShipDtls.Ship_To_Gstin = Convert.ToString(reader["Ship_To_Gstin"]);
+                    lstShipDtls.Ship_To_LglNm = Convert.ToString(reader["Ship_To_LglNm"]);
+                    lstShipDtls.Ship_To_TrdNm = Convert.ToString(reader["Ship_To_TrdNm"]);
+                    lstShipDtls.Ship_To_Addr1 = Convert.ToString(reader["Ship_To_Addr1"]);
+                    lstShipDtls.Ship_To_Addr2 = Convert.ToString(reader["Ship_To_Addr2"]);
+                    lstShipDtls.Ship_To_Loc = Convert.ToString(reader["Ship_To_Loc"]);
+                    lstShipDtls.Ship_To_Pin = Convert.ToInt32(reader["Ship_To_Pin"]);
+                    lstShipDtls.Ship_To_Stcd = Convert.ToInt32(reader["Ship_To_Stcd"]);
+                    lstShipDtls.Ship_To_Ph = Convert.ToInt64(reader["Ship_To_Ph"]);
+                    lstShipDtls.Ship_To_Em = Convert.ToString(reader["Ship_To_Em"]);
+                    #endregion
+
+                    #region Item Details
+                    ItemList lstItemList = new ItemList();
+                    lstItemList.Item_SlNo = Convert.ToInt32(reader["Item_SlNo"]);
+                    lstItemList.Item_PrdDesc = Convert.ToString(reader["Item_PrdDesc"]);
+                    lstItemList.Item_IsServc = Convert.ToString(reader["Item_IsServc"]);
+                    lstItemList.Item_HsnCd = Convert.ToString(reader["Item_HsnCd"]);
+                    lstItemList.Item_Barcde = Convert.ToString(reader["Item_Barcde"]);
+                    lstItemList.Item_Qty = Convert.ToInt32(reader["Item_Qty"]);
+                    lstItemList.Item_FreeQty = Convert.ToString(reader["Item_FreeQty"]);
+                    lstItemList.Item_Unit = Convert.ToString(reader["Item_Unit"]);
+                    lstItemList.Item_UnitPrice = Convert.ToString(reader["Item_UnitPrice"]);
+                    lstItemList.Item_TotAmt = Convert.ToString(reader["Item_TotAmt"]);
+                    lstItemList.Item_Discount = Convert.ToString(reader["Item_Discount"]);
+                    lstItemList.Item_PreTaxVal = Convert.ToString(reader["Item_PreTaxVal"]);
+                    lstItemList.Item_AssAmt = Convert.ToString(reader["Item_AssAmt"]);
+                    lstItemList.Item_GstRt = Convert.ToString(reader["Item_GstRt"]);
+                    lstItemList.Item_IgstAmt = Convert.ToString(reader["Item_IgstAmt"]);
+                    lstItemList.Item_CgstAmt = Convert.ToString(reader["Item_CgstAmt"]);
+                    lstItemList.Item_SgstAmt = Convert.ToString(reader["Item_SgstAmt"]);
+                    lstItemList.Item_CesRt = Convert.ToString(reader["Item_CesRt"]);
+                    lstItemList.Item_CesAmt = Convert.ToString(reader["Item_CesAmt"]);
+                    lstItemList.Item_CesNonAdvlAmt = Convert.ToString(reader["Item_CesNonAdvlAmt"]);
+                    lstItemList.Item_StateCesRt = Convert.ToString(reader["Item_StateCesRt"]);
+                    lstItemList.Item_StateCesAmt = Convert.ToString(reader["Item_StateCesAmt"]);
+                    lstItemList.Item_StateCesNonAdvlAmt = Convert.ToString(reader["Item_StateCesNonAdvlAmt"]);
+                    lstItemList.Item_OthChrg = Convert.ToString(reader["Item_OthChrg"]);
+                    lstItemList.Item_TotItemVal = Convert.ToString(reader["Item_TotItemVal"]);
+                    lstItemList.Item_OrdLineRef = Convert.ToString(reader["Item_OrdLineRef"]);
+                    lstItemList.Item_OrgCntry = Convert.ToString(reader["Item_OrgCntry"]);
+                    lstItemList.Item_PrdSlNo = Convert.ToString(reader["Item_PrdSlNo"]);
+
+                    AttribDtls getvalueAttribDtls = new AttribDtls();
+                    getvalueAttribDtls.Attrib_SlNo = Convert.ToInt32(reader["Attrib_SlNo"]);
+                    getvalueAttribDtls.Attrib_Nm = Convert.ToString(reader["Attrib_Nm"]);
+                    getvalueAttribDtls.Attrib_Val = Convert.ToString(reader["Attrib_Val"]);
+                    lstItemList.AttribDtls.Add(getvalueAttribDtls);
+
+                    BchDtls getvalueBchDtls = new BchDtls();
+                    getvalueBchDtls.Bch_SlNo = Convert.ToInt32(reader["Bch_SlNo"]);
+                    getvalueBchDtls.Bch_Nm = Convert.ToString(reader["Bch_Nm"]);
+                    getvalueBchDtls.Bch_ExpDt = Convert.ToString(reader["Bch_ExpDt"]);
+                    getvalueBchDtls.Bch_WrDt = Convert.ToString(reader["Bch_WrDt"]);
+                    lstItemList.BchDtls.Add(getvalueBchDtls);
+
+                    lstItemList.Ref11 = Convert.ToString(reader["Ref11"]);
+                    lstItemList.Ref12 = Convert.ToString(reader["Ref12"]);
+                    lstItemList.Ref13 = Convert.ToString(reader["Ref13"]);
+                    lstItemList.Ref14 = Convert.ToString(reader["Ref14"]);
+                    lstItemList.Ref15 = Convert.ToString(reader["Ref15"]);
+                    #endregion
+
+                    #region Value Details
+                    ValDtls lstValDtls = new ValDtls();
+                    lstValDtls.Doc_TotVal = Convert.ToString(reader["Doc_TotVal"]);
+                    lstValDtls.Doc_DiscountVal = Convert.ToString(reader["Doc_DiscountVal"]);
+                    lstValDtls.Doc_AssVal = Convert.ToString(reader["Doc_AssVal"]);
+                    lstValDtls.Doc_IgstVal = Convert.ToString(reader["Doc_IgstVal"]);
+                    lstValDtls.Doc_CgstVal = Convert.ToString(reader["Doc_CgstVal"]);
+                    lstValDtls.Doc_SgstVal = Convert.ToString(reader["Doc_SgstVal"]);
+                    lstValDtls.Doc_CesVal = Convert.ToString(reader["Doc_CesVal"]);
+                    lstValDtls.Doc_CesNonAdvlVal = Convert.ToString(reader["Doc_CesNonAdvlVal"]);
+                    lstValDtls.Doc_StCesVal = Convert.ToString(reader["Doc_StCesVal"]);
+                    lstValDtls.Doc_StCesNonAdvlVal = Convert.ToString(reader["Doc_StCesNonAdvlVal"]);
+                    lstValDtls.Doc_RndOffAmt = Convert.ToString(reader["Doc_RndOffAmt"]);
+                    lstValDtls.Doc_PreTaxVal = Convert.ToString(reader["Doc_PreTaxVal"]);
+                    lstValDtls.Doc_OthChrgVal = Convert.ToString(reader["Doc_OthChrgVal"]);
+                    lstValDtls.Doc_TotInvVal = Convert.ToString(reader["Doc_TotInvVal"]);
+                    lstValDtls.Doc_TotInvValFc = Convert.ToString(reader["Doc_TotInvValFc"]);
+                    #endregion
+
+                    #region Payee Payment Details
+                    PayDtls lstPayDtls = new PayDtls();
+                    lstPayDtls.Payee_Nm = Convert.ToString(reader["Payee_Nm"]);
+                    lstPayDtls.Payee_AccDet = Convert.ToString(reader["Payee_AccDet"]);
+                    lstPayDtls.Payee_Mode = Convert.ToString(reader["Payee_Mode"]);
+                    lstPayDtls.Payee_FinInsBr = Convert.ToString(reader["Payee_FinInsBr"]);
+                    lstPayDtls.Payee_PayTerm = Convert.ToString(reader["Payee_PayTerm"]);
+                    lstPayDtls.Payee_PayInstr = Convert.ToString(reader["Payee_PayInstr"]);
+                    lstPayDtls.Payee_CrTrn = Convert.ToString(reader["Payee_CrTrn"]);
+                    lstPayDtls.Payee_DirDr = Convert.ToString(reader["Payee_DirDr"]);
+                    lstPayDtls.Payee_CrDay = Convert.ToInt32(reader["Payee_CrDay"]);
+                    lstPayDtls.Payee_PaidAmt = Convert.ToString(reader["Payee_PaidAmt"]);
+                    lstPayDtls.Payee_PaymtDue = Convert.ToString(reader["Payee_PaymtDue"]);
+                    #endregion
+
+                    #region Reference Details
+                    RefDtls lstRefDtls = new RefDtls();
+                    lstRefDtls.Ref_InvRmk = Convert.ToString(reader["Ref_InvRmk"]);
+                    lstRefDtls.Ref_InvStDt = Convert.ToString(reader["Ref_InvStDt"]);
+                    lstRefDtls.Ref_InvEndDt = Convert.ToString(reader["Ref_InvEndDt"]);
+
+                    PrecDocDtls getvaluePrecDocDtls = new PrecDocDtls();
+                    getvaluePrecDocDtls.PrecDoc_SlNo = Convert.ToInt32(reader["PrecDoc_SlNo"]);
+                    getvaluePrecDocDtls.PrecDoc_PrecInvNo = Convert.ToString(reader["PrecDoc_PrecInvNo"]);
+                    getvaluePrecDocDtls.PrecDoc_PrecInvDt = Convert.ToString(reader["PrecDoc_PrecInvDt"]);
+                    getvaluePrecDocDtls.PrecDoc_OthRefNo = Convert.ToString(reader["PrecDoc_OthRefNo"]);
+                    lstRefDtls.PrecDocDtls.Add(getvaluePrecDocDtls);
+
+                    ContrDtls getvalueContrDtls = new ContrDtls();
+                    getvalueContrDtls.Contr_SlNo = Convert.ToInt32(reader["Contr_SlNo"]);
+                    getvalueContrDtls.Contr_RecAdvRefr = Convert.ToString(reader["Contr_RecAdvRefr"]);
+                    getvalueContrDtls.Contr_RecAdvDt = Convert.ToString(reader["Contr_RecAdvDt"]);
+                    getvalueContrDtls.Contr_TendRefr = Convert.ToString(reader["Contr_TendRefr"]);
+                    getvalueContrDtls.Contr_ContrRefr = Convert.ToString(reader["Contr_ContrRefr"]);
+                    getvalueContrDtls.Contr_ExtRefr = Convert.ToString(reader["Contr_ExtRefr"]);
+                    getvalueContrDtls.Contr_ProjRefr = Convert.ToString(reader["Contr_ProjRefr"]);
+                    getvalueContrDtls.Contr_PORefr = Convert.ToString(reader["Contr_PORefr"]);
+                    getvalueContrDtls.Contr_PORefDt = Convert.ToString(reader["Contr_PORefDt"]);
+                    lstRefDtls.ContrDtls.Add(getvalueContrDtls);
+                    #endregion
+
+                    #region Additional Document Details
+                    AddlDocDtls lstAddlDocDtls = new AddlDocDtls();
+                    lstAddlDocDtls.AddlDoc_SlNo = Convert.ToInt32(reader["AddlDoc_SlNo"]);
+                    lstAddlDocDtls.AddlDoc_URL = Convert.ToString(reader["AddlDoc_URL"]);
+                    lstAddlDocDtls.AddlDoc_Docs = Convert.ToString(reader["AddlDoc_Docs"]);
+                    lstAddlDocDtls.AddlDoc_Info = Convert.ToString(reader["AddlDoc_Info"]);
+                    #endregion
+
+                    #region Export Details
+                    ExpDtls lstExpDtls = new ExpDtls();
+                    lstExpDtls.Exp_ShipBNo = Convert.ToString(reader["Exp_ShipBNo"]);
+                    lstExpDtls.Exp_ShipBDt = Convert.ToString(reader["Exp_ShipBDt"]);
+                    lstExpDtls.Exp_Port = Convert.ToString(reader["Exp_Port"]);
+                    lstExpDtls.Exp_RefClm = Convert.ToString(reader["Exp_RefClm"]);
+                    lstExpDtls.Exp_ForCur = Convert.ToString(reader["Exp_ForCur"]);
+                    lstExpDtls.Exp_CntCode = Convert.ToString(reader["Exp_CntCode"]);
+                    lstExpDtls.Exp_Duty = Convert.ToString(reader["Exp_Duty"]);
+                    #endregion
+
+                    #region E Way Bill Details
+                    EwbDtls lstEwbDtls = new EwbDtls();
+                    lstEwbDtls.Ewb_TransID = Convert.ToString(reader["Ewb_TransID"]);
+                    lstEwbDtls.Ewb_TransName = Convert.ToString(reader["Ewb_TransName"]);
+                    lstEwbDtls.Ewb_TransMode = Convert.ToString(reader["Ewb_TransMode"]);
+                    lstEwbDtls.Ewb_Distance = Convert.ToString(reader["Ewb_Distance"]);
+                    lstEwbDtls.Ewb_TransDocNo = Convert.ToString(reader["Ewb_TransDocNo"]);
+                    lstEwbDtls.Ewb_TransDocDt = Convert.ToString(reader["Ewb_TransDocDt"]);
+                    lstEwbDtls.Ewb_VehNo = Convert.ToString(reader["Ewb_VehNo"]);
+                    lstEwbDtls.Ewb_VehType = Convert.ToString(reader["Ewb_VehType"]);
+                    #endregion
+
+                    #region Custom Refer Details
+                    CustomRefs lstCustomRefs = new CustomRefs();
+                    lstCustomRefs.Ref01 = Convert.ToString(reader["Ref01"]);
+                    lstCustomRefs.Ref02 = Convert.ToString(reader["Ref02"]);
+                    lstCustomRefs.Ref03 = Convert.ToString(reader["Ref03"]);
+                    lstCustomRefs.Ref04 = Convert.ToString(reader["Ref04"]);
+                    lstCustomRefs.Ref05 = Convert.ToString(reader["Ref05"]);
+                    lstCustomRefs.Ref06 = Convert.ToString(reader["Ref06"]);
+                    lstCustomRefs.Ref07 = Convert.ToString(reader["Ref07"]);
+                    lstCustomRefs.Ref08 = Convert.ToString(reader["Ref08"]);
+                    lstCustomRefs.Ref09 = Convert.ToString(reader["Ref09"]);
+                    lstCustomRefs.Ref10 = Convert.ToString(reader["Ref10"]);
+                    #endregion
+
+                    getvaluedocs.TranDtls = new TranDtls();
+                    getvaluedocs.TranDtls = lstTranDtls;
+                    getvaluedocs.DocDtls = new DocDtls();
+                    getvaluedocs.DocDtls = lstDocDtls;
+                    getvaluedocs.SellerDtls = new SellerDtls();
+                    getvaluedocs.SellerDtls = lstSellerDtls;
+                    getvaluedocs.BuyerDtls = new BuyerDtls();
+                    getvaluedocs.BuyerDtls = lstBuyerDtls;
+                    getvaluedocs.DispDtls = new DispDtls();
+                    getvaluedocs.DispDtls = lstDispDtls;
+                    getvaluedocs.ShipDtls = new ShipDtls();
+                    getvaluedocs.ShipDtls = lstShipDtls;
+                    getvaluedocs.ItemList = new List<ItemList>();
+                    getvaluedocs.ItemList.Add(lstItemList);
+                    getvaluedocs.ValDtls = new ValDtls();
+                    getvaluedocs.ValDtls = lstValDtls;
+                    getvaluedocs.PayDtls = new PayDtls();
+                    getvaluedocs.PayDtls = lstPayDtls;
+                    getvaluedocs.RefDtls = new RefDtls();
+                    getvaluedocs.RefDtls = lstRefDtls;
+                    getvaluedocs.AddlDocDtls = new AddlDocDtls();
+                    getvaluedocs.AddlDocDtls = lstAddlDocDtls;
+                    getvaluedocs.ExpDtls = new ExpDtls();
+                    getvaluedocs.ExpDtls = lstExpDtls;
+                    getvaluedocs.EwbDtls = new EwbDtls();
+                    getvaluedocs.EwbDtls = lstEwbDtls;
+                    getvaluedocs.CustomRefs = new CustomRefs();
+                    getvaluedocs.CustomRefs = lstCustomRefs;
+
+                    getvalue.docs.Add(getvaluedocs);
+                    //getvalue.docs.ToList().Add(getvaluedocs);
+                    //getvalue.docs = new List<Docs>() { getvaluedocs };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            return getvalue;
+        }
         //public async Task<IEnumerable<T>> GetItemsAsync<T>(string storedProcedureName, object param)
         //{
         //    using var dbConnection = Connection;
@@ -220,7 +521,27 @@ namespace QPay.DAL.Repository
         //    var result = await dbConnection.QueryAsync<T>(storedProcedureName, param, commandTimeout: 1000, commandType: CommandType.StoredProcedure);
         //    return result;
         //}
-
+        public string GetString(string storeProcedureName, object param)
+        {
+            try
+            {
+                using (var dbConnection = Connection)
+                {
+                    dbConnection.Open();
+                    var result = dbConnection.Query(storeProcedureName, param,
+                                                    commandType: CommandType.StoredProcedure);
+                    return JsonConvert.SerializeObject(result);
+                }
+            }
+            catch (SqlException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         public async Task<IEnumerable<T>> GetItemsAsync<T>(string storeProcedureName, object param)
         {
             try

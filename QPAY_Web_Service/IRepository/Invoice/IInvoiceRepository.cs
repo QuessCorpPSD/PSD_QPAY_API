@@ -23,6 +23,8 @@ namespace QPay.BAL.IRepository.Invoice
         Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
            [FromForm] string payperiodId, [FromForm] string CreatedBy);
         Task<InvoiceResponse> PerformaInvoiceMergeNew(List<MergeNewRequest> request);
+        Task<List<BillingDashboard>> BillingDashboard(int userId);
+        Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId);
 
     }
 }

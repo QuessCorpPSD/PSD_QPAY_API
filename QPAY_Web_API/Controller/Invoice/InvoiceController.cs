@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using QPay.API.Extensions;
 using QPay.BAL.IRepository.Invoice;
+using QPay.UI.Models;
 using static QPay.UI.Models.Invoice.Invoice;
 
 namespace QPay.API.Controller.Invoice
@@ -86,6 +89,45 @@ namespace QPay.API.Controller.Invoice
 
             var result = await _iinvoice.UploadAttributes(file, CompanyId, payperiodId, CreatedBy);
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("BillingDashboardByUserId/{userId}")]
+        public async Task<IActionResult> BillingDashboardByUserId(int userId)
+        {
+            var dashboard =await _iinvoice.BillingDashboard(userId);
+            return Ok(dashboard);
+        }
+        [HttpGet]
+        [Route("DraftInvoiceEmployeeByRequestId/{reqNo}")]
+        public async Task<IActionResult> DraftInvoiceEmployeeByRequestId(int reqNo)
+        {
+            var employee = await _iinvoice.DraftInvoiceEmployeeByRequestId(reqNo);
+            if (employee.Rows.Count > 0)
+            {
+                using var workbook = new XLWorkbook();
+                {
+                    var ws = workbook.AddWorksheet(employee, "Sheet1");
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var bytes = Convert.ToBase64String(stream.ToArray());
+                        FileResponse fileResponse = new FileResponse();
+                        fileResponse.FileName = "InputLot";
+                        fileResponse.File = bytes;
+
+                        return Ok(fileResponse);//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                    }
+                }
+            }
+            else
+            {
+                FileResponse fileResponse = new FileResponse();
+                fileResponse.FileName = "InputLot";
+                fileResponse.File = "No";
+                return Ok(fileResponse);
+            }
         }
     }
 }
