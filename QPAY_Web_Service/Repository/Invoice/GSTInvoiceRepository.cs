@@ -433,5 +433,25 @@ namespace QPay.BAL.Repository.Invoice
                 return new List<PayPeriodUI>();
             }
         }
+
+        public async Task<string> Reject(string xmlString, string userId,string status)
+        {
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "Rejected");
+            parameters.Add("@Status", status);
+            parameters.Add("@XmlData", xmlString);
+            parameters.Add("@UserId", userId);
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice_newUI", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+
+        }
     }
 }

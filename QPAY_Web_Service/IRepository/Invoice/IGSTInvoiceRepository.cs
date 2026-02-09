@@ -27,6 +27,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<string> GetInvoiceStatus(InvoiceStatusUI request);
         Task<List<PayPeriodUI>> GetPayPeriod(PayPeriodRequest request);
         Task<string> Edit(GstInvoiceEditRequest request);
+        Task<string> Reject(string xmlString, string userId,string status);
 
     }
 }

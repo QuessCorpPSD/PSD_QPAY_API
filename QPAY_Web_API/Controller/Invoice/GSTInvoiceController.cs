@@ -16,6 +16,7 @@ using QPay.UI.Models.Invoice;
 using QRCoder;
 using SelectPdf;
 using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -131,7 +132,7 @@ namespace QPay.API.Controller.Invoice
                 HtmlToPdf converter = new HtmlToPdf();
                 string certPath = _configuration["CertificatePath"].ToString();
                 string signapi = _configuration["SignApiUrl"].ToString();
-                
+
                 string watermarkText = _configuration["WatermarkText"].ToString();
 
                 if (IsHeaderFooter == true)
@@ -317,7 +318,7 @@ namespace QPay.API.Controller.Invoice
 
             return File(stream, "application/pdf", fileName);
 
-         
+
         }
 
 
@@ -368,7 +369,7 @@ namespace QPay.API.Controller.Invoice
         {
             using var workbook = new XLWorkbook(filePath);
             var dataSet = new DataSet("Data");
-            
+
             foreach (var worksheet in workbook.Worksheets)
             {
                 var dataTable = new DataTable(worksheet.Name);
@@ -401,14 +402,6 @@ namespace QPay.API.Controller.Invoice
             return dataSet;
         }
 
-        //[HttpPost]
-        //[Route("Create")]
-        //public async Task<IActionResult> Create(DAL.Repository.GstInvoiceCreateRequest request)
-        //{
-        //    var result = await _gstinvoiceRepository.Create(request);
-        //    return Ok(result);
-        //}
-
         [HttpPost("Create")]
         public async Task<IActionResult> Create(DAL.Repository.GstInvoiceCreateRequest request)
         {
@@ -417,7 +410,7 @@ namespace QPay.API.Controller.Invoice
             var response = await _gstinvoiceRepository.Create(request);
             return Ok(response);
         }
-       
+
         [HttpGet, Route("GetGSTInvoiceType")]
         public async Task<IActionResult> GetGSTInvoiceType() =>
     Ok(await this._gstinvoiceRepository.GetGSTInvoiceType());
@@ -436,7 +429,7 @@ namespace QPay.API.Controller.Invoice
         [HttpGet, Route("GetGSTNetDeductionType")]
         public async Task<IActionResult> GetGSTNetDeductionType() =>
            Ok(await this._gstinvoiceRepository.GetGSTNetDeductionType());
-       
+
         [HttpPost, Route("GetGstRates")]
         public async Task<IActionResult> GetGstRates(GetGstRateRequest request) =>
       Ok(await this._gstinvoiceRepository.GetGstRates(request));
@@ -465,5 +458,56 @@ namespace QPay.API.Controller.Invoice
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route("Reject")]
+        public async Task<IActionResult> Reject(IFormFile file, [FromForm] string userId, [FromForm] string status)
+        {
+
+            if (file == null || file.Length == 0)
+                return Ok("File is missing.");
+            string DirName = "";
+
+            DirName = Path.Combine(_configuration["ClaimDocPath"].ToString());
+            DirName += "GSTReject";
+            if (!Directory.Exists(DirName))
+            {
+                Directory.CreateDirectory(DirName);
+            }
+            string fileExtention = Path.GetExtension(file.FileName.ToUpper());
+            string FileName = Path.GetFileNameWithoutExtension(file.FileName.ToUpper());
+            FileName += DateTime.Now.ToString("_yyyyMMddhhmmssffff") + fileExtention;
+
+            string serverpath = DirName + FileName;
+
+            using (var stream = new FileStream(serverpath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            DataSet ds = new DataSet("Data");
+            ds = ExcelToDataSet(serverpath);
+            //Convert dt to XML
+            if (ds.Tables.Count == 0)
+
+                return Ok("Excel sheet is empty or not formatted correctly.");
+            ds.Tables[0].TableName = "GstInvoice";
+          
+            foreach (DataTable table in ds.Tables)
+            {
+                foreach (DataColumn col in table.Columns)
+                {
+                    col.ColumnName = col.ColumnName.Trim().Replace(" ", "_");
+                }
+            }
+            // Convert DataTable to XML
+            using var xmlWriter = new StringWriter();
+            ds.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
+            string xmlInput = xmlWriter.ToString();
+
+
+            var response = await _gstinvoiceRepository.Reject(xmlInput, userId,status);
+
+            return Ok(response);
+
+        }
     }
 }
