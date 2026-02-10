@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QPay.DAL.Repository;
 using QPay.UI.Models.Invoice;
+using QPay.UI.Invoice;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,6 +29,11 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<PayPeriodUI>> GetPayPeriod(PayPeriodRequest request);
         Task<string> Edit(GstInvoiceEditRequest request);
         Task<string> Reject(string xmlString, string userId,string status);
+        Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriod);
+        Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
+        Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action);
+        Task<string> SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
+
 
     }
 }

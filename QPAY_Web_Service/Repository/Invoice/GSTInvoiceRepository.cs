@@ -7,6 +7,7 @@ using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
 using QPay.UI.Common;
+using QPay.UI.Invoice;
 using QPay.UI.Models.Invoice;
 using System;
 using System.Collections.Generic;
@@ -452,6 +453,164 @@ namespace QPay.BAL.Repository.Invoice
 
             return "No data found";
 
+        }
+        public async Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriodId)
+        {
+
+
+            string storeProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@Action", "GetInvoiceCancelDetails");
+            parameter.Add("@Company_Id", companyId);
+            parameter.Add("@Pay_Period_Id", payPeriodId);
+
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<InvoiceCancelGrid>();
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<InvoiceCancelGrid>>(res);
+                return list?.ToList() ?? new List<InvoiceCancelGrid>();
+            }
+            catch (JsonException ex)
+            {
+                return new List<InvoiceCancelGrid>();
+            }
+        }
+        public async Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request)
+        {
+            var response = new InvoiceCancelResponse();
+
+            try
+            {
+                if (request?.invoice_Id == null || !request.invoice_Id.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No invoices selected";
+                    return response;
+                }
+
+                string storeProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]";
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@Action", "GetIrnCancellationData");
+                parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
+                parameter.Add("@Company_Id", request.CompanyId);
+                parameter.Add("@Pay_Period_Id", request.PayPeriodId);
+                parameter.Add("@QzoneUserId", request.userId);
+
+                var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+
+                if (string.IsNullOrWhiteSpace(res))
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No response from database";
+                    return response;
+                }
+
+                var invoiceResults = JsonConvert.DeserializeObject<List<InvoiceCancelResult>>(res);
+
+                if (invoiceResults == null || !invoiceResults.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = "No invoices processed";
+                    return response;
+                }
+
+                response.InvoiceResults = invoiceResults;
+
+                // ✅ Only include backend-approved Invoice IDs for credit note
+                foreach (var result in invoiceResults)
+                {
+                    if (result.Status?.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        response.CreditnoteInvoices.InvoiceIds.Add(result.Invoice_Id);
+                    }
+                }
+
+                // Failed invoices
+                var failedInvoices = invoiceResults
+                    .Where(x => x.Status?.Equals("FAILED", StringComparison.OrdinalIgnoreCase) == true)
+                    .ToList();
+
+                if (failedInvoices.Any() && response.CreditnoteInvoices.InvoiceIds.Any())
+                {
+                    response.Status = "PARTIAL_SUCCESS";
+                    response.Message = "Some invoices failed: " +
+                        string.Join(" | ", failedInvoices.Select(x => $"Invoice {x.Invoice_No}: {x.Error_Message}"));
+                }
+                else if (failedInvoices.Any())
+                {
+                    response.Status = "FAILED";
+                    response.Message = string.Join(" | ", failedInvoices.Select(x => $"Invoice {x.Invoice_No}: {x.Error_Message}"));
+                }
+                else
+                {
+                    response.Status = "SUCCESS";
+                    response.Message = "Invoices approved successfully";
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Status = "FAILED";
+                response.Message = "Error while approving invoices: " + ex.Message;
+                return response;
+            }
+        }
+
+
+        DataSet IGSTInvoiceRepository.GetInvoiceData(int invoiceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> IGSTInvoiceRepository.PostCancelReject(string xmlString, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        //Task<string> IGSTInvoiceRepository.Create(GstInvoiceCreateRequest request)
+        //{
+        //    throw new NotImplementedException();
+        //}  
+        public async Task<string> SaveBatchResponse(
+     int statusCode,
+     string responseMessage,
+     string response,
+     string responseXml,
+     string invoiceIds,
+     string mode,
+     string userId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = mode,
+                ["@StatusCode"] = statusCode,
+                ["@ResponseMessage"] = responseMessage,
+                ["@Response"] = response,
+                ["@XmlData"] = responseXml,
+                ["@InvoiceIds"] = invoiceIds,
+                ["@QzoneUserId"] = userId
+            };
+
+            return await _dbRepository.GetItemsAsync(
+                "Proc_ManageEInvoice_NewUI",
+                parameters
+            );
+        }
+
+        public async Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action)
+        {
+            {
+                var dbResults = _dbRepository.GetEInvoiceData(invoiceIds, UserId, Action);
+                return dbResults;
+            }
         }
     }
 }

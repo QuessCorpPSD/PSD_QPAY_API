@@ -148,6 +148,20 @@ namespace QPay.UI.Models.Invoice
             public List<object> Data { get; set; }
             public string? errors { get; set; }
         }
+     
 
+    }
+    public class CancelRequest
+    {
+        public string Pay_Period { get; set; } = string.Empty;
+        public int Company_Id { get; set; }
+        public int PayPeriod_Id { get; set; }
+    }
+    public class InvoiceCancelApprovalRequest
+    {
+        public List<int> invoice_Id { get; set; }
+        public int? CompanyId { get; set; }
+        public int? PayPeriodId { get; set; }
+        public string? userId { get; set; }
     }
 }
