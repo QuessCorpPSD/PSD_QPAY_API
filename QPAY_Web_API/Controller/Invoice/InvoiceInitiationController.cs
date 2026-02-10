@@ -45,22 +45,22 @@ namespace QPay.API.Controller.Invoice
             var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(initiationRequestModel);
             return Ok(invoicesearch);
         }
-        [HttpPost, Route("InvoiceInitiate")]
-        public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
-        {
-            string xml = XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
-            xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?>", "");
-            xml = xml.Replace(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
-            xml = xml.Replace("xsi:nil=\"true\" ", "");
-            var result = await _invoiceInitiationRepository.InvoiceInitiate(
-          request.TaxTypeId,
-          xml,
-          "Add",          // or make this request.Mode if dynamic
-          request.CreatedBy
-      );
+      //  [HttpPost, Route("InvoiceInitiate")]
+      //  public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
+      //  {
+      //      string xml = XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
+      //      xml = xml.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?>", "");
+      //      xml = xml.Replace(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
+      //      xml = xml.Replace("xsi:nil=\"true\" ", "");
+      //      var result = await _invoiceInitiationRepository.InvoiceInitiate(
+      //    request.TaxTypeId,
+      //    xml,
+      //    "Add",          // or make this request.Mode if dynamic
+      //    request.CreatedBy
+      //);
 
-            return Ok(result);
-        }
+      //      return Ok(result);
+      //  }
         [HttpPost, Route("ExportToExcel")]
         public async Task<IActionResult> ExportToExcel(InvoiceSearchRequest requestModel)
         {

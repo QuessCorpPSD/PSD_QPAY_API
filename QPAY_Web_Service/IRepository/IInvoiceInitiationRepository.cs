@@ -21,5 +21,6 @@ namespace QPay.BAL.IRepository
         Task<List<InitiationRequestUI>> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel);
         Task<FileResponse> ExportToExcel(int? CompanyId, string PayPeriodId, int? TaxTypeId);
         Task<List<InvoiceDashboardDto>> GetAllInvoiceAllotDetails(InvoiceDetailModel invoiceDetailModel);
+        Task<List<RemarksResponse>> getRemarksByReqNo(RequestModel requestModel);
     }
 }

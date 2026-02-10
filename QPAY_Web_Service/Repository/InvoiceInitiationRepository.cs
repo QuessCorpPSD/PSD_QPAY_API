@@ -31,6 +31,18 @@ namespace QPay.BAL.Repository
             this._config = config;
           
         }
+
+        public async Task<List<RemarksResponse>> getRemarksByReqNo(RequestModel requestModel)
+        {
+            string storeProcedure = "[dbo].[sp_GetAllRemarksByReqNo]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@ReqNo", requestModel.Req_No);
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<RemarksResponse>>(res);
+            return list?.ToList() ?? new List<RemarksResponse>();
+        }
+
+
         public async Task<List<CommonUI>> GetTaxTypes(string action)
         {
        

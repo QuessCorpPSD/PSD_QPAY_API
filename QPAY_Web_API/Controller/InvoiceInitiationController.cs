@@ -80,6 +80,12 @@ namespace QPay.API.Controller
 
             return Ok(result);
         }
+        [HttpPost, Route("getRemarksByReqNo")]
+        public async Task<IActionResult> getRemarksByReqNo(RequestModel requestModel)
+        {
+            var reqno = await this._invoiceInitiationRepository.getRemarksByReqNo(requestModel);
+            return Ok(reqno);
+        }
         [HttpPost, Route("ExportToExcel")]
         public async Task<IActionResult> ExportToExcel(InvoiceSearchRequest requestModel)
         {
