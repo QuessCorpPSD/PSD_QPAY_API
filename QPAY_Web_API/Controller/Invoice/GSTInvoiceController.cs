@@ -28,6 +28,7 @@ using System.Text;
 using System.Web;
 using System.Web;
 using static QPay.UI_Domain.Models.PurchaseOrder.PoRequest;
+using QPay.UI.Models;
 
 
 namespace QPay.API.Controller.Invoice
@@ -649,13 +650,13 @@ namespace QPay.API.Controller.Invoice
         }
 
         public async Task<string> SaveBatchResponse(
-     int statusCode,
-     string responseMessage,
-     string response,
-     string responseXml,
-     string invoiceIds,
-     string mode,
-     string userId)
+             int statusCode,
+             string responseMessage,
+             string response,
+             string responseXml,
+             string invoiceIds,
+             string mode,
+             string userId)
         {
             var message = await _gstinvoiceRepository.SaveBatchResponse(
                 statusCode,
@@ -668,6 +669,42 @@ namespace QPay.API.Controller.Invoice
             );
 
             return message;
+        }
+
+        [HttpGet, Route("GetUploadedFile/{invoice_Id}")]
+        public IActionResult GetUploadedFile(int invoice_Id)
+        {
+            try
+            {
+                var filejson = _gstinvoiceRepository.GetFilename(invoice_Id);
+                var fileList = JsonConvert.DeserializeObject<List<FileJson>>(filejson);
+                if (fileList == null || fileList.Count == 0 || string.IsNullOrEmpty(fileList[0]?.FilePath))
+                {
+                    return BadRequest(new { message = "FilePath not found." });
+                }
+                //string? fileName = fileList?[0].FileName;
+                string? filePath = fileList?[0].FilePath;
+                string? fileName = Path.GetFileName(filePath);
+                string? fullPath = filePath.Replace(@"\", @"\\");
+                this._logger.LogInfo("CancelDocPath"+fullPath);
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    this._logger.LogInfo("CancelDoc File Not found");
+                    return BadRequest(new { message = "File not found." });
+                }
+                this._logger.LogInfo(fullPath);
+                var fileBytes = System.IO.File.ReadAllBytes(fullPath);
+                string base64String = Convert.ToBase64String(fileBytes);
+                FileResponse fileResponse = new FileResponse();
+                fileResponse.FileName = fileName;
+                fileResponse.File = base64String;
+
+                return Ok(fileResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
     }
 }
