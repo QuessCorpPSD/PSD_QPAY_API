@@ -107,7 +107,7 @@ namespace QPay.BAL.Repository
             param.Add("@UserId", invoiceDetailModel.userId);
             var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
 
-            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot]" ?? "";
+            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot_Test]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
             parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);

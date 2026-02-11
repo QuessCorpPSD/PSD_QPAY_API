@@ -612,5 +612,23 @@ namespace QPay.BAL.Repository.Invoice
                 return dbResults;
             }
         }
+
+
+        public string GetFilename(int invoice_Id)
+        {
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@InvoiceId", invoice_Id);
+
+            var res = this._dbRepository.GetItemsAsync("Proc_GetInvoiceCancelDoc", parameters).Result;
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+
+        }
     }
 }

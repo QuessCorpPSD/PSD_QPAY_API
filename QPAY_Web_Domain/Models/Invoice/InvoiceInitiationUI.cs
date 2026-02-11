@@ -136,6 +136,7 @@ namespace QPay.UI.Models.Invoice
         public string? Client_SPOC_Name { get; set; } = "";
         public string? Work_Order_Number { get; set; } = "";
         public string? Data_From { get; set; } = "";
+        public string? InvoiceType { get; set; } = "";
 
     }
 

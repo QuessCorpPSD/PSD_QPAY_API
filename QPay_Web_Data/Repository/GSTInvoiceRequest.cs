@@ -100,4 +100,10 @@
         public decimal CALCRG { get; set; }
         public decimal CALRT { get; set; }
     }
+
+    public class FileJson
+    {
+        public string? FilePath { get; set; }
+        //public string? FileName { get; set; }
+    }
 }

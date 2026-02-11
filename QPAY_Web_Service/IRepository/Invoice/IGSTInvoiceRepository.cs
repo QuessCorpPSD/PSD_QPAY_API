@@ -33,7 +33,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
         Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action);
         Task<string> SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
-
+        string GetFilename(int invoice_Id);
 
     }
 }
