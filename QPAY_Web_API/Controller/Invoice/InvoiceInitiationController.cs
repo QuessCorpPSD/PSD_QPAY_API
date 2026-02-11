@@ -81,11 +81,11 @@ namespace QPay.API.Controller.Invoice
                 return StatusCode(500, $"An error occurred while exporting the file: {ex.Message}");
             }
         }
-        [HttpPost, Route("getRemarksByReqNo")]
-        public async Task<IActionResult> getRemarksByReqNo(RequestModel requestModel)
-        {
-            var reqno = await this._invoiceInitiationRepository.getRemarksByReqNo(requestModel);
-            return Ok(reqno);
-        }
+        //[HttpPost, Route("getRemarksByReqNo")]
+        //public async Task<IActionResult> getRemarksByReqNo(RequestModel requestModel)
+        //{
+        //    var reqno = await this._invoiceInitiationRepository.getRemarksByReqNo(requestModel);
+        //    return Ok(reqno);
+        //}
     }
 }
