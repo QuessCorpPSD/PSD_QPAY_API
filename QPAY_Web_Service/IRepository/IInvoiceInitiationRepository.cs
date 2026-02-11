@@ -15,7 +15,7 @@ namespace QPay.BAL.IRepository
     {
         Task<List<CommonUI>> GetTaxTypes(string action);
         Task<List<InvoiceInitiationUI>> Search(int? Company_Id, string PayPeriod, int? TaxTypeId);
-        Task<FileResponse> InitiationSearchExport(InitiationRequestModel initiationRequestModel);
+        Task<FileResponse> InitiationSearchExport(IntiationExportRequest intiationExportRequest);
         Task<InvoiceInitiationUI> InvoiceInitiate(int? TaxTypeId, string xml, string action, int userId);
         Task<List<InitiationRequestUI>> InitiationSearch(InitiationRequestModel initiationRequestModel);
         Task<List<InitiationRequestUI>> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel);

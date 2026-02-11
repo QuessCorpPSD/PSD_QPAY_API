@@ -62,9 +62,9 @@ namespace QPay.API.Controller
 
 
         [HttpPost, Route("InitiationSearchExport")]
-        public async Task<IActionResult> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
+        public async Task<IActionResult> InitiationSearchExport(IntiationExportRequest intiationExportRequest)
         {
-            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(initiationRequestModel);
+            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(intiationExportRequest);
             return Ok(invoicesearch);
         }
         [HttpPost, Route("InvoiceInitiate")]

@@ -39,12 +39,12 @@ namespace QPay.API.Controller.Invoice
             var invoicesearch = await this._invoiceInitiationRepository.InitiationSearch(initiationRequestModel);
             return Ok(invoicesearch);
         }
-        [HttpPost, Route("InitiationSearchExport")]
-        public async Task<IActionResult> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
-        {
-            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(initiationRequestModel);
-            return Ok(invoicesearch);
-        }
+        //[HttpPost, Route("InitiationSearchExport")]
+        //public async Task<IActionResult> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
+        //{
+        //    var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(initiationRequestModel);
+        //    return Ok(invoicesearch);
+        //}
       //  [HttpPost, Route("InvoiceInitiate")]
       //  public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
       //  {

@@ -135,6 +135,7 @@ namespace QPay.UI.Models.Invoice
 
         public string? Client_SPOC_Name { get; set; } = "";
         public string? Work_Order_Number { get; set; } = "";
+        public string? Data_From { get; set; } = "";
 
     }
 
@@ -147,6 +148,15 @@ namespace QPay.UI.Models.Invoice
         public string ActionType { get; set; } = "";
         public int? Invoice_Billing_Type { get; set; }
         public int? CreatedBy { get; set; }
+    }
+
+    public class IntiationExportRequest
+    {
+        public int? Company_Id { get; set; }
+        public int? PayPeriod_Id { get; set; }
+        public string? LotNo { get; set; }
+        public string? ReqNo { get; set; }
+        public string? Data_From { get; set; }
     }
 
     public class InvoiceDetailModel
@@ -175,6 +185,7 @@ namespace QPay.UI.Models.Invoice
     public class InvoiceDashboardDto
     {
         public int? Serial_No { get; set; }
+        public string InvoiceType { get; set; } = "";
         public string Req_No { get; set; } = "";
         public string Company_Code { get; set; } = "";
         public string Pay_Period { get; set; } = "";

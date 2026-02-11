@@ -131,32 +131,62 @@ namespace QPay.BAL.Repository
         }
 
 
-        public async Task<FileResponse> InitiationSearchExport(InitiationRequestModel initiationRequestModel)
+        public async Task<FileResponse> InitiationSearchExport(IntiationExportRequest intiationExportRequest)
         {
-            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search]" ?? "";
-            var parameter = new DynamicParameters();
-            parameter.Add("@Company_Id", initiationRequestModel.Company_Id ?? (object)DBNull.Value);
-            parameter.Add("@PayPeriod_Id", initiationRequestModel.PayPeriod_Id ?? (object)DBNull.Value);
-            parameter.Add("@InvoiceType", initiationRequestModel.InvoiceType ?? (object)DBNull.Value);
-            parameter.Add("@ActionType", initiationRequestModel.ActionType ?? (object)DBNull.Value);
-            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
-            DataTable list =(DataTable) JsonConvert.DeserializeObject<DataTable>(res);
-            
-            using var workbook = new XLWorkbook();
+
+            if (intiationExportRequest.Data_From == "OI")
             {
-                var ws = workbook.AddWorksheet(list, "Invoice");
-                ws.Table(0).ShowAutoFilter = false;
-                ws.Table(0).Theme = XLTableTheme.None;
-                using (MemoryStream stream = new MemoryStream())
+                var parameter = new DynamicParameters();
+                parameter.Add("@Company_ID", intiationExportRequest.Company_Id ?? (object)DBNull.Value);
+                parameter.Add("@Pay_Frequency_Detail_Id", intiationExportRequest.PayPeriod_Id ?? (object)DBNull.Value);
+                parameter.Add("@INPUTNUMBER", intiationExportRequest.LotNo ?? (object)DBNull.Value);
+                parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
+                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_OtherIncome_Report_PONUMBER_Request_ExportToExcel]", parameter);
+                DataTable list = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
+
+                using var workbook = new XLWorkbook();
                 {
-                    workbook.SaveAs(stream);
-                    var bytes = Convert.ToBase64String(stream.ToArray());
-                    FileResponse fileResponse = new FileResponse();
-                    fileResponse.FileName = "Invoice";
-                    fileResponse.File = bytes;
-                    return fileResponse;//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                    var ws = workbook.AddWorksheet(list, "PayRegister_OI");
+                    ws.Table(0).ShowAutoFilter = false;
+                    ws.Table(0).Theme = XLTableTheme.None;
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var bytes = Convert.ToBase64String(stream.ToArray());
+                        FileResponse fileResponse = new FileResponse();
+                        fileResponse.FileName = "OtherIncome_PayRegister";
+                        fileResponse.File = bytes;
+                        return fileResponse;//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                    }
                 }
             }
+            else
+            {
+                var parameter = new DynamicParameters();
+                parameter.Add("@Company_Id", intiationExportRequest.Company_Id ?? (object)DBNull.Value);
+                parameter.Add("@Pay_Period_Id", intiationExportRequest.PayPeriod_Id ?? (object)DBNull.Value);
+                parameter.Add("@Lot_No", intiationExportRequest.LotNo ?? (object)DBNull.Value);
+                parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
+                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise]", parameter);
+                DataTable list = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
+
+                using var workbook = new XLWorkbook();
+                {
+                    var ws = workbook.AddWorksheet(list, "PayRegister_Regular");
+                    ws.Table(0).ShowAutoFilter = false;
+                    ws.Table(0).Theme = XLTableTheme.None;
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var bytes = Convert.ToBase64String(stream.ToArray());
+                        FileResponse fileResponse = new FileResponse();
+                        fileResponse.FileName = "Regular_PayRegister";
+                        fileResponse.File = bytes;
+                        return fileResponse;//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                    }
+                }
+            }
+            
         }
 
         public async Task<InvoiceInitiationUI> InvoiceInitiate(int? TaxTypeId, string xml, string action, int userId)
