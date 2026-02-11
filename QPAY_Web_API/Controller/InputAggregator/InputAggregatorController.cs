@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
+using QPay.API.LoggerService;
 
 namespace QPay.API.Controller.InputAggregator
 {
@@ -10,10 +11,13 @@ namespace QPay.API.Controller.InputAggregator
     {
         private readonly BAL.IRepository.IInputAggregatorRepository _IRepository;
         private readonly IConfiguration _configuration;
-        public InputAggregatorController(IConfiguration configuration, BAL.IRepository.IInputAggregatorRepository Repository)
+        private readonly ILoggerManager _logger;
+        public InputAggregatorController(IConfiguration configuration, BAL.IRepository.IInputAggregatorRepository Repository,
+            ILoggerManager logger)
         {
             this._IRepository = Repository;
             this._configuration = configuration;
+            _logger = logger;
         }
 
         #region for mapping 
@@ -100,7 +104,11 @@ namespace QPay.API.Controller.InputAggregator
             if (file == null || file.Length == 0)
                 return Ok("File is missing.");
 
+            this._logger.LogInfo("input aggregator api started");
+
             var result = await _IRepository.Upload(file, CreatedBy, CompanyId);
+
+            this._logger.LogInfo("input aggregator api end");
             return Ok(result);
         }
 
