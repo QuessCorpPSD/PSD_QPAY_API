@@ -195,7 +195,7 @@ namespace QPay.BAL.Repository.Invoice
             parameters.Add("@CALCRG", request.CALCRG);
             parameters.Add("@CALRT", request.CALRT);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice_newUI", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -211,7 +211,7 @@ namespace QPay.BAL.Repository.Invoice
             parameters.Add("@Action", request.Action);
             parameters.Add("@UserId", request.UserId);
             parameters.Add("@Invoice_Id", request.Invoice_Id, DbType.Int32, ParameterDirection.InputOutput);
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageGstInvoice_newUI", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -563,22 +563,7 @@ namespace QPay.BAL.Repository.Invoice
                 return response;
             }
         }
-
-
-        DataSet IGSTInvoiceRepository.GetInvoiceData(int invoiceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<string> IGSTInvoiceRepository.PostCancelReject(string xmlString, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Task<string> IGSTInvoiceRepository.Create(GstInvoiceCreateRequest request)
-        //{
-        //    throw new NotImplementedException();
-        //}  
+ 
         public async Task<string> SaveBatchResponse(
      int statusCode,
      string responseMessage,
