@@ -9,6 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static QPay.UI.Models.Invoice.Invoice;
+using static QPay.UI.Invoice.Invoice;
+using Microsoft.AspNetCore.Http;
+using InvoiceResponse = QPay.UI.Models.Invoice.InvoiceResponse;
 
 namespace QPay.BAL.IRepository.Invoice
 {
@@ -31,9 +34,15 @@ namespace QPay.BAL.IRepository.Invoice
         Task<string> Reject(string xmlString, string userId,string status);
         Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriod);
         Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
+        Task<string> BulkRejectInvoice(InvoiceCancelApprovalRequest request);
         Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action);
         Task<string> SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
         string GetFilename(int invoice_Id);
-
+        Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
+        Task<ClientPeriodUI> CompanyPayPeriod(int payperiod);
+        Task<InvoiceNumberLotUI> IRNStatusGenerationUpdate(string Invoice_Number);
+        Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI);
+        Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
+           [FromForm] string payperiodId, [FromForm] string CreatedBy);
     }
 }

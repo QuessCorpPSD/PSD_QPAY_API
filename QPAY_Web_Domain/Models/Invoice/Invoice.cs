@@ -163,5 +163,38 @@ namespace QPay.UI.Models.Invoice
         public int? CompanyId { get; set; }
         public int? PayPeriodId { get; set; }
         public string? userId { get; set; }
+        public string? remarks { get; set; }
+    }
+
+    public class AttributeUI
+    {
+        public int? id { get; set; }
+        public string? AttributeName { get; set; } = string.Empty;
+        public string? ActionType { get; set; } = string.Empty;
+        public int? CompanyId { get; set; }
+        public bool? IsActive { get; set; }
+        public int? CreatedBy { get; set; }
+
+        public string? createdOn { get; set; }
+
+        public int? ModifiedBy { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+        public int? StatusCode { get; set; }
+
+        public string? Messages { get; set; }
+
+    }
+
+    public class SelectedItems
+    {
+        public string value { get; set; } = "";
+        public string text { get; set; } = "";
+    }
+
+    public class InvoiceResponse
+    {
+        public string response { get; set; } = string.Empty;
+        public List<string> errors { get; set; } = new List<string>();
     }
 }

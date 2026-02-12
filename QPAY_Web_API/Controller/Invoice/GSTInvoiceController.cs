@@ -1,9 +1,4 @@
 ﻿using ClosedXML.Excel;
-using ClosedXML.Excel;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -12,23 +7,18 @@ using QPay.API.LoggerService;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
-using QPay.UI.Models.Invoice;
 using QPay.UI.Invoice;
 using QRCoder;
 using SelectPdf;
 using System.Data;
-using System.Data.OleDb;
 using System.Drawing;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
-using System.Web;
-using static QPay.UI_Domain.Models.PurchaseOrder.PoRequest;
 using QPay.UI.Models;
+using System.IO.Compression;
 
 
 namespace QPay.API.Controller.Invoice
@@ -55,25 +45,351 @@ namespace QPay.API.Controller.Invoice
         [HttpGet, Route("GetGSTInvoice/{userId}")]
         public async Task<IActionResult> GetGSTInvoice(int userId) =>
             Ok(await this._gstinvoiceRepository.GetGSTInvoice(userId));
+
         [HttpPost]
         [Route("BulkDownload")]
-        public ActionResult BulkDownload([FromBody] QPay.UI.Models.Invoice.BulkInvoices bulkInvoices)
+        public async Task<ActionResult> BulkDownload([FromBody] UI.Models.Invoice.BulkInvoices bulkInvoices)
         {
-            string[] DownloadIds = bulkInvoices.invoiceIds.Select(id => id.ToString()).ToArray();
-            MemoryStream outputMemStream = new MemoryStream();
-            ZipOutputStream zipStream = new ZipOutputStream(outputMemStream);
+            var basePath = _configuration["ClaimDocPath"]!;
+            var dynamic = Path.Combine(basePath, Guid.NewGuid().ToString());
 
-            zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
-            byte[] bytes = null;
+            // Ensure temp folder exists
+            Directory.CreateDirectory(dynamic);
 
-            // loops through the PDFs I need to create
-
-            foreach (var invoicedetails in DownloadIds)
+            foreach (var invoiceId in bulkInvoices.invoiceIds)
             {
-                string[] idetails = invoicedetails.Split('|');
-                int invoiceId = Convert.ToInt32(idetails[0]);
-                //string companyCode = idetails[1];
-                //string payPeriod = idetails[2];
+                var invoice = await _gstinvoiceRepository.GetInvoiceDetailByInvoiceId(invoiceId);
+                if (invoice == null) continue;
+
+                var companyDetail = await _gstinvoiceRepository.CompanyPayPeriod(invoice.Pay_Period_Id);
+
+                //var dynamicFolder = Path.Combine(dynamic, invoice.Invoice_Number);
+                //if (!Directory.Exists(dynamicFolder))
+                //{
+                //    Directory.CreateDirectory(dynamicFolder);
+                //}
+                //Directory.CreateDirectory(dynamic);
+                if (companyDetail == null) continue;
+
+                // ---------- INVOICE PDF ----------
+                var IRNStatusFolder = invoice.IsGenerated_IRN == 0 ? "Draft" : "IRN";
+                string files = string.Format("{0}\\{1}\\{2}\\{3}\\{4}",
+                            basePath,
+                             companyDetail.Company_Code,
+                             companyDetail.Pay_Period,
+                             IRNStatusFolder,
+                            string.Format("{0}_{1}_{2}.pdf", companyDetail.Company_Code, companyDetail.Pay_Period, invoice.Invoice_Number));
+
+
+                if (!System.IO.File.Exists(files) || invoice.Regenerate == 1)
+                {
+                    var invoiceDetails = new InvoiceNumberLotUI
+                    {
+                        Company_Id = invoice.Company_Id,
+                        Pay_Period_id = invoice.Pay_Period_Id,
+                        Invoice_Number = invoice.Invoice_Number,
+                        Invoice_Id = invoiceId,
+                        IsGenerated_IRN = invoice.IsGenerated_IRN,
+                        Regenerate = invoice.Regenerate
+                    };
+
+                    var result = await DownloadByInvoiceId(invoiceDetails); // should save PDF to invoiceFilePath
+                    if (result is OkObjectResult okResult)
+                    {
+                        var value = okResult.Value;
+
+                        // If anonymous/dynamic
+                        dynamic data = value;
+                        string InvoiceNumber = data.FileName;
+                        var invoiceupdate = _gstinvoiceRepository.IRNStatusGenerationUpdate(invoice.Invoice_Number).Result;
+                        if (invoiceDetails != null)
+                        {
+                            IRNStatusFolder = invoiceDetails.IsGenerated_IRN == 0 ? "Draft" : "IRN";
+                            files = string.Format("{0}{1}\\{2}\\{3}\\{4}",
+                                        basePath,
+                                         companyDetail.Company_Code,
+                                         companyDetail.Pay_Period,
+                                         IRNStatusFolder,
+                                        string.Format("{0}_{1}_{2}.pdf", companyDetail.Company_Code, companyDetail.Pay_Period, invoice.Invoice_Number));
+                        }
+                    }
+
+                }
+
+
+                var InvoiceSourcePath = Path.Combine(files);
+                var InvoiceTargetPath = Path.Combine(dynamic, $"{invoice.Invoice_Number}.pdf");
+                var invoiceFilePath = Path.Combine(files, $"{invoice.Invoice_Number}.pdf");
+                if (System.IO.File.Exists(InvoiceSourcePath))
+                {
+                    System.IO.File.Copy(InvoiceSourcePath, InvoiceTargetPath, true);
+                }
+
+                // ---------- PAY REGISTER EXCEL ----------
+                //var excelSourceFolder = Path.Combine(
+                //    basePath,
+                //    companyDetail.Company_Code,
+                //    companyDetail.Pay_Period,
+                //    invoice.Invoice_Number
+                //);
+
+                //var excelFileName = $"{companyDetail.Company_Code}_{companyDetail.Pay_Period}_{invoice.Invoice_Number}.xlsx";
+                //var excelSourcePath = Path.Combine(excelSourceFolder, excelFileName);
+                //var excelTargetPath = Path.Combine(dynamicFolder, excelFileName);
+
+                //if (!System.IO.File.Exists(excelSourcePath))
+                //{
+                //    var invoiceDetails = new InvoiceNumberLotUI
+                //    {
+                //        Company_Id = invoice.Company_Id,
+                //        Pay_Period_id = invoice.Pay_Period_Id,
+                //        Invoice_Number = invoice.Invoice_Number,
+                //        Data_from= invoice.Data_from
+                //    };
+
+                //    await _payregister.InvoicePayRegister(invoiceDetails);
+                //}
+
+
+
+                //if (System.IO.File.Exists(excelSourcePath))
+                //{
+                //    System.IO.File.Copy(excelSourcePath, excelTargetPath, true);
+                //}
+                //DataTable invoicesumary_dt = await _ieinvoice.GetInvoiceSummaryByInvoiceId(invoice.Invoice_Number);
+                //var InvSourceFolder = Path.Combine(
+                //    basePath,
+                //    companyDetail.Company_Code,
+                //    companyDetail.Pay_Period,
+                //    invoice.Invoice_Number
+                //);
+
+                //var SummaryFileName = $"{invoice.Invoice_Number}_Summary.xlsx";
+                //var SummarySourcePath = Path.Combine(""); // excelSourceFolder, excelFileName);
+                //var SummaryTargetPath = Path.Combine(""); // dynamicFolder, excelFileName);
+                //FileResponse fileResponse = new FileResponse();
+                //using (MemoryStream stream = new MemoryStream())
+                //{
+                //    using var workbook = new XLWorkbook();
+                //    {
+                //        var ws = workbook.AddWorksheet(invoicesumary_dt, "Invoice Summary");
+                //        workbook.SaveAs(stream);
+                //        var bytes_summary = (stream.ToArray());
+                //      System.IO.File.WriteAllBytes(dynamicFolder+"\\"+ SummaryFileName, bytes_summary);
+                //        //  FileResponse fileResponse = new FileResponse();
+                //        //fileResponse.FileName = "PayRegister.xlsx";
+                //        //fileResponse.File = bytes_summary;
+                //    }
+                //}
+
+                //var bytes = Convert.FromBase64String(fileResponse.File);
+
+                //using (var fs = new FileStream(SummaryTargetPath, FileMode.Create, FileAccess.Write))
+                //{
+                //    fs.Write(bytes, 0, bytes.Length);
+                //}
+            }
+
+            // ---------- ZIP CREATION ----------
+            using var memoryStream = new MemoryStream();
+
+            //using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            //{
+            //    foreach (var file in Directory.GetFiles(dynamic))
+            //    {
+            //        zip.CreateEntryFromFile(file, Path.GetFileName(file));
+            //    }
+            //}
+
+            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            {
+                var files = Directory.GetFiles(dynamic, "*", SearchOption.AllDirectories);
+
+                foreach (var file in files)
+                {
+                    var entryName = Path.GetRelativePath(dynamic, file);
+                    var zipEntry = archive.CreateEntry(entryName, CompressionLevel.Fastest);
+
+                    using var entryStream = zipEntry.Open();
+                    using var fileStream = System.IO.File.OpenRead(file);
+                    fileStream.CopyTo(entryStream);
+                }
+            }
+
+            //return File(
+            //    memoryStream.ToArray(),
+            //    "application/zip",
+            //    "Invoices.zip"
+            //);
+            //memoryStream.Position = 0;
+
+            // ---------- CLEANUP ----------
+            try
+            {
+                if (Directory.Exists(dynamic))
+                    Directory.Delete(dynamic, true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex+ $"Failed to delete temp folder: {dynamic}");
+            }
+
+            return File(memoryStream.ToArray(), "application/zip", "Invoices.zip");
+
+
+
+            //string[] DownloadIds = bulkInvoices.invoiceIds.Select(id => id.ToString()).ToArray();
+
+            //MemoryStream outputMemStream = new MemoryStream();
+
+            //ZipOutputStream zipStream = new ZipOutputStream(outputMemStream);
+
+            //zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
+
+            //byte[] bytes = null;
+
+            //// loops through the PDFs I need to create
+            //byte[] invoiceFileByte = null;
+            //string fileName="";
+            //foreach (var invoicedetails in DownloadIds)
+            //{
+            //    int invoiceId = Convert.ToInt32(invoicedetails);
+            //    ZipEntry newEntry = null;
+
+            //    var invoice = _invoiceRepository.GetInvoiceDetailByInvoiceId(invoiceId).Result;
+            //    if (invoice != null)
+            //    {
+            //        var companydetail = _payrollRepository.CompanyPayPeriod(invoice.Pay_Period_Id).Result;
+            //        if (companydetail != null)
+            //        {
+            //            var FilePath = "";
+            //            fileName = invoice.Invoice_Number + ".pdf";
+            //            newEntry= new ZipEntry(fileName);
+            //            newEntry.DateTime = DateTime.Now;
+
+            //            zipStream.PutNextEntry(newEntry);
+            //            var fileNames = string.Format("{0}_{1}_{2}", companydetail.Company_Code, companydetail.Pay_Period, invoice.Invoice_Number);
+            //            if (invoice.IsGenerated_IRN == 0)
+
+            //                FilePath = string.Format("{0}{1}/{2}/DraftInvoice/{3}.pdf",
+            //                    _configuration["ClaimDocPath"].ToString(),
+            //                    companydetail.Company_Code, companydetail.Pay_Period, fileNames);
+            //            else
+            //                FilePath = string.Format("{0}{1}/{2}/IRN/{3}.pdf",
+            //                    _configuration["ClaimDocPath"].ToString(),
+            //                    companydetail.Company_Code, companydetail.Pay_Period, fileNames);
+            //            if (!System.IO.File.Exists(FilePath))
+            //            {
+            //                InvoiceNumberLotUI invoice_details = new InvoiceNumberLotUI()
+            //                {
+            //                    Company_Id = invoice.Company_Id,
+            //                    Pay_Period_id = invoice.Pay_Period_Id,
+            //                    Invoice_Number = invoice.Invoice_Number
+            //                };
+            //                 DownloadByInvoiceId(invoice_details);
+            //            }
+
+            //            invoiceFileByte = System.IO.File.ReadAllBytes(FilePath);
+            //           // return File(existpdf, "application/pdf", string.Format("{0}.pdf", invoice.Invoice_Number));
+            //        }
+            //    }
+            //    else
+            //    {
+
+
+
+            //      //  string fileName;
+
+            //        string invoiceHtml;
+
+            //        bool applyDigitalSignature;
+
+            //        bool isHeaderFooter;
+
+            //        string QRImageText;
+
+            //        string QRImageBase64 = "";
+
+            //        string dateToDs;
+
+            //        bool isIRNGenerated;
+
+            //        DataSet ds = GetInvoiceData(Convert.ToInt32(invoiceId));
+            //        invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
+            //        fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
+            //        string companyCode = Clean(ds.Tables[0].Rows[0]["CompanyCode"].ToString());
+            //        string payPeriod = Clean(ds.Tables[0].Rows[0]["PayPeriod"].ToString());
+            //        string invoiceNumber = Clean(ds.Tables[0].Rows[0]["InvoiceNumber"].ToString());
+            //        applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
+            //        && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
+            //        isHeaderFooter = ds.Tables[0].Columns.Contains("IsHeaderFooter")
+            //        && Convert.ToBoolean(ds.Tables[0].Rows[0]["IsHeaderFooter"]);
+
+            //        isIRNGenerated = ds.Tables[0].Columns.Contains("IRN") && Convert.ToBoolean(ds.Tables[0].Rows[0]["IRN"]);
+
+            //        QRImageText = ds.Tables.Count > 1 && ds.Tables[1].Columns.Contains("QR_Image_Text")
+            //                      ? ds.Tables[1].Rows[0]["QR_Image_Text"].ToString()
+
+            //                      : "";
+
+            //        if (!string.IsNullOrEmpty(QRImageText))
+
+            //            QRImageBase64 = GenerateQRCodeBase64String(QRImageText);
+
+            //        invoiceHtml = invoiceHtml.Replace("[QR_Image_Text]", QRImageBase64);
+
+            //        dateToDs = ds.Tables[1].Rows[0]["date_to_ds"].ToString();
+
+            //        newEntry = new ZipEntry(fileName);
+            //        newEntry.DateTime = DateTime.Now;
+            //        zipStream.PutNextEntry(newEntry);
+
+            //        invoiceFileByte = GetInvoicePdf(invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, fileName);
+            //        // byte[] zipBytes = GetInvoicePdfAndPayRegisterZip(invoiceId, invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, companyCode, payPeriod, invoiceNumber, fileName);
+
+
+            //        //return File(zipBytes, "application/zip", $"Invoice_{invoiceNumber}.zip");
+
+            //    }
+            //    var invoiceFileBytes = DownloadToFolder(invoiceFileByte, _configuration["GstInvoiceForOtherApp"], fileName);
+            //    MemoryStream inStream = new MemoryStream(invoiceFileBytes);
+            //    StreamUtils.Copy(inStream, zipStream, new byte[4096]);
+            //    inStream.Close();
+            //    zipStream.CloseEntry();
+            //}
+
+            //zipStream.IsStreamOwner = false;    // False stops the Close also Closing the underlying stream.
+
+            //zipStream.Close();          // Must finish the ZipOutputStream before using outputMemStream.
+
+            //outputMemStream.Position = 0;
+
+            //return File(outputMemStream.ToArray(), "application/octet-stream", "Invoices.zip");
+
+        }
+
+        [HttpPost]
+        [Route("DownloadByInvoiceId")]
+        public async Task<IActionResult> DownloadByInvoiceId(InvoiceNumberLotUI invoiceNumberLotUI)
+        {
+            FileResponse fileResponse = new FileResponse() { File = "N", FileName = string.Format("{0}.pdf", invoiceNumberLotUI.Invoice_Number) };
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            string filePath = Path.Combine(folderPath, "debug.txt");
+            System.IO.File.AppendAllText(filePath,
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] PDF generation started{Environment.NewLine}",
+            Encoding.UTF8);
+            try
+            {
+                if (invoiceNumberLotUI.Invoice_Id <= 0)
+                    return BadRequest("Invalid Invoice Id");
+
+
+                _logger.LogError("Invoice Received" + JsonConvert.SerializeObject(invoiceNumberLotUI));
                 string fileName;
                 string invoiceHtml;
                 bool applyDigitalSignature;
@@ -82,17 +398,26 @@ namespace QPay.API.Controller.Invoice
                 string QRImageBase64 = "";
                 string dateToDs;
                 bool isIRNGenerated;
-
-                DataSet ds = GetInvoiceData(Convert.ToInt32(invoiceId));
-
+                int invoiceId = (int)invoiceNumberLotUI.Invoice_Id;
+                _logger.LogError("Invoice Received" + JsonConvert.SerializeObject(invoiceNumberLotUI));
+                System.IO.File.AppendAllText(filePath,
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {JsonConvert.SerializeObject(invoiceNumberLotUI)}{Environment.NewLine}",
+            Encoding.UTF8);
+                System.IO.File.AppendAllText(filePath,
+               $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] SP Excution Started...{Environment.NewLine}",
+           Encoding.UTF8);
+                DataSet ds = GetInvoiceData(invoiceId);
+                System.IO.File.AppendAllText(filePath,
+             $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] SP Excution Completed...{Environment.NewLine}",
+         Encoding.UTF8);
                 invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
                 fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
                 applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
                                         && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
                 isHeaderFooter = ds.Tables[0].Columns.Contains("IsHeaderFooter")
                                  && Convert.ToBoolean(ds.Tables[0].Rows[0]["IsHeaderFooter"]);
-                isIRNGenerated = ds.Tables[0].Columns.Contains("IRN")
-                           && Convert.ToBoolean(ds.Tables[0].Rows[0]["IRN"]);
+                isIRNGenerated = invoiceNumberLotUI.IsGenerated_IRN == 1 ? true : false;
+                //ds.Tables[0].Columns.Contains("IRN") && Convert.ToBoolean(ds.Tables[0].Rows[0]["IRN"]);
                 QRImageText = ds.Tables.Count > 1 && ds.Tables[1].Columns.Contains("QR_Image_Text")
                               ? ds.Tables[1].Rows[0]["QR_Image_Text"].ToString()
                               : "";
@@ -103,31 +428,84 @@ namespace QPay.API.Controller.Invoice
                 invoiceHtml = invoiceHtml.Replace("[QR_Image_Text]", QRImageBase64);
 
                 dateToDs = ds.Tables[1].Rows[0]["date_to_ds"].ToString();
-                var newEntry = new ZipEntry(fileName);
-                newEntry.DateTime = DateTime.Now;
-
-                zipStream.PutNextEntry(newEntry);
-
+                System.IO.File.AppendAllText(filePath,
+             $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Converting Pdf started...{Environment.NewLine}",
+         Encoding.UTF8);
                 byte[] pdf = GetInvoicePdf(invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, fileName);
+                System.IO.File.AppendAllText(filePath,
+            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Converting Pdf compated...{Environment.NewLine}",
+        Encoding.UTF8);
+                var path = _configuration["ClaimDocPath"].ToString();
 
-                string dirPath = _configuration["CertificatePath"].ToString();
+                var company = await this._gstinvoiceRepository.CompanyPayPeriod(invoiceNumberLotUI.Pay_Period_id);
+                var companyPath = Path.Combine(_configuration["ClaimDocPath"].ToString(), company.Company_Code);
+                var payperiodPath = Path.Combine(companyPath, company.Pay_Period);
+                if (invoiceNumberLotUI.IsGenerated_IRN == 0)
+                {
+                    var Invoicepath = Path.Combine(payperiodPath, "Draft");
 
-                byte[] fileBytes = DownloadToFolder(pdf, dirPath, fileName);
-                MemoryStream inStream = new MemoryStream(fileBytes);
-                StreamUtils.Copy(inStream, zipStream, new byte[4096]);
-                inStream.Close();
-                zipStream.CloseEntry();
+                    if (!Directory.Exists(Invoicepath))
+                    {
+                        Directory.CreateDirectory(Invoicepath);
+                    }
+                    string fileNames = string.Format("{0}_{1}_{2}{3}",
+                               company.Company_Code,
+                               company.Pay_Period,
+                              invoiceNumberLotUI.Invoice_Number,
+                               ".pdf");
+                    Invoicepath = Invoicepath + "\\" + fileNames;
+
+                    using (var fs = new FileStream(Invoicepath, FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(pdf, 0, pdf.Length);
+                    }
+                    fileResponse.File = "Y";
+                    fileResponse.FileName = fileNames;
+                }
+                else
+                {
+                    var Invoicepath = Path.Combine(payperiodPath, "IRN");
+
+                    if (invoiceNumberLotUI.Regenerate == 1)
+                    {
+                        if (Directory.Exists(Invoicepath))
+                        {
+                            Directory.Delete(Invoicepath, true);
+                        }
+                        Directory.CreateDirectory(Invoicepath);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(Invoicepath);
+                    }
+                    string fileNames = string.Format("{0}_{1}_{2}{3}",
+                               company.Company_Code,
+                               company.Pay_Period,
+                              invoiceNumberLotUI.Invoice_Number,
+                               ".pdf");
+                    Invoicepath = Invoicepath + "\\" + fileNames;
+
+                    using (var fs = new FileStream(Invoicepath, FileMode.Create, FileAccess.Write))
+                    {
+                        fs.Write(pdf, 0, pdf.Length);
+                    }
+                    fileResponse.File = "Y";
+                    fileResponse.FileName = fileNames;
+                }
 
             }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText(filePath,
+            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {ex.Message}...{Environment.NewLine}",
+        Encoding.UTF8);
+                this._logger.LogError("exception : " + ex.Message);
+            }
 
-            zipStream.IsStreamOwner = false;    // False stops the Close also Closing the underlying stream.
-            zipStream.Close();          // Must finish the ZipOutputStream before using outputMemStream.
 
-            outputMemStream.Position = 0;
 
-            return File(outputMemStream.ToArray(), "application/octet-stream", "Invoices.zip");
+            return Ok(fileResponse);
         }
-
         private byte[] GetInvoicePdf(string invoiceHtml, string dateToDs, bool applyDigitalSignature = false, bool IsHeaderFooter = false, bool isIRNGenerated = false, string fileName = default(string))
         {
             try
@@ -422,7 +800,7 @@ namespace QPay.API.Controller.Invoice
         public async Task<IActionResult> GetGSTBillable_Type() =>
            Ok(await this._gstinvoiceRepository.GetGSTBillableType());
         [HttpPost, Route("GetInvoiceStatus")]
-        public async Task<IActionResult> GetInvoiceStatus(InvoiceStatusUI request) =>
+        public async Task<IActionResult> GetInvoiceStatus(UI.Models.Invoice.InvoiceStatusUI request) =>
        Ok(await this._gstinvoiceRepository.GetInvoiceStatus(request));
 
         [HttpGet, Route("GetGSTCtcDeductionType")]
@@ -434,16 +812,16 @@ namespace QPay.API.Controller.Invoice
            Ok(await this._gstinvoiceRepository.GetGSTNetDeductionType());
 
         [HttpPost, Route("GetGstRates")]
-        public async Task<IActionResult> GetGstRates(GetGstRateRequest request) =>
+        public async Task<IActionResult> GetGstRates(UI.Models.Invoice.GetGstRateRequest request) =>
       Ok(await this._gstinvoiceRepository.GetGstRates(request));
 
 
         [HttpPost, Route("GetParticulars")]
-        public async Task<IActionResult> GetParticulars(SendRequest request) =>
+        public async Task<IActionResult> GetParticulars(UI.Models.Invoice.SendRequest request) =>
      Ok(await this._gstinvoiceRepository.GetParticulars(request));
 
         [HttpPost, Route("GetPayPeriod")]
-        public async Task<IActionResult> GetPayPeriod(PayPeriodRequest request) =>
+        public async Task<IActionResult> GetPayPeriod(UI.Models.Invoice.PayPeriodRequest request) =>
   Ok(await this._gstinvoiceRepository.GetPayPeriod(request));
 
 
@@ -529,7 +907,7 @@ namespace QPay.API.Controller.Invoice
         }
 
         [HttpPost, Route("GetAllInvoiceCancelDetails")]
-        public async Task<IActionResult> GetAllInvoiceCancelDetails([FromBody] CancelRequest request)
+        public async Task<IActionResult> GetAllInvoiceCancelDetails([FromBody] UI.Models.Invoice.CancelRequest request)
         {
             var ds = await this._gstinvoiceRepository.GetAllInvoiceCancelDetails(request.Company_Id, request.PayPeriod_Id);
 
@@ -537,7 +915,7 @@ namespace QPay.API.Controller.Invoice
             return Ok(payload);
         }
         [HttpPost, Route("BulkApproveInvoice")]
-        public async Task<IActionResult> BulkApproveInvoice([FromBody] InvoiceCancelApprovalRequest request)
+        public async Task<IActionResult> BulkApproveInvoice([FromBody] UI.Models.Invoice.InvoiceCancelApprovalRequest request)
         {
             // Call repository
             var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
@@ -568,7 +946,12 @@ namespace QPay.API.Controller.Invoice
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
         }
-
+        [HttpPost, Route("BulkRejectCancelRequest")]
+        public async Task<IActionResult> BulkRejectInvoice([FromBody] UI.Models.Invoice.InvoiceCancelApprovalRequest request)
+        {
+            var payload = await _gstinvoiceRepository.BulkRejectInvoice(request);
+            return Ok(payload);
+        }
 
         public async Task<EInvoice> InitiateCreditNoteIRN(
     string invoiceIds,
@@ -705,6 +1088,32 @@ namespace QPay.API.Controller.Invoice
             {
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
+        }
+
+        [HttpPost, Route("GetAllAttribute")]
+        public async Task<IActionResult> GetAllAttribute(UI.Models.Invoice.AttributeUI attributeUI)
+        {
+            var payload = await _gstinvoiceRepository.GetAllAttribute(attributeUI);
+
+            var attribute = payload.Select(x => new UI.Models.Invoice.SelectedItems()
+            {
+                value = x.AttributeName,
+                text = x.AttributeName
+            }).ToList();
+
+            return Ok(attribute.ToList());
+        }
+
+        [HttpPost]
+        [Route("UploadAttributes")]
+        public async Task<IActionResult> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
+          [FromForm] string payperiodId, [FromForm] string CreatedBy)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is missing.");
+
+            var result = await _gstinvoiceRepository.UploadAttributes(file, CompanyId, payperiodId, CreatedBy);
+            return Ok(result);
         }
     }
 }
