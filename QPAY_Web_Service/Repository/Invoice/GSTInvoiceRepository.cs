@@ -1,6 +1,10 @@
 ﻿using Azure.Core;
+using ClosedXML.Excel;
 using Dapper;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository;
@@ -13,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using static QPay.UI.Models.Invoice.Invoice;
+using static QPay.UI.Invoice.Invoice;
 
 namespace QPay.BAL.Repository.Invoice
 {
@@ -502,6 +507,8 @@ namespace QPay.BAL.Repository.Invoice
                 parameter.Add("@Company_Id", request.CompanyId);
                 parameter.Add("@Pay_Period_Id", request.PayPeriodId);
                 parameter.Add("@QzoneUserId", request.userId);
+                parameter.Add("@Remarks", request.remarks);
+
 
                 var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
 
@@ -563,11 +570,22 @@ namespace QPay.BAL.Repository.Invoice
                 return response;
             }
         }
-
-
-        DataSet IGSTInvoiceRepository.GetInvoiceData(int invoiceId)
+        public async Task<string> BulkRejectInvoice(InvoiceCancelApprovalRequest request)
         {
-            throw new NotImplementedException();
+            var response = new InvoiceCancelResponse();
+
+            string storeprocedure = "[dbo].[Proc_ManageEInvoice_NewUI]";
+
+            var parameter = new DynamicParameters();
+            parameter.Add("@Action", "GetIrnCancellationData");
+            parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
+            parameter.Add("@Status", "Reject");
+            parameter.Add("@Remarks", request.remarks);
+            //parameter.Add("@Company_Id", request.CompanyId);
+            //parameter.Add("@Pay_Period_Id", request.PayPeriodId);
+            //parameter.Add("@QzoneUserId", request.userId);
+
+            return await _dbRepository.GetItemsAsync(storeprocedure, parameter);
         }
 
         Task<string> IGSTInvoiceRepository.PostCancelReject(string xmlString, string userId)
@@ -630,5 +648,258 @@ namespace QPay.BAL.Repository.Invoice
             return "No data found";
 
         }
+
+        public async Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId)
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("@Invoice_Id", invoiceId);
+            string storedProcedure = "SP_IRN_GeneratedStatus_InvoiceDetail";
+
+            var res = await _dbRepository.GetItemsAsync(storedProcedure, parameter);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                var resultList = JsonConvert.DeserializeObject<List<InvoiceDetail>>(res);
+
+                return resultList.FirstOrDefault() ?? new InvoiceDetail();
+            }
+            else
+            {
+                return new InvoiceDetail();
+            }
+
+        }
+
+        public async Task<ClientPeriodUI> CompanyPayPeriod(int payperiod)
+        {
+            var parameters = new DynamicParameters();
+            string storeProcedure = "SP_GetCompanyCodeAndPayPeriod";
+            parameters.Add("@PayPeriod", payperiod);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+            if (res != null)
+            {
+                var company = JsonConvert.DeserializeObject<List<ClientPeriodUI>>(res);
+                return company.FirstOrDefault() ?? new ClientPeriodUI { Company_Code = "", Pay_Period = "" };
+            }
+            else
+            {
+                return new ClientPeriodUI { Company_Code = "", Pay_Period = "" };
+            }
+        }
+
+        public async Task<InvoiceNumberLotUI> IRNStatusGenerationUpdate(string Invoice_Number)
+        {
+            string procedure = "SP_PayRegister_Invoice";
+            var parameter = new DynamicParameters();
+            parameter.Add("@Flag", "IRNUpdate");
+            parameter.Add("@InvoiceNumber", Invoice_Number);
+            var res = await this._dbRepository.GetItemsAsync(procedure, parameter);
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                var resultList = JsonConvert.DeserializeObject<List<InvoiceNumberLotUI>>(res);
+
+                return resultList.FirstOrDefault() ?? new InvoiceNumberLotUI();
+            }
+            else
+            {
+                return new InvoiceNumberLotUI();
+            }
+        }
+
+        public async Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI)
+            {
+            var parameter = new DynamicParameters();
+            parameter.Add("@Id", attributeUI.id);
+            parameter.Add("@AttributeName", attributeUI.AttributeName);
+            parameter.Add("@Isactive", attributeUI.IsActive);
+            parameter.Add("@CreatedBy", attributeUI.CreatedBy);
+            parameter.Add("@ActionType", attributeUI.ActionType);
+            parameter.Add("@CompanyId", attributeUI.CompanyId);
+
+            var res = await _dbRepository.GetItemsAsync("SP_tbl_Attributes_AddUpdate", parameter);
+
+            if (res != null)
+            {
+                var attribute = JsonConvert.DeserializeObject<List<AttributeUI>>(res);
+                return attribute;
+            }
+            else
+            {
+                return new List<AttributeUI>();
+            }
+        }
+
+        public async Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
+          [FromForm] string payperiodId, [FromForm] string CreatedBy)
+        {
+            InvoiceResponse invoiceDetails = new InvoiceResponse();
+
+            if (file != null && file.Length != 0)
+            {
+                var uploadsFolder = Path.Combine(_config["ClaimDocPath"].ToString(), "Invoice", "Attributes");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var originalFileName = Path.GetFileName(file.FileName);
+                var extension = Path.GetExtension(originalFileName);
+                var newFileName = $"Attributes_{CompanyId}_{payperiodId}_{datePrefix}{extension}";
+
+                var filePath = Path.Combine(uploadsFolder, newFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                DataSet ds = new DataSet("DocumentElement");
+                ds = ExcelToDataSet(filePath);
+                //Convert dt to XML
+                if (ds.Tables.Count == 0)
+                {
+                    invoiceDetails.response = "Excel sheet is empty or not formatted correctly.";
+                    return invoiceDetails;
+                }
+
+                DataTable dtToSerialize = ds.Tables[0];
+
+                if (!dtToSerialize.Columns.Contains("Company_Id"))
+                    dtToSerialize.Columns.Add("Company_Id", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("PayPeriod_Id"))
+                    dtToSerialize.Columns.Add("PayPeriod_Id", typeof(int));
+
+                // Add extra columns that SQL expects
+                if (!dtToSerialize.Columns.Contains("Narration"))
+                    dtToSerialize.Columns.Add("Narration", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("PO_Number"))
+                    dtToSerialize.Columns.Add("PO_Number", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("GL_Code"))
+                    dtToSerialize.Columns.Add("GL_Code", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("Cost_Center_Name"))
+                    dtToSerialize.Columns.Add("Cost_Center_Name", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("Client_SPOC_Name"))
+                    dtToSerialize.Columns.Add("Client_SPOC_Name", typeof(string));
+
+                if (!dtToSerialize.Columns.Contains("Work_Order_Number"))
+                    dtToSerialize.Columns.Add("Work_Order_Number", typeof(string));
+
+                foreach (DataRow row in dtToSerialize.Rows)
+                {
+                    row["Company_Id"] = CompanyId;   // or actual PayPeriod from UI
+                    row["PayPeriod_Id"] = payperiodId;
+                }
+
+                foreach (DataRow row in dtToSerialize.Rows)
+                {
+                    foreach (DataColumn col in dtToSerialize.Columns)
+                    {
+                        if (row.IsNull(col))
+                            row[col] = string.Empty; // replace DBNull with empty string
+                    }
+                }
+
+
+                // Convert to XML
+                using var xmlWriter = new StringWriter();
+                dtToSerialize.TableName = "Table";  // Required for SQL XQuery
+                DataSet xmlDS = new DataSet("NewDataSet");
+                xmlDS.Tables.Add(dtToSerialize.Copy());
+
+                xmlDS.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
+                string xmlInput = xmlWriter.ToString();
+                string storeProcedure = "Proc_Upload_GSTInvoice_Attributes";
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@XML_File", xmlInput);
+                parameters.Add("@CreatedBy", CreatedBy);
+
+                var res = await _dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    try
+                    {
+                        var resultList = JsonConvert.DeserializeObject<List<ResponseModel>>(res);
+                        var message = resultList?.FirstOrDefault()?.Result ?? string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(message) &&
+                            message.Contains("Row(s) Uploaded Successfully.", StringComparison.OrdinalIgnoreCase))
+                        {
+                            invoiceDetails.response = message;
+                        }
+                        else
+                        {
+                            invoiceDetails.response = "Failed to import.";
+                            invoiceDetails.errors = res
+                                ?.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                                .ToList() ?? new List<string> { "Unknown error." };
+                        }
+                    }
+                    catch
+                    {
+                        invoiceDetails.response = "Error while processing response.";
+                    }
+                }
+                else
+                {
+                    invoiceDetails.response = "Failed";
+                }
+            }
+            else
+            {
+                invoiceDetails.response = "File not found";
+            }
+            return invoiceDetails;
+        }
+
+
+        public class ResponseModel
+        {
+            public string Result { get; set; }
+            public string Error_Message { get; set; }
+        }
+
+
+        public static DataSet ExcelToDataSet(string filePath)
+        {
+            using var workbook = new XLWorkbook(filePath);
+            var dataSet = new DataSet();
+
+            foreach (var worksheet in workbook.Worksheets)
+            {
+                var dataTable = new DataTable(worksheet.Name);
+                bool firstRow = true;
+
+                foreach (var row in worksheet.RowsUsed())
+                {
+                    if (firstRow)
+                    {
+                        foreach (var cell in row.Cells())
+                        {
+                            string columnName = cell.IsEmpty() ? $"Column{cell.Address.ColumnNumber}" : cell.GetValue<string>();
+                            dataTable.Columns.Add(columnName);
+                        }
+                        firstRow = false;
+                    }
+                    else
+                    {
+                        var values = row.Cells(1, dataTable.Columns.Count)
+                                        .Select(cell => cell.IsEmpty() ? string.Empty : cell.GetValue<string>())
+                                        .ToArray();
+
+                        dataTable.Rows.Add(values);
+                    }
+                }
+
+                dataSet.Tables.Add(dataTable);
+            }
+
+            return dataSet;
+        }
+
     }
 }

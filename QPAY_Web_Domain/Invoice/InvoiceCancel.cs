@@ -94,6 +94,8 @@ namespace QPay.UI.Invoice
         public string Crn_IRN_Number { get; set; } = "";
         public string? CreditNoteNumber { get; set; }
         public string? CancelledOn { get; set; }
+        public string? FilePath { get; set; }
+
     }
 
 }

@@ -9,14 +9,6 @@ namespace QPay.UI.Invoice
 {
     public class Invoice
     {
-        public class InvoiceResponse
-        {
-            public string response { get; set; } = string.Empty;
-            public List<string> errors { get; set; } = new List<string>();
-        }
-
-
-
         public class LotMergeRequest
         {
             public List<MergeRequest> mergeRequests { get; set; }
