@@ -19,6 +19,7 @@ using System.Text;
 using System.Web;
 using QPay.UI.Models;
 using System.IO.Compression;
+using QPay.UI.Common;
 
 
 namespace QPay.API.Controller.Invoice
@@ -614,15 +615,39 @@ namespace QPay.API.Controller.Invoice
         }
         private string GenerateQRCodeBase64String(string qrcodeText)
         {
-            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            var qrGenerator = new QRCodeGenerator();
+            var qrCodeData = qrGenerator.CreateQrCode(qrcodeText, QRCodeGenerator.ECCLevel.Q);
+
+            int modules = qrCodeData.ModuleMatrix.Count;
+
+            int pixelsPerModule = (int)Math.Floor(250.0 / modules);
+
+            if (pixelsPerModule < 1)
+                pixelsPerModule = 1;
+
+            using (var qrCode = new QRCode(qrCodeData))
             {
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrcodeText, QRCodeGenerator.ECCLevel.Q);
-                using (QRCode qrCode = new QRCode(qrCodeData))
-                using (Bitmap qrBitmap = qrCode.GetGraphic(20))
-                using (MemoryStream ms = new MemoryStream())
+                using (Bitmap bitmap = qrCode.GetGraphic(
+                    pixelsPerModule,
+                    Color.Black,
+                    Color.White,
+                    drawQuietZones: true))
                 {
-                    qrBitmap.Save(ms, ImageFormat.Png);
-                    return Convert.ToBase64String(ms.ToArray());
+                    using (Bitmap finalBitmap = new Bitmap(250, 250))
+                    {
+                        using (Graphics g = Graphics.FromImage(finalBitmap))
+                        {
+                            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                            g.DrawImage(bitmap, 0, 0, 250, 250);
+                        }
+
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            finalBitmap.Save(ms, ImageFormat.Png);
+                            return Convert.ToBase64String(ms.ToArray());
+                        }
+                    }
                 }
             }
         }
@@ -1114,6 +1139,105 @@ namespace QPay.API.Controller.Invoice
 
             var result = await _gstinvoiceRepository.UploadAttributes(file, CompanyId, payperiodId, CreatedBy);
             return Ok(result);
+        }
+
+        [HttpPost, Route("GetConsolidateInvoiceSummary")]
+        public async Task<IActionResult> GetConsolidateInvoiceSummary(DownloadRegister downloadRegister)
+        {
+            DataSet ds = await _gstinvoiceRepository.GetConsolidateInvoiceSummary(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id);
+            DataTable dt = ds.Tables[0];
+
+            //DataTable dt1 = _ieinvoice.PayRegisterDownload(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id, downloadRegister.Pay_Period);
+
+            if (dt.Rows.Count > 0) //&& dt1.Rows.Count > 0)
+            {
+                using var workbook = new XLWorkbook();
+                {
+                    
+                    var ws = workbook.AddWorksheet(dt, "InvoiceSummary");
+                    ws.Table(0).ShowAutoFilter = false;
+                    ws.Table(0).Theme = XLTableTheme.None;
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var bytes = Convert.ToBase64String(stream.ToArray());
+                        FileResponse fileResponse = new FileResponse();
+                        string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
+                        fileResponse.FileName = "Consolidated_InvoiceSummary" + fileName;
+                        fileResponse.File = bytes;
+
+                        return Ok(fileResponse);//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                    }
+                }
+            }
+            else
+            {
+                var response = new APIResponse<object>
+                {
+                    statuscode = 400,
+                    message = "Failure",
+                    data = "",
+                    error = ""
+                };
+                return Ok(response);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("EInvoiceError/{invoiceId}")]
+        public async Task<IActionResult> EInvoiceError(int invoiceId)
+        {
+            FileResponse fileResponse = new FileResponse();
+            try
+            {
+                DataSet ds = await _gstinvoiceRepository.GetEInvoiceError(invoiceId);
+
+                if (ds == null || ds.Tables.Count == 0)
+                {
+                    fileResponse.File = "No";
+                }
+                else
+                {
+
+                    using var workbook = new XLWorkbook();
+                    {
+
+                        var ws = workbook.AddWorksheet(ds.Tables[0], "IRNError");
+                        ws.Table(0).ShowAutoFilter = false;
+                        ws.Table(0).Theme = XLTableTheme.None;
+
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var bytes = Convert.ToBase64String(stream.ToArray());
+
+                            fileResponse.FileName = "InputLot";
+                            fileResponse.File = bytes;
+                            //return Ok(fileResponse);//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                        }
+
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                fileResponse.File = "No";
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+            return Ok(fileResponse);
+        }
+
+        [HttpGet]
+        [Route("EInvoiceErrorHover/{invoiceId}")]
+        public async Task<IActionResult> EInvoiceErrorHover(int invoiceId)
+        {
+            DataSet ds = await _gstinvoiceRepository.GetEInvoiceErrorHover(invoiceId);
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
         }
     }
 }

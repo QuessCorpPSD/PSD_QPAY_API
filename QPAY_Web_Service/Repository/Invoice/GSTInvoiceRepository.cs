@@ -504,10 +504,12 @@ namespace QPay.BAL.Repository.Invoice
                 var parameter = new DynamicParameters();
                 parameter.Add("@Action", "GetIrnCancellationData");
                 parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
-                parameter.Add("@Company_Id", request.CompanyId);
-                parameter.Add("@Pay_Period_Id", request.PayPeriodId);
-                parameter.Add("@QzoneUserId", request.userId);
+                //parameter.Add("@Company_Id", request.CompanyId);
+                //parameter.Add("@Pay_Period_Id", request.PayPeriodId);
+                //parameter.Add("@QzoneUserId", request.userId);
                 parameter.Add("@Remarks", request.remarks);
+                parameter.Add("@Status", "Approved");
+
 
 
                 var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
@@ -579,7 +581,7 @@ namespace QPay.BAL.Repository.Invoice
             var parameter = new DynamicParameters();
             parameter.Add("@Action", "GetIrnCancellationData");
             parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
-            parameter.Add("@Status", "Reject");
+            parameter.Add("@Status", "Rejected");
             parameter.Add("@Remarks", request.remarks);
             //parameter.Add("@Company_Id", request.CompanyId);
             //parameter.Add("@Pay_Period_Id", request.PayPeriodId);
@@ -899,6 +901,45 @@ namespace QPay.BAL.Repository.Invoice
             }
 
             return dataSet;
+        }
+
+        public async Task<DataSet> GetConsolidateInvoiceSummary(int companyId, int payperiodid)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Company_id"] = companyId,
+                ["@Pay_Period_id"] = payperiodid,
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);
+        }
+        public async Task<DataSet> GetEInvoiceErrorHover(int invoiceId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+
+
+                ["@Invoice_Id"] = invoiceId,
+                ["@Company_Id"] = 0,
+                ["@Pay_Period_Id"] = "0",
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Get_EInvoice_Error_Invoicewise", parameters, 1500);
+
+        }
+        public async Task<DataSet> GetEInvoiceError(int invoiceId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+
+
+                ["@Invoice_Id"] = invoiceId,
+                ["@Company_Id"] = 0,
+                ["@Pay_Period_Id"] = "0",
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Get_EInvoice_Error_Invoicewise", parameters, 1500);
+
         }
 
     }
