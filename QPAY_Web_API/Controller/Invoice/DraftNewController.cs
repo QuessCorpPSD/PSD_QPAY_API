@@ -39,74 +39,74 @@ namespace QPay.API.Controller.Invoice
             return Ok(payload);
         }
 
-        [HttpPost]
-        [Route("PerformaInvoiceSplit")]
-        public async Task<IActionResult> PerformaInvoiceSplit(IFormFile file, [FromForm] string CompanyId,
-            [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("File is missing.");
+        //[HttpPost]
+        //[Route("PerformaInvoiceSplit")]
+        //public async Task<IActionResult> PerformaInvoiceSplit(IFormFile file, [FromForm] string CompanyId,
+        //    [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId)
+        //{
+        //    if (file == null || file.Length == 0)
+        //        return BadRequest("File is missing.");
 
-            var result = await _iinvoice.PerformaInvoiceSplit(file, CompanyId, payperiod, CreatedBy, payperiodId);
-            return Ok(result);
-        }
+        //    var result = await _iinvoice.PerformaInvoiceSplit(file, CompanyId, payperiod, CreatedBy, payperiodId);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        [Route("PerformaInvoiceMerge")]
-        public async Task<IActionResult> PerformaInvoiceMerge(LotMergeRequest request)
-        {
-            var result = await _iinvoice.PerformaInvoiceMerge(request);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("PerformaInvoiceMerge")]
+        //public async Task<IActionResult> PerformaInvoiceMerge(LotMergeRequest request)
+        //{
+        //    var result = await _iinvoice.PerformaInvoiceMerge(request);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        [Route("PerformaInvoiceMergeNew")]
-        public async Task<IActionResult> PerformaInvoiceMergeNew(List<MergeNewRequest> request)
-        {
-            var result = await _iinvoice.PerformaInvoiceMergeNew(request);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("PerformaInvoiceMergeNew")]
+        //public async Task<IActionResult> PerformaInvoiceMergeNew(List<MergeNewRequest> request)
+        //{
+        //    var result = await _iinvoice.PerformaInvoiceMergeNew(request);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        [Route("PerformaInvoiceInitiate")]
-        public async Task<IActionResult> PerformaInvoiceInitiate(DraftInvoiceInitiate request)
-        {
-            var result = await _iinvoice.PerformaInvoiceInitiate(request);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("PerformaInvoiceInitiate")]
+        //public async Task<IActionResult> PerformaInvoiceInitiate(DraftInvoiceInitiate request)
+        //{
+        //    var result = await _iinvoice.PerformaInvoiceInitiate(request);
+        //    return Ok(result);
+        //}
 
 
-        [HttpPost]
-        [Route("PerformaInvoiceSkip")]
-        public async Task<IActionResult> PerformaInvoiceSkip(DraftInvoiceInitiate request)
-        {
-            var result = await _iinvoice.PerformaInvoiceSkip(request);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("PerformaInvoiceSkip")]
+        //public async Task<IActionResult> PerformaInvoiceSkip(DraftInvoiceInitiate request)
+        //{
+        //    var result = await _iinvoice.PerformaInvoiceSkip(request);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        [Route("UpdateMapName")]
-        public async Task<IActionResult> UpdateMapName(IFormFile file, [FromForm] string CompanyId,
-           [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("File is missing.");
+        //[HttpPost]
+        //[Route("UpdateMapName")]
+        //public async Task<IActionResult> UpdateMapName(IFormFile file, [FromForm] string CompanyId,
+        //   [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId)
+        //{
+        //    if (file == null || file.Length == 0)
+        //        return BadRequest("File is missing.");
 
-            var result = await _iinvoice.UpdateMapName(file, CompanyId, payperiod, CreatedBy, payperiodId);
-            return Ok(result);
-        }
+        //    var result = await _iinvoice.UpdateMapName(file, CompanyId, payperiod, CreatedBy, payperiodId);
+        //    return Ok(result);
+        //}
 
-        [HttpPost]
-        [Route("UploadAttributes")]
-        public async Task<IActionResult> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
-           [FromForm] string payperiodId, [FromForm] string CreatedBy)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest("File is missing.");
+        //[HttpPost]
+        //[Route("UploadAttributes")]
+        //public async Task<IActionResult> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
+        //   [FromForm] string payperiodId, [FromForm] string CreatedBy)
+        //{
+        //    if (file == null || file.Length == 0)
+        //        return BadRequest("File is missing.");
 
-            var result = await _iinvoice.UploadAttributes(file, CompanyId, payperiodId, CreatedBy);
-            return Ok(result);
-        }
+        //    var result = await _iinvoice.UploadAttributes(file, CompanyId, payperiodId, CreatedBy);
+        //    return Ok(result);
+        //}
 
         [HttpPost, Route("GetSplitTemplate")]
         public async Task<IActionResult> GetSplitTemplate(SplitParams splitParams)
