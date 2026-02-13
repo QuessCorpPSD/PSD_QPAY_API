@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using QPay.BAL.IRepository;
@@ -26,7 +27,7 @@ namespace QPay.BAL.Repository
     {
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _configuration;
-
+        
         public InputAggregatorRepository(DbRepository dbRepository, IConfiguration configuration)
         {
             this._dbRepository = dbRepository;
@@ -317,7 +318,7 @@ namespace QPay.BAL.Repository
                 string FileName = Path.GetFileNameWithoutExtension(file.FileName.ToUpper());
                 FileName += DateTime.Now.ToString("_yyyyMMddhhmmssffff") + fileExtention;
                 //string serverpath = ConfigurationManager.AppSettings["ClaimDocPath"] + FileName;
-                string serverpath = DirName + FileName;
+                string serverpath = DirName + "/" + FileName;
 
                 using (var stream = new FileStream(serverpath, FileMode.Create))
                 {
