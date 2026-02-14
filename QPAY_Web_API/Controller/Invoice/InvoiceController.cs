@@ -99,10 +99,10 @@ namespace QPay.API.Controller.Invoice
             return Ok(dashboard);
         }
         [HttpGet]
-        [Route("DraftInvoiceEmployeeByRequestId/{reqNo}")]
-        public async Task<IActionResult> DraftInvoiceEmployeeByRequestId(int reqNo)
+        [Route("DraftInvoiceEmployeeByRequestId/{reqNo}/{invoiceType}")]
+        public async Task<IActionResult> DraftInvoiceEmployeeByRequestId(int reqNo, string invoiceType)
         {
-            var employee = await _iinvoice.DraftInvoiceEmployeeByRequestId(reqNo);
+            var employee = await _iinvoice.DraftInvoiceEmployeeByRequestId(reqNo, invoiceType);
             if (employee.Rows.Count > 0)
             {
                 using var workbook = new XLWorkbook();

@@ -595,44 +595,34 @@ namespace QPay.BAL.Repository.Invoice
             throw new NotImplementedException();
         }
 
-        //Task<string> IGSTInvoiceRepository.Create(GstInvoiceCreateRequest request)
-        //{
-        //    throw new NotImplementedException();
-        //}  
-        public async Task<string> SaveBatchResponse(
-     int statusCode,
-     string responseMessage,
-     string response,
-     string responseXml,
-     string invoiceIds,
-     string mode,
-     string userId)
+        public EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action)
         {
-            var parameters = new Dictionary<string, object?>
+            EInvoice einvoice = this._dbRepository.GetEInvoiceData(invoiceIds, UserId, Action);
+            if (einvoice != null)
             {
-                ["@Action"] = mode,
-                ["@StatusCode"] = statusCode,
-                ["@ResponseMessage"] = responseMessage,
-                ["@Response"] = response,
-                ["@XmlData"] = responseXml,
-                ["@InvoiceIds"] = invoiceIds,
-                ["@QzoneUserId"] = userId
-            };
-
-            return await _dbRepository.GetItemsAsync(
-                "Proc_ManageEInvoice_NewUI",
-                parameters
-            );
-        }
-
-        public async Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action)
-        {
+                return einvoice;
+            }
+            else
             {
-                var dbResults = _dbRepository.GetEInvoiceData(invoiceIds, UserId, Action);
-                return dbResults;
+                throw new Exception("No data found for the given Invoices");
             }
         }
 
+        public string SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = Mode,
+                ["@StatusCode"] = StatusCode,
+                ["@ResponseMessage"] = ResponseMessage,
+                ["@Response"] = Response,
+                ["@XmlData"] = ResponseXml,
+                ["@InvoiceIds"] = InvoiceIds,
+                //["@Mode"] = Mode,
+                ["@QzoneUserId"] = UserId,
+            };
+            return _dbRepository.GetString("Proc_ManageEInvoice_NewUI", parameters);
+        }
 
         public string GetFilename(int invoice_Id)
         {

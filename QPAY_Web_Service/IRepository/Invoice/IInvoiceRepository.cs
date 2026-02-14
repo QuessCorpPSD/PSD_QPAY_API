@@ -24,7 +24,7 @@ namespace QPay.BAL.IRepository.Invoice
            [FromForm] string payperiodId, [FromForm] string CreatedBy);
         Task<InvoiceResponse> PerformaInvoiceMergeNew(List<MergeNewRequest> request);
         Task<List<BillingDashboard>> BillingDashboard(int userId);
-        Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId);
+        Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType);
 
     }
 }

@@ -35,8 +35,6 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriod);
         Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
         Task<string> BulkRejectInvoice(InvoiceCancelApprovalRequest request);
-        Task<EInvoice> GetEInvoiceData(string invoiceIds, string UserId, string Action);
-        Task<string> SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
         string GetFilename(int invoice_Id);
         Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
         Task<ClientPeriodUI> CompanyPayPeriod(int payperiod);
@@ -48,5 +46,8 @@ namespace QPay.BAL.IRepository.Invoice
 
         Task<DataSet> GetEInvoiceError(int invoiceId);
         Task<DataSet> GetEInvoiceErrorHover(int invoiceId);
+
+        EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action);
+        string SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
     }
 }

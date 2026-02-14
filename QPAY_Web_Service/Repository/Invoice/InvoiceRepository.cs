@@ -513,13 +513,14 @@ namespace QPay.BAL.Repository.Invoice
             return billingDashboards;
         }
 
-        public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId)
+        public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@RequestId", requestId);
+            parameters.Add("@Invoice_Type", invoiceType);
 
             var result = await _dbRepository
-                .GetItemsAsync("SP_PROC_DraftInvoice_EmployeeByRequestId", parameters);
+                .GetItemsAsync("SP_PROC_DraftInvoice_EmployeeByRequestId_Test", parameters);
 
             return result != null && result.Any()
                 ? JsonConvert.DeserializeObject<DataTable>(result) ?? new DataTable()

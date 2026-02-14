@@ -141,7 +141,9 @@ namespace QPay.BAL.Repository
                 parameter.Add("@Pay_Frequency_Detail_Id", intiationExportRequest.PayPeriod_Id ?? (object)DBNull.Value);
                 parameter.Add("@INPUTNUMBER", intiationExportRequest.LotNo ?? (object)DBNull.Value);
                 parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
-                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_OtherIncome_Report_PONUMBER_Request_ExportToExcel]", parameter);
+                parameter.Add("@Invoice_Type", intiationExportRequest.Invoice_Type ?? (object)DBNull.Value);
+
+                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_OtherIncome_Report_PONUMBER_Request_ExportToExcel_Test]", parameter);
                 DataTable list = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
 
                 using var workbook = new XLWorkbook();
@@ -167,7 +169,9 @@ namespace QPay.BAL.Repository
                 parameter.Add("@Pay_Period_Id", intiationExportRequest.PayPeriod_Id ?? (object)DBNull.Value);
                 parameter.Add("@Lot_No", intiationExportRequest.LotNo ?? (object)DBNull.Value);
                 parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
-                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise]", parameter);
+                parameter.Add("@Invoice_Type", intiationExportRequest.Invoice_Type ?? (object)DBNull.Value);
+
+                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise_Test]", parameter);
                 DataTable list = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
 
                 using var workbook = new XLWorkbook();
@@ -275,6 +279,52 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
+        public async Task<InvoiceResponse> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequest provisionalrequest)
+        {
+            InvoiceResponse invoiceDetails = new InvoiceResponse();
+            string storeProcedure = "Proc_ManageInvoiceEmployeeDetail_NewUI";
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = "CreateInvoice",
+                ["@UserId"] = provisionalrequest.CreatedBy,
+                ["@CompanyId"] = provisionalrequest.CompanyId,
+                ["@CostCenterMappingId"] = provisionalrequest.Map_Name_Id,
+                ["@PayPeriodId"] = provisionalrequest.PayPeriodId,
+                ["@LotNumber"] = provisionalrequest.LotNo,
+                ["@InputNumber"] = provisionalrequest.Input_No,
+                ["@IsActive"] = provisionalrequest.Isactive,
+                ["@CreatedBy"] = provisionalrequest.CreatedBy,
+                ["@ModifiedBy"] = provisionalrequest.CreatedBy,
+                ["@PageNo"] = "1",
+                ["@PageSize"] = "10",
+                ["@Map_Name"] = provisionalrequest.Map_Name,
+                ["@Pay_Period"] = provisionalrequest.PayPeriod
+
+            };
+
+            DataSet ds = _dbRepository.ExecuteStoredProcedureToDataSetAsync(storeProcedure, parameters, 1500);
+            var res = ds.Tables[1].Rows[0]["Result"].ToString();
+            if (!string.IsNullOrWhiteSpace(res))
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(res))
+                    {
+                        invoiceDetails.response = res;
+                    }
+                }
+                catch
+                {
+                    invoiceDetails.response = "Error while processing response.";
+                }
+            }
+            else
+            {
+                invoiceDetails.response = "Failed";
+            }
+
+            return invoiceDetails;
+        }
     }
-    }
+}
 
