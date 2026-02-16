@@ -106,7 +106,7 @@ namespace QPay.API.Controller.Invoice
                         if (invoiceDetails != null)
                         {
                             IRNStatusFolder = invoiceDetails.IsGenerated_IRN == 0 ? "Draft" : "IRN";
-                            files = string.Format("{0}{1}\\{2}\\{3}\\{4}",
+                            files = string.Format("{0}\\{1}\\{2}\\{3}\\{4}",
                                         basePath,
                                          companyDetail.Company_Code,
                                          companyDetail.Pay_Period,
