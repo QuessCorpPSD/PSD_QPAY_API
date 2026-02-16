@@ -12,6 +12,7 @@ using static QPay.UI.Models.Invoice.Invoice;
 using static QPay.UI.Invoice.Invoice;
 using Microsoft.AspNetCore.Http;
 using InvoiceResponse = QPay.UI.Models.Invoice.InvoiceResponse;
+using QPay.UI.Models;
 
 namespace QPay.BAL.IRepository.Invoice
 {
@@ -49,5 +50,8 @@ namespace QPay.BAL.IRepository.Invoice
 
         EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action);
         string SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
+        FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, string payPeriod);
+        DataTable GetPayRegisterSummary(int companyCode, int pay_period_Id);
+        Task<List<InvoiceColors>> GetAllInvoiceTypeColors();
     }
 }

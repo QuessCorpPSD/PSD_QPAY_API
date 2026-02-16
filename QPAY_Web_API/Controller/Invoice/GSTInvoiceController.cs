@@ -1318,5 +1318,25 @@ namespace QPay.API.Controller.Invoice
             var result = _gstinvoiceRepository.GetEInvoiceData(invoiceIds, UserId, Action);
             return result;
         }
+
+        [HttpPost]
+        [Route("PayRegisterDownload")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> PayRegisterDownload(DownloadRegister downloadRegister)
+        {
+            FileResponse fileResponse = new FileResponse();
+            fileResponse = _gstinvoiceRepository.PayRegisterDownload(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id, downloadRegister.Pay_Period);
+            return Ok(fileResponse);
+        }
+
+        [HttpGet]
+        [Route("GetAllInvoiceTypeColors")]
+        public async Task<IActionResult> GetAllInvoiceTypeColors()
+        {
+            var ds = await _gstinvoiceRepository.GetAllInvoiceTypeColors();
+
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
     }
 }
