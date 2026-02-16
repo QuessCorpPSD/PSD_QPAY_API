@@ -902,17 +902,39 @@ namespace QPay.BAL.Repository.Invoice
 
             return dataSet;
         }
-
-        public async Task<DataSet> GetConsolidateInvoiceSummary(int companyId, int payperiodid)
+        public async Task<DataTable> GetConsolidateInvoiceSummary(int companyId, int payperiodid)
         {
-            var parameters = new Dictionary<string, object?>
-            {
-                ["@Company_id"] = companyId,
-                ["@Pay_Period_id"] = payperiodid,
-            };
+            //var parameters = new Dictionary<string, object?>
+            //{
+            //    ["@Company_id"] = companyId,
+            //    ["@Pay_Period_id"] = payperiodid,
+            //};
+            DataTable dataTable = new DataTable();
+            var parameter = new DynamicParameters();
+            parameter.Add("@Company_id", companyId);
+            parameter.Add("@Pay_Period_id", payperiodid);
 
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);
+            var res =await _dbRepository.GetItemsAsync("SpInvoiceDetails_Report_Companywise", parameter);
+            if(res.Any())
+            {
+                dataTable = JsonConvert.DeserializeObject<DataTable>(res) ?? new DataTable();
+                return dataTable;
+            }
+            return dataTable;
+
+           // return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);
         }
+
+        //public async Task<DataSet> GetConsolidateInvoiceSummary(int companyId, int payperiodid)
+        //{
+        //    var parameters = new Dictionary<string, object?>
+        //    {
+        //        ["@Company_id"] = companyId,
+        //        ["@Pay_Period_id"] = payperiodid,
+        //    };
+
+        //    return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);
+        //}
         public async Task<DataSet> GetEInvoiceErrorHover(int invoiceId)
         {
             var parameters = new Dictionary<string, object?>

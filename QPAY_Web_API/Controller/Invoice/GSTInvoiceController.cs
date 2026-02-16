@@ -1144,31 +1144,35 @@ namespace QPay.API.Controller.Invoice
         [HttpPost, Route("GetConsolidateInvoiceSummary")]
         public async Task<IActionResult> GetConsolidateInvoiceSummary(DownloadRegister downloadRegister)
         {
-            DataSet ds = await _gstinvoiceRepository.GetConsolidateInvoiceSummary(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id);
-            DataTable dt = ds.Tables[0];
-
-            //DataTable dt1 = _ieinvoice.PayRegisterDownload(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id, downloadRegister.Pay_Period);
-
-            if (dt.Rows.Count > 0) //&& dt1.Rows.Count > 0)
+            DataTable dt = await _gstinvoiceRepository.GetConsolidateInvoiceSummary(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id);
+           // DataTable dt = ds.Tables[0];
+            if (dt.Rows.Count > 0) 
             {
                 using var workbook = new XLWorkbook();
-                {
-                    
+                {                    
                     var ws = workbook.AddWorksheet(dt, "InvoiceSummary");
                     ws.Table(0).ShowAutoFilter = false;
                     ws.Table(0).Theme = XLTableTheme.None;
 
-                    using (MemoryStream stream = new MemoryStream())
+                    using (var stream = new MemoryStream())
                     {
                         workbook.SaveAs(stream);
-                        var bytes = Convert.ToBase64String(stream.ToArray());
-                        FileResponse fileResponse = new FileResponse();
-                        string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
-                        fileResponse.FileName = "Consolidated_InvoiceSummary" + fileName;
-                        fileResponse.File = bytes;
 
-                        return Ok(fileResponse);//File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayRegister.xlsx");
+                        // 🔴 THIS LINE IS MANDATORY
+                        stream.Position = 0;
+
+                        var base64 = Convert.ToBase64String(stream.ToArray());
+
+                        var fileResponse = new FileResponse
+                        {
+                            FileName = "Consolidated_InvoiceSummary_" +
+                                       DateTime.Now.ToString("yyyyMMddHHmmssffff") + ".xlsx",
+                            File = base64
+                        };
+
+                        return Ok(fileResponse);
                     }
+
                 }
             }
             else

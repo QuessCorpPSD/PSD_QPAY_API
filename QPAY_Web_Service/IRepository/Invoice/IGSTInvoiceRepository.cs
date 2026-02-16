@@ -44,7 +44,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI);
         Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
            [FromForm] string payperiodId, [FromForm] string CreatedBy);
-        Task<DataSet> GetConsolidateInvoiceSummary(int companyId, int payperiodid);
+        Task<DataTable> GetConsolidateInvoiceSummary(int companyId, int payperiodid);
 
         Task<DataSet> GetEInvoiceError(int invoiceId);
         Task<DataSet> GetEInvoiceErrorHover(int invoiceId);

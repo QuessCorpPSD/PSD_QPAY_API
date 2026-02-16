@@ -1215,9 +1215,9 @@ namespace QPay.API.Controller.Invoice
 
             if (dt.Rows.Count > 0) //&& dt1.Rows.Count > 0)
             {
-                                using var workbook = new XLWorkbook();
+                using var workbook = new XLWorkbook();
                 {
-                                       var ws = workbook.AddWorksheet(dt, "InvoiceSummary");
+                    var ws = workbook.AddWorksheet(dt, "InvoiceSummary");
                     ws.Table(0).ShowAutoFilter = false;
                     ws.Table(0).Theme = XLTableTheme.None;
 
@@ -1225,7 +1225,7 @@ namespace QPay.API.Controller.Invoice
                     {
                         workbook.SaveAs(stream);
                         var bytes = Convert.ToBase64String(stream.ToArray());
-                       
+
                         string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
                         fileResponse.FileName = "Consolidated_InvoiceSummary" + fileName;
                         fileResponse.File = bytes;
