@@ -158,6 +158,7 @@ namespace QPay.UI.Models.Invoice
         public string? LotNo { get; set; }
         public string? ReqNo { get; set; }
         public string? Data_From { get; set; }
+        public string? Invoice_Type { get; set; }
     }
 
     public class InvoiceDetailModel
@@ -204,6 +205,32 @@ namespace QPay.UI.Models.Invoice
         public string Rejected_On { get; set; } = "";
         public string Rejected_By { get; set; } = "";
         public string InvoiceCreatedOn { get; set; } = "";
+        public string Invoice_remarks { get; set; } = "";
+    }
+
+
+    public class ProvisionalInvoiceInitiateRequest
+    {
+        public string CompanyId { get; set; } = string.Empty;
+        public string CompanyCode { get; set; } = string.Empty;
+        public string PayPeriodId { get; set; } = string.Empty;
+        public string PayPeriod { get; set; } = string.Empty;
+        public string LotNo { get; set; } = string.Empty;
+        public string Input_No { get; set; } = string.Empty;
+        public string Amount { get; set; } = string.Empty;
+        public string ServiceCharge { get; set; } = string.Empty;
+        public string State_Name { get; set; } = string.Empty;
+        public string State_Id { get; set; } = string.Empty;
+        public string Map_Name_Id { get; set; } = string.Empty;
+        public string Map_Name { get; set; } = string.Empty;
+        public string Invoice_Category_Id { get; set; } = string.Empty;
+        public string Invoice_Category { get; set; } = string.Empty;
+        public string CreatedBy { get; set; } = string.Empty;
+        public string Isactive { get; set; } = string.Empty;
+        public string Employee_code { get; set; } = string.Empty;
+
+
+
     }
 
 }

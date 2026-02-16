@@ -951,7 +951,7 @@ namespace QPay.API.Controller.Invoice
                 string bulkInvoiceIds = string.Join(",", ds.CreditnoteInvoices.InvoiceIds);
 
                 // Prepare payload for credit note IRN generation
-                var invoiceDetails = await InitiateCreditNoteIRN(bulkInvoiceIds, request.userId);
+                var invoiceDetails = InitiateCreditNoteIRN(bulkInvoiceIds, request.userId);
 
                 string JsonString = JsonConvert.SerializeObject(invoiceDetails);
 
@@ -978,15 +978,11 @@ namespace QPay.API.Controller.Invoice
             return Ok(payload);
         }
 
-        public async Task<EInvoice> InitiateCreditNoteIRN(
-    string invoiceIds,
-    string userId)
+        public EInvoice InitiateCreditNoteIRN(string invoiceIds, string userId)
         {
-            return await _gstinvoiceRepository.GetEInvoiceData(
-                invoiceIds,
-                userId,
-                "GetEInvoiceCreditNoteData"
-            );
+            var results = _gstinvoiceRepository.GetEInvoiceData(invoiceIds, userId, "GetEInvoiceCreditNoteData");
+
+            return results;
         }
 
         public async Task<string> CallFynamicsAPIForCreditNote(
@@ -1039,7 +1035,7 @@ namespace QPay.API.Controller.Invoice
                     {
                         responseText = "Connection Failure";
                     }
-                    message = await SaveBatchResponse(
+                    message =  SaveBatchResponse(
                         statusCode,
                         responseMessage,
                         responseText,
@@ -1053,28 +1049,6 @@ namespace QPay.API.Controller.Invoice
             {
                 message = $"CallFynamicsAPI Error: {ex.Message}";
             }
-
-            return message;
-        }
-
-        public async Task<string> SaveBatchResponse(
-             int statusCode,
-             string responseMessage,
-             string response,
-             string responseXml,
-             string invoiceIds,
-             string mode,
-             string userId)
-        {
-            var message = await _gstinvoiceRepository.SaveBatchResponse(
-                statusCode,
-                responseMessage,
-                response,
-                responseXml,
-                invoiceIds,
-                mode,
-                userId
-            );
 
             return message;
         }
@@ -1242,6 +1216,111 @@ namespace QPay.API.Controller.Invoice
             DataSet ds = await _gstinvoiceRepository.GetEInvoiceErrorHover(invoiceId);
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
+        }
+
+        [HttpPost]
+        [Route("InitiateIRN")]
+        public ActionResult InitiateIRN(InitiateIRN initiateIRN)
+        {
+            //string invoiceIds, int CompanyId, int PayPeriodId, string UserId
+            //string[] invoiceIds = initiateIRN.invoiceIds.Select(id => id.ToString()).ToArray();
+            string invoiceIds = string.Join(",", initiateIRN.invoiceIds);
+            string UserId = initiateIRN.userId;
+            var invoiceDetails = GetEInvoiceData(invoiceIds, UserId, "GetEInvoiceData");
+            string JsonString = JsonConvert.SerializeObject(invoiceDetails).ToString();
+            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(invoiceDetails);
+
+
+            Task<string> task = Task.Run(async () => await CallFynamicsAPI(JsonString, invoiceIds, UserId));
+            string Response = task.Result;
+
+            var payload = ResponseWrapManager.ResponseWrapper(Response, HttpContext);
+            return Ok(payload);
+
+        }
+
+        public async Task<string> CallFynamicsAPI(string JsonString, string InvoiceIds, string UserId)
+        {
+            string Message = "";
+            try
+            {
+                //ErrorLogException.ErrorLog().LogWebAPI("CallFynamicsAPI", "Starts", JsonString);
+
+                string Response = "";
+                int StatusCode;
+                string ResponseMessage = "";
+                string ResponseXml = "";
+                string BatchApiLink = _configuration["BatchApiLink"].ToString();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //SecurityProtocolType.Ssl3;
+                    // Skip validation of SSL/TLS certificate
+                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                    var httpContent = new StringContent(JsonString, Encoding.UTF8, "application/json");
+                    var responseMessage = await httpClient.PostAsync(BatchApiLink, httpContent);
+
+                    if (responseMessage.StatusCode == HttpStatusCode.OK)
+                    {
+                        StatusCode = (int)responseMessage.StatusCode;
+                        ResponseMessage = responseMessage.ReasonPhrase;
+                        Response = responseMessage.Content.ReadAsStringAsync().Result;
+                        var doc = JsonConvert.DeserializeXmlNode(Response, "Response");
+                        ResponseXml = doc.InnerXml;
+
+                        /*--------------DO NOT DELETE BELOW COMMENTED PART--------------------
+                        Response responsejson = new Response();
+                        responsejson = JsonConvert.DeserializeObject<Response>(Response);
+
+                        XmlDocument xmlDoc = new XmlDocument();
+                        XmlSerializer serializer = new XmlSerializer(responsejson.GetType());
+                        XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                        ns.Add("", "");
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            serializer.Serialize(ms, responsejson, ns);
+                            ms.Position = 0;
+                            xmlDoc.Load(ms);
+
+                            foreach (XmlNode node in xmlDoc)
+                            {
+                                if (node.NodeType == XmlNodeType.XmlDeclaration)
+                                {
+                                    xmlDoc.RemoveChild(node);
+                                }
+                            }
+                            ResponseXml = xmlDoc.InnerXml;
+                        }*/
+                    }
+                    else
+                    {
+                        StatusCode = (int)responseMessage.StatusCode;
+                        ResponseMessage = responseMessage.ReasonPhrase;
+                        Response = "Connection Failure";
+                    }
+                    Message = SaveBatchResponse(StatusCode, ResponseMessage, Response, ResponseXml, InvoiceIds, "SaveBatchResponse", UserId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Message = $"CallFynamicsAPI Error: {ex}";
+            }
+            return Message;
+        }
+
+        public string SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId)
+        {
+            var Message = _gstinvoiceRepository.SaveBatchResponse(StatusCode, ResponseMessage, Response, ResponseXml, InvoiceIds, Mode, UserId);
+            return Message;
+        }
+
+
+        public EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action)
+        {
+            var result = _gstinvoiceRepository.GetEInvoiceData(invoiceIds, UserId, Action);
+            return result;
         }
     }
 }
