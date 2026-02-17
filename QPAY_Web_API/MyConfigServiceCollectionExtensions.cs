@@ -7,8 +7,10 @@ using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.BAL.IRepository.Invoice;
+using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Process;
 using QPay.BAL.IRepository.Reports;
+using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.IRepository.Tools;
 using QPay.BAL.Repository;
 using QPay.BAL.Repository.Billing;
@@ -16,11 +18,11 @@ using QPay.BAL.Repository.Common;
 using QPay.BAL.Repository.Customer;
 using QPay.BAL.Repository.GlobalMaster;
 using QPay.BAL.Repository.Invoice;
+using QPay.BAL.Repository.Invoice;
 using QPay.BAL.Repository.Process;
 using QPay.BAL.Repository.Reports;
+using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.Tools;
-using QPay.BAL.IRepository.Invoice;
-using QPay.BAL.Repository.Invoice;
 using QPay.IRepository.Repository.Common;
 using QPAY_Web_API.Controller;
 
@@ -201,8 +203,11 @@ namespace QPay.API
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>(); 
-                services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
+            services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
 
+            services.AddScoped<ISalaryReleasePendingApprovalRepository, SalaryReleasePendingApprovalRepository>();
+            services.AddScoped<IBatchGenerationRepository, BatchGenerationRepository>();
+            services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
         }
     }
 
