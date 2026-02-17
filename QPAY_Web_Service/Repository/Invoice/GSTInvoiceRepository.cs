@@ -967,7 +967,7 @@ namespace QPay.BAL.Repository.Invoice
             string storeProcedure = "";
             storeProcedure = "sp_PayRegister";
 
-            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
+            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res != null)
             {
                 try
@@ -1278,7 +1278,7 @@ namespace QPay.BAL.Repository.Invoice
             string storeProcedure = "sp_PayregisterPSDSummary";
             parameters.Add("@Company_Id", companyCode);
             parameters.Add("@Pay_Period_Id", pay_period_Id);
-            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
+            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
             if (res != null)
             {
 
