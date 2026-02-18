@@ -1088,93 +1088,93 @@ namespace QPay.BAL.Repository.Invoice
 
                                             ws.Cell(lastrow, 1).Value = "Grand Total";
 
-                                            var totalsummary = GetPayRegisterSummary(companyCode, pay_period_Id);
-                                            if (totalsummary != null)
-                                            {
-                                                if (totalsummary.Rows.Count > 0)
-                                                {
+                                            //var totalsummary = GetPayRegisterSummary(companyCode, pay_period_Id);
+                                            //if (totalsummary != null)
+                                            //{
+                                            //    if (totalsummary.Rows.Count > 0)
+                                            //    {
 
-                                                    int row = 2;
-                                                    int cell = 5;
-                                                    double total = 0.0;
-                                                    double gst = 0.0;
-                                                    foreach (DataColumn item in totalsummary.Columns)
-                                                    {
-                                                        var columnName = item.ColumnName.ToString();
-                                                        if (columnName == "TOTAL COST TO COMPANY")
-                                                        {
-                                                            columnName = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
-                                                        }
-                                                        var value = Convert.ToDouble(totalsummary.Rows[0][item.ColumnName]);
-                                                        if (Convert.ToDouble(value) > 0)
-                                                        {
-                                                            total = total + value;
-                                                            ws.Cell(lastrow + row, 4).Value = columnName;
-                                                            var column = ws.Cell(lastrow + row, 4);
-                                                            column.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                            column.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                            column.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                            column.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //        int row = 2;
+                                            //        int cell = 5;
+                                            //        double total = 0.0;
+                                            //        double gst = 0.0;
+                                            //        foreach (DataColumn item in totalsummary.Columns)
+                                            //        {
+                                            //            var columnName = item.ColumnName.ToString();
+                                            //            if (columnName == "TOTAL COST TO COMPANY")
+                                            //            {
+                                            //                columnName = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
+                                            //            }
+                                            //            var value = Convert.ToDouble(totalsummary.Rows[0][item.ColumnName]);
+                                            //            if (Convert.ToDouble(value) > 0)
+                                            //            {
+                                            //                total = total + value;
+                                            //                ws.Cell(lastrow + row, 4).Value = columnName;
+                                            //                var column = ws.Cell(lastrow + row, 4);
+                                            //                column.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //                column.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //                column.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //                column.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                            ws.Cell(lastrow + row, cell).Value = value;
-                                                            var ctc_cell = ws.Cell(lastrow + row, cell);
-                                                            ctc_cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                            ctc_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                            ctc_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                            ctc_cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                                                            row++;
+                                            //                ws.Cell(lastrow + row, cell).Value = value;
+                                            //                var ctc_cell = ws.Cell(lastrow + row, cell);
+                                            //                ctc_cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //                ctc_cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //                ctc_cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //                ctc_cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //                row++;
 
-                                                        }
+                                            //            }
 
-                                                    }
-                                                    ws.Cell(lastrow + row, 4).Value = "Sub Total";
-                                                    var Sub_title = ws.Cell(lastrow + row, 4);
-                                                    Sub_title.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                    Sub_title.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                    Sub_title.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                    Sub_title.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //        }
+                                            //        ws.Cell(lastrow + row, 4).Value = "Sub Total";
+                                            //        var Sub_title = ws.Cell(lastrow + row, 4);
+                                            //        Sub_title.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //        Sub_title.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //        Sub_title.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //        Sub_title.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                    ws.Cell(lastrow + row, 5).Value = total;
-                                                    var sub_total = ws.Cell(lastrow + row, 5);
-                                                    sub_total.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                    sub_total.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                    sub_total.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                    sub_total.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //        ws.Cell(lastrow + row, 5).Value = total;
+                                            //        var sub_total = ws.Cell(lastrow + row, 5);
+                                            //        sub_total.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //        sub_total.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //        sub_total.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //        sub_total.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                    row++;
-                                                    //cell++;
+                                            //        row++;
+                                            //        //cell++;
 
-                                                    ws.Cell(lastrow + row, 4).Value = "GST";
-                                                    var gst_title = ws.Cell(lastrow + row, 4);
-                                                    gst_title.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                    gst_title.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                    gst_title.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                    gst_title.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //        ws.Cell(lastrow + row, 4).Value = "GST";
+                                            //        var gst_title = ws.Cell(lastrow + row, 4);
+                                            //        gst_title.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //        gst_title.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //        gst_title.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //        gst_title.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                    gst = total * (18.0 / 100.0);
+                                            //        gst = total * (18.0 / 100.0);
 
-                                                    ws.Cell(lastrow + row, 5).Value = gst;
-                                                    var gst_value = ws.Cell(lastrow + row, 5);
-                                                    gst_value.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                    gst_value.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                    gst_value.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                    gst_value.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                                            //        ws.Cell(lastrow + row, 5).Value = gst;
+                                            //        var gst_value = ws.Cell(lastrow + row, 5);
+                                            //        gst_value.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                            //        gst_value.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                            //        gst_value.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                            //        gst_value.Style.Border.RightBorder = XLBorderStyleValues.Thin;
 
-                                                    row++;
-                                                    // cell++;
+                                            //        row++;
+                                            //        // cell++;
 
-                                                    ws.Cell(lastrow + row, 4).Value = "Total";
-                                                    ws.Cell(lastrow + row, 5).Value = total + gst;
+                                            //        ws.Cell(lastrow + row, 4).Value = "Total";
+                                            //        ws.Cell(lastrow + row, 5).Value = total + gst;
 
-                                                    ws.Cell(lastrow + row, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                                                    ws.Cell(lastrow + row, 4).Style.Border.OutsideBorderColor = XLColor.Black;
+                                            //        ws.Cell(lastrow + row, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                                            //        ws.Cell(lastrow + row, 4).Style.Border.OutsideBorderColor = XLColor.Black;
 
 
-                                                    ws.Cell(lastrow + row, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                                                    ws.Cell(lastrow + row, 5).Style.Border.OutsideBorderColor = XLColor.Black;
+                                            //        ws.Cell(lastrow + row, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                                            //        ws.Cell(lastrow + row, 5).Style.Border.OutsideBorderColor = XLColor.Black;
 
-                                                }
-                                            }
+                                            //    }
+                                            //}
                                         }
 
                                     }

@@ -84,7 +84,7 @@ namespace QPay.UI.Models.Invoice
         public string? Service_Charge_Type { get; set; } = "";
         public int? InvoiceType_Id { get; set; }
         public decimal? Net_CTC { get; set; }
-        public int InvoiceCulture_id { get; set; }
+        public int? InvoiceCulture_id { get; set; }
         public string? InvoiceCul_Ref_No { get; set; } = "";
         public int? Invoice_Category_Id { get; set; }
         public string? PO_Number { get; set; } = "";
@@ -113,8 +113,8 @@ namespace QPay.UI.Models.Invoice
         public decimal? STCTC { get; set; }
         public decimal? BFIN35 { get; set; }
         public decimal? MBAPP { get; set; }
-        public string Invoice_Type { get; set; } = "";
-        public string Invoice_Category { get; set; } = "";
+        public string? Invoice_Type { get; set; } = "";
+        public string? Invoice_Category { get; set; } = "";
 
         public string? State_name { get; set; } = "";
         public bool? IsInitiation { get; set; }
@@ -137,8 +137,8 @@ namespace QPay.UI.Models.Invoice
         public string? Work_Order_Number { get; set; } = "";
         public string? Data_From { get; set; } = "";
         public string? InvoiceType { get; set; } = "";
-        public string Invoice_remarks { get; set; } = "";
-        public string Narration { get; set; } = "";
+        public string? Invoice_remarks { get; set; } = "";
+        public string? Narration { get; set; } = "";
 
 
     }
