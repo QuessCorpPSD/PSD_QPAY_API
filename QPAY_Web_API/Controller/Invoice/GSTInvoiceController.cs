@@ -932,9 +932,9 @@ namespace QPay.API.Controller.Invoice
         }
 
         [HttpPost, Route("GetAllInvoiceCancelDetails")]
-        public async Task<IActionResult> GetAllInvoiceCancelDetails([FromBody] UI.Models.Invoice.CancelRequest request)
+        public async Task<IActionResult> GetAllInvoiceCancelDetails()
         {
-            var ds = await this._gstinvoiceRepository.GetAllInvoiceCancelDetails(request.Company_Id, request.PayPeriod_Id);
+            var ds = await this._gstinvoiceRepository.GetAllInvoiceCancelDetails();
 
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);

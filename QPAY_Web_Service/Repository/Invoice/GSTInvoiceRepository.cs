@@ -461,15 +461,13 @@ namespace QPay.BAL.Repository.Invoice
             return "No data found";
 
         }
-        public async Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriodId)
+        public async Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails()
         {
 
 
             string storeProcedure = "[dbo].[Proc_ManageEInvoice_NewUI]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@Action", "GetInvoiceCancelDetails");
-            parameter.Add("@Company_Id", companyId);
-            parameter.Add("@Pay_Period_Id", payPeriodId);
 
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
 

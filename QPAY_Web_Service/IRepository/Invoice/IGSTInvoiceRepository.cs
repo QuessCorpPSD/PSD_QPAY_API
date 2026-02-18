@@ -33,7 +33,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<PayPeriodUI>> GetPayPeriod(PayPeriodRequest request);
         Task<string> Edit(GstInvoiceEditRequest request);
         Task<string> Reject(string xmlString, string userId,string status);
-        Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails(int companyId, int payPeriod);
+        Task<List<InvoiceCancelGrid>> GetAllInvoiceCancelDetails();
         Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
         Task<string> BulkRejectInvoice(InvoiceCancelApprovalRequest request);
         string GetFilename(int invoice_Id);

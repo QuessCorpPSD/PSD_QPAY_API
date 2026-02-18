@@ -95,6 +95,9 @@ namespace QPay.UI.Invoice
         public string? CreditNoteNumber { get; set; }
         public string? CancelledOn { get; set; }
         public string? FilePath { get; set; }
+        public string Invoice_Category { get; set; } = "";
+
+        public string Invoice_Color { get; set; } = "";
 
     }
 
