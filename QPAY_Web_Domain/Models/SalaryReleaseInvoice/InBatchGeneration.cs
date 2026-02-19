@@ -75,4 +75,10 @@ namespace QPay.UI.Models.SalaryReleaseInvoice
        // public int Status { get; set; }
         public string Validation { get; set; }
     }
+
+    public class SatausErrorMessage
+    {
+        
+        public string Error_Message { get; set; }
+    }
 }

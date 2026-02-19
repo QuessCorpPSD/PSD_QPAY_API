@@ -1,4 +1,6 @@
-﻿using QPay.UI.Models.SalaryReleaseInvoice;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using QPay.UI.Models.SalaryReleaseInvoice;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,5 +38,14 @@ namespace QPay.BAL.IRepository.SalaryReleaseInvoice
         #region Download Batch start
         List<BatchList> GetBatchList(string BatchType, string BatchDate, int UserId);
         #endregion Download Batch end
+
+        #region Salary release status start
+
+        DataSet GetSalaryReleaseStatusdata(string BatchType, string FromDate, string Todate, string EmployeeCode, int UserId);
+
+        DataSet GetSalaryReleaseStatusdataExport(string BatchType, string FromDate, string Todate, string EmployeeCode,int UserId);
+
+        Task<List<SatausErrorMessage>> UtrUpload(IFormFile file, [FromForm] string BatchType, [FromForm] int UserId);
+        #endregion Salary release status end
     }
 }

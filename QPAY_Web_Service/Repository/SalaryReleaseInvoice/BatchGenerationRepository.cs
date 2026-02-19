@@ -1,11 +1,16 @@
-﻿using Dapper;
+﻿using ClosedXML.Excel;
+using Dapper;
 using DocumentFormat.OpenXml.Office.Word;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.DAL.Repository;
 using QPay.UI.Models.SalaryReleaseInvoice;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,8 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using OfficeOpenXml;
-using Renci.SshNet;
 
 namespace QPay.BAL.Repository.SalaryReleaseInvoice
 {
@@ -605,6 +608,7 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
         }
 
         #endregion Salaryreleaseprocess end
+
         #region Download Batch start
         public List<BatchList> GetBatchList(string BatchType, string BatchDate, int UserId)
         {
@@ -623,7 +627,182 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
 
             return new List<BatchList>();
         }
-       
+
         #endregion Download Batch end
+
+        #region Salary release status start
+        public DataSet GetSalaryReleaseStatusdata(string BatchType, string FromDate, string Todate, string EmployeeCode, int UserId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = "Search",
+                ["@BatchType"] = BatchType,
+                ["@Fromdate"] = FromDate,
+                ["@Todate"] = Todate,
+                ["@EmployeeCode"] = EmployeeCode,
+                ["@CreatedBy"] = UserId
+
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_BatchSalaryReleaseStatus", parameters);
+        }
+
+        public DataSet GetSalaryReleaseStatusdataExport(string BatchType, string FromDate, string Todate, string EmployeeCode, int UserId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = "Export",
+                ["@BatchType"] = BatchType,
+                ["@Fromdate"] = FromDate,
+                ["@Todate"] = Todate,
+                ["@EmployeeCode"] = EmployeeCode,
+                ["@CreatedBy"] = UserId
+
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_BatchSalaryReleaseStatus", parameters);
+        }
+        public async Task<List<SatausErrorMessage>> UtrUpload(IFormFile file, [FromForm] string BatchType, [FromForm] int UserId)
+        {
+            SatausErrorMessage ResultMessage = new SatausErrorMessage();
+            //var ResultMessage = "";
+            var result = "";
+
+            if (file != null && file.Length != 0)
+            {
+                var uploadsFolder = Path.Combine(_configuration["SalaryReleaseKey"].ToString(), "Utrupload");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var datePrefix = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var originalFileName = Path.GetFileName(file.FileName);
+                var extension = Path.GetExtension(originalFileName);
+                var newFileName = $"UtrUpload_{UserId}_{datePrefix}{extension}";
+
+                var filePath = Path.Combine(uploadsFolder, newFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                DataSet ds = new DataSet("DocumentElement");
+                ds = ExcelToDataSet(filePath);
+                ds.Tables[0].TableName = "Table";
+                //Convert dt to XML
+                if (ds.Tables.Count == 0)
+                {
+                    result = "Excel sheet is empty or not formatted correctly.";
+
+                    // Wrap it into a list of ErrorMessage
+                    var errorList = new List<SatausErrorMessage>
+                    {
+                         new SatausErrorMessage { Error_Message = result }
+                   };
+                    return errorList;
+                }
+
+                DataSet dscolumns = new DataSet();
+                foreach (DataTable dt in ds.Tables)
+                {
+                    DataTable newTable = dt.Clone();
+
+                    if (dt.Rows.Count > 0)
+                        newTable.ImportRow(dt.Rows[0]);
+
+                    dscolumns.Tables.Add(newTable);
+                }
+
+                DataTable dtToSerilize = new DataTable();
+                dtToSerilize = ds.Tables[0];
+
+                // Convert DataTable to XML
+                using var xmlWriter = new StringWriter();
+                using var xmlWriter2 = new StringWriter();
+
+                //ds.Tables.Add(dtToSerilize.Copy());
+                ds.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
+               // dscolumns.WriteXml(xmlWriter2, XmlWriteMode.IgnoreSchema);              
+
+                string xmlInput = xmlWriter.ToString();
+               // string xmlInput2 = xmlWriter2.ToString();
+
+                string storeProcedure = "Proc_Manage_BatchSalaryReleaseStatus";
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@xmlInput", xmlInput);
+                parameters.Add("@CreatedBy", UserId);
+                parameters.Add("@Action", "UtrUpload");
+                parameters.Add("@BatchType", BatchType);
+               
+
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+
+                if (string.IsNullOrWhiteSpace(res))
+                {
+                    return new List<SatausErrorMessage>(); // return empty object if no result
+                }
+
+                try
+                {
+                    var list = JsonConvert.DeserializeObject<List<SatausErrorMessage>>(res);
+                    return list?.ToList() ?? new List<SatausErrorMessage>();
+                }
+                catch (JsonException ex)
+                {
+                    return new List<SatausErrorMessage>();
+                }
+
+            }
+            else
+            {
+                result = "Excel sheet is empty or not formatted correctly.";
+
+                // Wrap it into a list of ErrorMessage
+                var errorList1 = new List<SatausErrorMessage>
+                    {
+                         new SatausErrorMessage { Error_Message = result }
+                   };
+                return errorList1;
+            }
+
+
+        }
+
+        public static DataSet ExcelToDataSet(string filePath)
+        {
+            using var workbook = new XLWorkbook(filePath);
+            var dataSet = new DataSet();
+
+            foreach (var worksheet in workbook.Worksheets)
+            {
+                var dataTable = new DataTable(worksheet.Name);
+                bool firstRow = true;
+
+                foreach (var row in worksheet.RowsUsed())
+                {
+                    if (firstRow)
+                    {
+                        foreach (var cell in row.Cells())
+                        {
+                            string columnName = cell.IsEmpty() ? $"Column{cell.Address.ColumnNumber}" : cell.GetValue<string>();
+                            dataTable.Columns.Add(columnName);
+                        }
+                        firstRow = false;
+                    }
+                    else
+                    {
+                        var values = row.Cells(1, dataTable.Columns.Count)
+                                        .Select(cell => cell.IsEmpty() ? string.Empty : cell.GetValue<string>())
+                                        .ToArray();
+
+                        dataTable.Rows.Add(values);
+                    }
+                }
+
+                dataSet.Tables.Add(dataTable);
+            }
+
+            return dataSet;
+        }
+
+        #endregion Salary release status end
     }
 }

@@ -145,5 +145,37 @@ namespace QPay.API.Controller.SalaryReleaseInvoice
         }
 
         #endregion Download Batch end
+
+        #region Salary release status start
+
+        [HttpGet, Route("GetSalaryReleaseStatusdata/{BatchType}/{FromDate}/{Todate}/{EmployeeCode}/{UserId}")]
+        public IActionResult GetSalaryReleaseStatusdata(string BatchType, string FromDate, string Todate, string EmployeeCode, int UserId)
+        {
+
+            var ds = _BatchGenerationRepository.GetSalaryReleaseStatusdata(BatchType, FromDate, Todate, EmployeeCode, UserId);
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+
+        [HttpGet, Route("GetSalaryReleaseStatusdataExport/{BatchType}/{FromDate}/{Todate}/{EmployeeCode}/{UserId}")]
+        public IActionResult GetSalaryReleaseStatusdataExport(string BatchType, string FromDate, string Todate, string EmployeeCode, int UserId)
+        {
+
+            var ds = _BatchGenerationRepository.GetSalaryReleaseStatusdataExport(BatchType, FromDate, Todate, EmployeeCode, UserId);
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+
+        [HttpPost, Route("UtrUpload")]
+        public async Task<IActionResult> UtrUpload(IFormFile file, [FromForm] string BatchType, [FromForm] int UserId)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is missing.");
+
+            var result = await _BatchGenerationRepository.UtrUpload(file, BatchType, UserId);
+            return Ok(result);
+        }
+
+        #endregion Salary release status end
     }
 }
