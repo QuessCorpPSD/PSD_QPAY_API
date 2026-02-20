@@ -22,6 +22,25 @@ namespace QPay.API.Controller.SalaryReleaseInvoice
             _configuration = configuration;
         }
 
+        #region BatchTypeLoad start
+
+        [HttpGet, Route("GetBatchTypeList/{UserId}")]
+        public IActionResult GetBatchTypeList(int UserId)
+        {
+            var response = _BatchGenerationRepository.GetBatchTypeList(UserId);
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetTemplate/{Flag}/{UserId}")]
+        public IActionResult GetTemplate(string Flag, int UserId)
+        {
+            var ds = _BatchGenerationRepository.GetTemplate(Flag, UserId);            
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+        #endregion BatchTypeLoad end
+
         #region BatchGenerate start
 
         [HttpGet, Route("GetApproveInvoices/{BatchType}/{BatchCreationType}/{EntityId}/{UserId}")]
@@ -87,7 +106,7 @@ namespace QPay.API.Controller.SalaryReleaseInvoice
             return Ok(response);
         }
 
-        [HttpGet, Route("GetSRPBatchData/{BatchType}/{BatchId}/{EntityId}/{UserId}")]
+        [HttpGet, Route("GetSRPBatchData/{BatchType}/{BatchId}/{UserId}")]
         public IActionResult GetSRPBatchData(string BatchType, string BatchId, int UserId)
         {
 

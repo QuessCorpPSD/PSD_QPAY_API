@@ -34,6 +34,35 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
             this._configuration = configuration;
         }
 
+        #region BatchTypeLoad start
+        public List<CommonDropDown> GetBatchTypeList(int UserId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "BatchTypeList");
+            parameters.Add("@CreatedBy", UserId);
+
+            var res = this._dbRepository.GetItemsAsync("Proc_BatchType_Load", parameters).Result;
+            if (res != "")
+            {
+                return JsonConvert.DeserializeObject<List<CommonDropDown>>(res) ?? new List<CommonDropDown>();
+            }
+
+            return new List<CommonDropDown>();
+        }
+
+        
+        public DataSet GetTemplate(string Flag, int UserId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = Flag,
+                ["@CreatedBy"] = UserId
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_BatchTemplate", parameters);
+        }
+
+        #endregion BatchTypeLoad end
+
         #region BatchGenerate start
         public DataSet GetApproveInvoices(string BatchType, int BatchCreationType, int EntityId, int UserId)
         {

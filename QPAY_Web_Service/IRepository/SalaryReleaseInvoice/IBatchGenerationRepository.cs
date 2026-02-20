@@ -12,6 +12,13 @@ namespace QPay.BAL.IRepository.SalaryReleaseInvoice
 {
     public interface IBatchGenerationRepository
     {
+
+        #region BatchTypeLoad start
+        List<CommonDropDown> GetBatchTypeList(int UserId);
+        DataSet GetTemplate(string Flag, int UserId);
+
+        #endregion BatchTypeLoad end
+
         #region BatchGenerate start
         DataSet GetApproveInvoices(string BatchType, int BatchCreationType, int EntityId, int UserId);
 

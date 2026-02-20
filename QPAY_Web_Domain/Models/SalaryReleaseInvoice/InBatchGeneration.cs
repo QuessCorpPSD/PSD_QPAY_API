@@ -81,4 +81,10 @@ namespace QPay.UI.Models.SalaryReleaseInvoice
         
         public string Error_Message { get; set; }
     }
+
+    public class CommonDropDown
+    {
+        public string value { get; set; }
+        public string name { get; set; }
+    }
 }
