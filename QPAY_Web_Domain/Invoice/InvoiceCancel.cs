@@ -76,6 +76,7 @@ namespace QPay.UI.Invoice
         public string? Invoice_Date { get; set; }
         public int? StateId { get; set; }
         public string? State_Name { get; set; }
+        public decimal? Amount { get; set; }
         public decimal? IGST_Percentage { get; set; }
         public decimal? IGST_Amount { get; set; }
         public decimal? CGST_Percentage { get; set; }
@@ -98,6 +99,8 @@ namespace QPay.UI.Invoice
         public string Invoice_Category { get; set; } = "";
 
         public string Invoice_Color { get; set; } = "";
+
+        public string Remarks { get; set; } = "";
 
     }
 
