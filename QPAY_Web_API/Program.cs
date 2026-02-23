@@ -126,7 +126,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.MapGet("/", () => Results.Ok("API is running."));
 /* ✅ CORS MUST BE HERE */
 app.UseCors("CorsPolicy");
 
