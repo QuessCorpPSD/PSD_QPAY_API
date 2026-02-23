@@ -23,5 +23,7 @@ namespace QPay.BAL.IRepository
         Task<List<InvoiceDashboardDto>> GetAllInvoiceAllotDetails(InvoiceDetailModel invoiceDetailModel);
         Task<List<RemarksResponse>> getRemarksByReqNo(RequestModel requestModel);
         Task<InvoiceResponse> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequest provisionalrequest);
+
+        Task<DataSet> DraftExporttoExcel(InvoiceDetailModel invoiceDetailModel);
     }
 }

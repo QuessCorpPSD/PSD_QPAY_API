@@ -325,6 +325,17 @@ namespace QPay.BAL.Repository
 
             return invoiceDetails;
         }
+
+        public async Task<DataSet> DraftExporttoExcel (InvoiceDetailModel invoiceDetailModel)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+            ["@InvoiceType"]= invoiceDetailModel.InvoiceType,
+            ["@ActionType"]= invoiceDetailModel.ActionType,
+            ["@UserId"]= invoiceDetailModel.userId
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Invoice_Initiation_search_Allot_Test", parameters, 1500);
+        }
     }
 }
 

@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
 using QPay.API.LoggerService;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.UI.Common;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
 using QPay.UI.Models.Invoice;
+using System.Data;
 
 namespace QPay.API.Controller
 {
@@ -113,6 +116,50 @@ namespace QPay.API.Controller
         {
             var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(provisionalrequest);
             return Ok(result);
+        }
+
+        [HttpPost, Route("DraftExporttoExcel")]
+        public async Task<IActionResult> DraftExporttoExcel(InvoiceDetailModel invoiceDetailModel)
+        {
+
+            DataSet ds = await _invoiceInitiationRepository.DraftExporttoExcel(invoiceDetailModel);
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                using var workbook = new XLWorkbook();
+
+                ds.Tables[0].TableName = "Invoice Details";
+
+                for (int i = 0; i < ds.Tables.Count; i++)
+                {
+                    var ws = workbook.AddWorksheet(ds.Tables[i], ds.Tables[i].TableName);
+                    ws.Table(0).ShowAutoFilter = false;
+                    ws.Table(0).Theme = XLTableTheme.None;
+                }
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var bytes = Convert.ToBase64String(stream.ToArray());
+                    FileResponse fileResponse = new FileResponse();
+                    string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
+                    fileResponse.FileName = "InvoiceDetails" + fileName;
+                    fileResponse.File = bytes;
+
+                    return Ok(fileResponse);
+                }
+            }
+            else
+            {
+                var response = new APIResponse<object>
+                {
+                    statuscode = 400,
+                    message = "Failure",
+                    data = "",
+                    error = ""
+                };
+                return Ok(response);
+            }
+
         }
 
     }

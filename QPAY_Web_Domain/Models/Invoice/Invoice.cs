@@ -16,6 +16,7 @@ namespace QPay.UI.Models.Invoice
 
         public class BillingDashboard
         {
+            public string? Status { get; set; } = "";
             public int? Req_No { get; set; }
             public DateTime? RequestDatetime { get; set; }
 

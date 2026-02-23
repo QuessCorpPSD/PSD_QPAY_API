@@ -73,7 +73,7 @@ namespace QPay.API.Controller.Invoice
                 if (companyDetail == null) continue;
 
                 // ---------- INVOICE PDF ----------
-                var IRNStatusFolder = invoice.IsGenerated_IRN == 0 ? "Draft" : "IRN";
+                var IRNStatusFolder = invoice.IsGenerated_IRN == 0 ? "DraftInvoice" : "IRN";
                 string files = string.Format("{0}\\{1}\\{2}\\{3}\\{4}",
                             basePath,
                              companyDetail.Company_Code,
@@ -105,7 +105,7 @@ namespace QPay.API.Controller.Invoice
                         var invoiceupdate = _gstinvoiceRepository.IRNStatusGenerationUpdate(invoice.Invoice_Number).Result;
                         if (invoiceDetails != null)
                         {
-                            IRNStatusFolder = invoiceDetails.IsGenerated_IRN == 0 ? "Draft" : "IRN";
+                            IRNStatusFolder = invoiceDetails.IsGenerated_IRN == 0 ? "DraftInvoice" : "IRN";
                             files = string.Format("{0}\\{1}\\{2}\\{3}\\{4}",
                                         basePath,
                                          companyDetail.Company_Code,
@@ -443,7 +443,7 @@ namespace QPay.API.Controller.Invoice
                 var payperiodPath = Path.Combine(companyPath, company.Pay_Period);
                 if (invoiceNumberLotUI.IsGenerated_IRN == 0)
                 {
-                    var Invoicepath = Path.Combine(payperiodPath, "Draft");
+                    var Invoicepath = Path.Combine(payperiodPath, "DraftInvoice");
 
                     if (!Directory.Exists(Invoicepath))
                     {

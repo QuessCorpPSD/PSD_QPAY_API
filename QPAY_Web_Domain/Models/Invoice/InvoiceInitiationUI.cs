@@ -113,6 +113,9 @@ namespace QPay.UI.Models.Invoice
         public decimal? STCTC { get; set; }
         public decimal? BFIN35 { get; set; }
         public decimal? MBAPP { get; set; }
+
+        public decimal? EAPCT { get; set; }
+        public decimal? HOSAC { get; set; }
         public string? Invoice_Type { get; set; } = "";
         public string? Invoice_Category { get; set; } = "";
 

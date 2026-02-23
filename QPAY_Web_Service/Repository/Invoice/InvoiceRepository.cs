@@ -499,18 +499,30 @@ namespace QPay.BAL.Repository.Invoice
             }
             return invoiceDetails;
         }
-        public async Task<List<BillingDashboard>> BillingDashboard(int userId)
+        public async Task<List<BillingDashboard>> BillingDashboard(int userId, string flag)
         {
             List<BillingDashboard> billingDashboards = new List<BillingDashboard>();
             var parameter = new DynamicParameters();
             parameter.Add("@UserId", userId);
+            parameter.Add("@flag", flag);
 
-            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard", parameter);
+
+            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard_Test", parameter);
             if(res.Any())
             {
                 billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };
             }
             return billingDashboards;
+        }
+
+        public async Task<DataSet> BillingDashboardExport(int userId, string flag)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@UserId"] = userId,
+                ["@flag"] = flag
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard_Test", parameters, 1500);
         }
 
         public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType)
