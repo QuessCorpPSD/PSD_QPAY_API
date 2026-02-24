@@ -1067,7 +1067,7 @@ namespace QPay.API.Controller.Invoice
                 //string? fileName = fileList?[0].FileName;
                 string? filePath = fileList?[0].FilePath;
                 string? fileName = Path.GetFileName(filePath);
-                string? fullPath = filePath.Replace(@"\", @"\\");
+                string? fullPath = filePath; //.Replace(@"\", @"\\");
                 this._logger.LogInfo("CancelDocPath"+fullPath);
                 if (!System.IO.File.Exists(fullPath))
                 {

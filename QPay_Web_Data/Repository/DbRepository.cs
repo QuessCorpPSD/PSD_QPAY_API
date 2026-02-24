@@ -118,6 +118,84 @@ namespace QPay.DAL.Repository
             }
             return ds;
         }
+        public DataSet ExecuteStoredProcedureToDataSetBatchdownload(
+
+    string storedProcedureName,
+
+    Dictionary<string, object> parameters,
+
+    int commandTimeout = 1000)
+
+        {
+
+            var ds = new DataSet();
+
+            try
+
+            {
+
+                using (var connection = new SqlConnection(_connectionString))
+
+                using (var command = new SqlCommand(storedProcedureName, connection))
+
+                {
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.CommandTimeout = commandTimeout;
+
+                    // Add parameters dynamically
+
+                    if (parameters != null)
+
+                    {
+
+                        foreach (var param in parameters)
+
+                        {
+
+                            command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+
+                        }
+
+                    }
+
+                    using (var adapter = new SqlDataAdapter(command))
+
+                    {
+
+                        adapter.Fill(ds); // run in background
+
+                    }
+
+                }
+
+            }
+
+            catch (SqlException ex)
+
+            {
+
+                // Log SQL specific exception
+
+                throw new Exception($"SQL Error: {ex.Message}", ex);
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                // Log general exception
+
+                throw new Exception($"Error executing stored procedure: {ex.Message}", ex);
+
+            }
+
+            return ds;
+
+        }
+
         public DataSet GetEmployeeIDDataSet(int companyId, string payPeriod, int lotNumber)
         {
             var ds = new DataSet();
