@@ -80,18 +80,16 @@ namespace QPay.BAL.Repository
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_LEAVE_TYPE_DETAIL", parameters);
         }
+       
 
-
-        /*
-
-        public async Task<DataSet> Search(int? companyId)
+        public async Task<DataSet> QuessAttendanceAttributeMaster()
         {
             var parameters = new Dictionary<string, object?>
             {
-                ["@Company_Id"] = companyId,
+               // ["@Company_Id"] = companyId,
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Client_Attributes_Mapping_detail", parameters, 1500);
-        } */
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Attendance_Attributes_Master", parameters, 1500);
+        } 
 
         public async Task<RequestResponse> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy)
         {

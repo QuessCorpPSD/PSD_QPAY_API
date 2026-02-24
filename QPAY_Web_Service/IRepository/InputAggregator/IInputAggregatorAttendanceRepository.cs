@@ -26,7 +26,8 @@ namespace QPay.BAL.IRepository
         Task<DataSet> Createleavetype(leaveTypeMasterRequest request);
 
         //Task<DataSet> Search(int? companyId);
-        
+
+        Task<DataSet> QuessAttendanceAttributeMaster();
 
         Task<RequestResponse> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy);
 

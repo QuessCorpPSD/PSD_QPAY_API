@@ -99,6 +99,23 @@ namespace QPay.API.Controller.InputAggregator
             }
         }
 
+        [HttpGet]
+        [Route("QuessAttendanceAttributeMaster")]
+        public async Task<IActionResult> QuessAttendanceAttributeMaster()
+        {
+            var response = await _IRepository.QuessAttendanceAttributeMaster();
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
+
+
         [HttpPost]
         [Route("ClientAttributesUpload")]
         public async Task<IActionResult> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy)
