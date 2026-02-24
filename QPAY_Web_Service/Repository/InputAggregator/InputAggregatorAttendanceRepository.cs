@@ -12,6 +12,7 @@ using QPay.UI.Customer;
 using QPay.UI.GlobalMaster;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
+using QPay.UI.Models.Aggregator;
 using QPay.UI.Models.TaxAndSaving;
 using System;
 using System.Collections.Generic;
@@ -22,36 +23,66 @@ using System.Threading.Tasks;
 
 namespace QPay.BAL.Repository
 {
-    public class InputAggregatorRepository : IInputAggregatorRepository
+    public class InputAggregatorAttendanceRepository : IInputAggregatorAttendanceRepository
     {
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _configuration;
 
-        public InputAggregatorRepository(DbRepository dbRepository, IConfiguration configuration)
+        public InputAggregatorAttendanceRepository(DbRepository dbRepository, IConfiguration configuration)
         {
             this._dbRepository = dbRepository;
             this._configuration = configuration;
         }
 
-       
-
-        public async Task<DataSet> QuessAttributeMaster()
+        public async Task<DataSet> QuessLeaveMaster()
         {
             var parameters = new Dictionary<string, object?>
             {
                 
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Attributes_Master", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Quess_Leave_Master", parameters, 1500);
         }
 
-        public async Task<DataSet> ClientAttributes(int? companyId)
+        public async Task<DataSet> leaveTypeMaster()
         {
             var parameters = new Dictionary<string, object?>
             {
-                ["@Company_Id"] = companyId,
+                
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Client_Attributes_Master", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Leave_Type_Master", parameters, 1500);
         }
+
+        public async Task<DataSet> Createleavemapping(AttendanceAggregatorRequest items)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["@Leave_mapping_detail_Id"] = items.parentDetail.LEAVE_MAPPING_DETAIL_ID,
+                ["@Company_Id"] = items.parentDetail.COMPANY_ID ,
+                ["@Leave_Type_Id"] = items.parentDetail.LEAVE_TYPE_ID,
+                ["@Leave_Treat_Id"] = items.parentDetail.LEAVE_TREAT_ID,
+                ["@IsActive"] = items.parentDetail.ISACTIVE,
+                ["@Header_Count"] = items.parentDetail.ATTENDANCE_TYPE,
+                ["@mode"] = items.mode,
+                ["@CreatedBy"] = items.createdBy,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_LEAVE_TYPE_MAPPING_DETAIL", parameters);
+        }
+
+        public async Task<DataSet> Createleavetype(leaveTypeMasterRequest items)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["@Leave_Type_Id"] = items.parentDetail.LEAVE_TYPE_ID,
+                ["@Leave_Type_Name"] = items.parentDetail.LEAVE_TYPE_NAME,
+                ["@IsActive"] = items.parentDetail.ISACTIVE,
+                ["@mode"] = items.mode,
+                ["@CreatedBy"] = items.createdBy,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_LEAVE_TYPE_DETAIL", parameters);
+        }
+
+
+        /*
 
         public async Task<DataSet> Search(int? companyId)
         {
@@ -60,7 +91,7 @@ namespace QPay.BAL.Repository
                 ["@Company_Id"] = companyId,
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Client_Attributes_Mapping_detail", parameters, 1500);
-        }
+        } */
 
         public async Task<RequestResponse> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy)
         {
@@ -120,7 +151,7 @@ namespace QPay.BAL.Repository
                 string xmlInput = xmlWriter.ToString();
                 string xmlInput2 = xmlWriter2.ToString();
 
-                string storeProcedure = "Proc_Upload_Client_Attributes";
+                string storeProcedure = "Proc_Upload_Client_Attendance_Attributes";
                 var parameters = new DynamicParameters();
                 parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@CreatedBy", CreatedBy);
@@ -219,7 +250,7 @@ namespace QPay.BAL.Repository
                 string xmlInput = xmlWriter.ToString();
                 string xmlInput2 = xmlWriter2.ToString();
 
-                string storeProcedure = "Proc_Upload_Quess_Client_Attributes_mapping";
+                string storeProcedure = "Proc_Upload_Quess_Client_Attendance_Attributes_mapping";
                 var parameters = new DynamicParameters();
                 parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@CreatedBy", CreatedBy);
@@ -297,6 +328,7 @@ namespace QPay.BAL.Repository
             return dataSet;
         }
 
+        
         public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
         {
             RequestResponse poDetails = new RequestResponse();
@@ -332,23 +364,12 @@ namespace QPay.BAL.Repository
                     poDetails.response = "Excel sheet is empty or not formatted correctly.";
                     return poDetails;
                 }
-                //DataSet dscolumns = new DataSet();
-                //foreach (DataTable dt in ds.Tables)
-                //{
-                //    DataTable newTable = dt.Clone();
-
-                //    if (dt.Rows.Count > 0)
-                //        newTable.ImportRow(dt.Rows[0]);
-
-                //    dscolumns.Tables.Add(newTable);
-                //}
-
                 DataTable dtToSerilize = new DataTable();
                 dtToSerilize = ds.Tables[0];
 
-                // List<string> columnValues = dtToSerilize.AsEnumerable().Select(r => r.Field<string>("Remittance_DimCWSFinClientInvoice_InvoiceNumber0Grouping")).ToList();
-                List<string> selectedColumns = GetSelectedColumns(); // your logic
-
+                var param = new DynamicParameters();
+                param.Add("@CompanyId", CompanyId);
+                List<string> selectedColumns = await this._dbRepository.GetSelectedColumns("Sp_Get_Client_Attendance_Attributes", param); 
                 DataTable result = new DataTable();
 
                 foreach (string col in selectedColumns)
@@ -373,7 +394,7 @@ namespace QPay.BAL.Repository
                 dscolumns.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
                 string xmlInput = xmlWriter.ToString();
 
-                string storeProcedure = @"Proc_Upload_Attendance_InputAggregator";
+                string storeProcedure = @"";
                 var parameters = new DynamicParameters();
                 parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@CreatedBy", CreatedBy);
@@ -415,19 +436,20 @@ namespace QPay.BAL.Repository
             return poDetails;
         }
 
-        public List<string> GetSelectedColumns()
-        {
-            // Implement your logic to get the list of selected columns
-            return new List<string>
-            {
-               "Remittance_DimCWSFinClientInvoice_InvoiceNumber0Grouping",
-                "details_DimCWSFinAssignment_AssignmentNumber_WithOutLink",
-                "details_DimCWSFinMiscFee_TransactionNumber",
-                "details_WeekStarting_DimCWSFinDateView_ActualDate",
-                "details_WeekEnding_DimCWSFinDateView_ActualDate",
-                "details_FactCWSFinAssignmentRegister_InvoicedGrossFormatted"
-            };
-        }
+
+        //public List<string> GetSelectedColumns()
+        //{
+        //    // Implement your logic to get the list of selected columns
+        //    return new List<string>
+        //    {
+        //       "Remittance_DimCWSFinClientInvoice_InvoiceNumber0Grouping",
+        //        "details_DimCWSFinAssignment_AssignmentNumber_WithOutLink",
+        //        "details_DimCWSFinMiscFee_TransactionNumber",
+        //        "details_WeekStarting_DimCWSFinDateView_ActualDate",
+        //        "details_WeekEnding_DimCWSFinDateView_ActualDate",
+        //        "details_FactCWSFinAssignmentRegister_InvoicedGrossFormatted"
+        //    };
+        //}
 
 
         public async Task<DataSet> billableReport(int? companyId, int? payPeriodId)
@@ -436,9 +458,11 @@ namespace QPay.BAL.Repository
             {
                 ["@Company_Id"] = companyId,
                 ["@Pay_Period_Id"] = payPeriodId,
-            }; // Sp_Search_billabledays_Upload
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("", parameters, 1500);
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Search_billabledays_Upload", parameters, 1500);
         }
+
+       
 
     }
 }
