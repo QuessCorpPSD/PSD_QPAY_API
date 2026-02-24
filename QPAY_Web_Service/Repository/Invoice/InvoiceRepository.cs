@@ -507,7 +507,7 @@ namespace QPay.BAL.Repository.Invoice
             parameter.Add("@flag", flag);
 
 
-            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard_Test", parameter);
+            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard", parameter);
             if(res.Any())
             {
                 billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };
@@ -522,7 +522,7 @@ namespace QPay.BAL.Repository.Invoice
                 ["@UserId"] = userId,
                 ["@flag"] = flag
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard_Test", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard", parameters, 1500);
         }
 
         public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType)

@@ -24,7 +24,7 @@ namespace QPay.UI.Models.Invoice
 
             public string? Company_Name { get; set; }
 
-            public int? LotNo { get; set; }
+            public string? LotNo { get; set; }
             public int? HC { get; set; }
 
             public string? ReqUserName {get;set;}
