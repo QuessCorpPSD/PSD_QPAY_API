@@ -68,6 +68,15 @@ namespace QPay.BAL.Repository
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_LEAVE_TYPE_MAPPING_DETAIL", parameters);
         }
 
+        public async Task<DataSet> SearchLeaveTypeMapping(int? companyId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@companyId"] = companyId
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Leave_Type_Master_mapping_detail", parameters, 1500);
+        }
+
         public async Task<DataSet> Createleavetype(leaveTypeMasterRequest items)
         {
             var parameters = new Dictionary<string, object>

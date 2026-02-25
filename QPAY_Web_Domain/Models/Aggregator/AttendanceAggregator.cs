@@ -28,7 +28,7 @@ namespace QPay.UI.Models.Aggregator
     public class leaveTypeMaster
     {
         public int LEAVE_TYPE_ID { get; set; }
-        public int LEAVE_TYPE_NAME { get; set; }
+        public string LEAVE_TYPE_NAME { get; set; }
         public int ISACTIVE { get; set; }
     }
 

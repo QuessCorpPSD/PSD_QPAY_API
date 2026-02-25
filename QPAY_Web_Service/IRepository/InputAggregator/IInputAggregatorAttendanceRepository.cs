@@ -25,7 +25,7 @@ namespace QPay.BAL.IRepository
 
         Task<DataSet> Createleavetype(leaveTypeMasterRequest request);
 
-        //Task<DataSet> Search(int? companyId);
+        Task<DataSet> SearchLeaveTypeMapping(int? companyId);
 
         Task<DataSet> QuessAttendanceAttributeMaster();
 

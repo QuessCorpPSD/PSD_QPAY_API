@@ -75,6 +75,9 @@ namespace QPay.API.Controller.InputAggregator
             }
         }
 
+
+
+
         [HttpPost]
         [Route("Createleavemapping")]
         public async Task<IActionResult> Createleavemapping([FromBody] AttendanceAggregatorRequest request)
@@ -142,12 +145,12 @@ namespace QPay.API.Controller.InputAggregator
 
 
 
-        /*
+        
         [HttpGet]
-        [Route("Search/{companyId}")]
-        public async Task<IActionResult> Search(int? companyId)
+        [Route("SearchLeaveTypeMapping/{companyId}")]
+        public async Task<IActionResult> SearchLeaveTypeMapping(int? companyId)
         {
-            var response = await _IRepository.Search(companyId);
+            var response = await _IRepository.SearchLeaveTypeMapping(companyId);
             if (response.Tables[0].Rows.Count > 0)
             {
                 var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
@@ -160,7 +163,7 @@ namespace QPay.API.Controller.InputAggregator
         }
 
 
-        */
+        
 
         #region for billing report generation
 
