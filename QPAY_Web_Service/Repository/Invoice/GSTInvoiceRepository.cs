@@ -506,7 +506,7 @@ namespace QPay.BAL.Repository.Invoice
                 parameter.Add("@InvoiceIds", string.Join(",", request.invoice_Id));
                 //parameter.Add("@Company_Id", request.CompanyId);
                 //parameter.Add("@Pay_Period_Id", request.PayPeriodId);
-                //parameter.Add("@QzoneUserId", request.userId);
+                parameter.Add("@UserId", request.userId);
                 parameter.Add("@Remarks", request.remarks);
                 parameter.Add("@Status", "Approved");
 
@@ -585,7 +585,7 @@ namespace QPay.BAL.Repository.Invoice
             parameter.Add("@Remarks", request.remarks);
             //parameter.Add("@Company_Id", request.CompanyId);
             //parameter.Add("@Pay_Period_Id", request.PayPeriodId);
-            //parameter.Add("@QzoneUserId", request.userId);
+            parameter.Add("@UserId", request.userId);
 
             return await _dbRepository.GetItemsAsync(storeprocedure, parameter);
         }

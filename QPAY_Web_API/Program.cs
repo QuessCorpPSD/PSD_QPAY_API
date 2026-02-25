@@ -111,7 +111,11 @@ builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 1073741824; // 1 GB
 });
-
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(30);
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(30);
+});
 /* ============================
    BUILD APP
 ============================ */
