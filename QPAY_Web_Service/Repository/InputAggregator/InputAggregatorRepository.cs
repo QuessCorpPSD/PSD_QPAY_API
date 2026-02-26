@@ -373,7 +373,7 @@ namespace QPay.BAL.Repository
                 dscolumns.WriteXml(xmlWriter, XmlWriteMode.IgnoreSchema);
                 string xmlInput = xmlWriter.ToString();
 
-                string storeProcedure = @"Proc_Upload_Attendance_InputAggregator";
+                string storeProcedure = @"Proc_Upload_InputAggregator";
                 var parameters = new DynamicParameters();
                 parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@CreatedBy", CreatedBy);
