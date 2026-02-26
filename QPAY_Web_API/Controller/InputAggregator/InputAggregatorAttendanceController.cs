@@ -75,9 +75,6 @@ namespace QPay.API.Controller.InputAggregator
             }
         }
 
-
-
-
         [HttpPost]
         [Route("Createleavemapping")]
         public async Task<IActionResult> Createleavemapping([FromBody] AttendanceAggregatorRequest request)
@@ -107,6 +104,22 @@ namespace QPay.API.Controller.InputAggregator
         public async Task<IActionResult> QuessAttendanceAttributeMaster()
         {
             var response = await _IRepository.QuessAttendanceAttributeMaster();
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
+
+        [HttpGet]
+        [Route("Search/{companyId}")]
+        public async Task<IActionResult> Search(int? companyId)
+        {
+            var response = await _IRepository.Search(companyId);
             if (response.Tables[0].Rows.Count > 0)
             {
                 var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);

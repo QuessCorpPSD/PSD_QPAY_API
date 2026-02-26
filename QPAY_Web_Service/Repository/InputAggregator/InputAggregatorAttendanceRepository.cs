@@ -335,7 +335,15 @@ namespace QPay.BAL.Repository
             return dataSet;
         }
 
-        
+        public async Task<DataSet> Search(int? companyId)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Company_Id"] = companyId,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Client_Attendance_Attributes_Mapping_detail", parameters, 1500);
+        }
+
         public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
         {
             RequestResponse poDetails = new RequestResponse();

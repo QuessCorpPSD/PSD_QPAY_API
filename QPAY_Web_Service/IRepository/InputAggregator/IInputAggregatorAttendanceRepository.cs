@@ -29,6 +29,8 @@ namespace QPay.BAL.IRepository
 
         Task<DataSet> QuessAttendanceAttributeMaster();
 
+        Task<DataSet> Search(int? companyId);
+
         Task<RequestResponse> ClientAttributesUpload(IFormFile file, [FromForm] string CreatedBy);
 
         Task<RequestResponse> AttributesMappingUpload(IFormFile file, [FromForm] string CreatedBy);
