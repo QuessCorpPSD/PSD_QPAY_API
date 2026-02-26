@@ -1832,6 +1832,18 @@ namespace QPay.DAL.Repository
             }
         }
 
+        public async Task<List<string>> GetSelectedColumns(string storeProcedureName, object param)
+        {
+            using (var dbConnection = ConnectionSecondary)
+            {
+
+                var result = await dbConnection.QueryAsync<string>(storeProcedureName, param, commandType: CommandType.StoredProcedure,
+                    commandTimeout: 1000);
+
+                return result.AsList();
+            }
+
+        }
 
 
 

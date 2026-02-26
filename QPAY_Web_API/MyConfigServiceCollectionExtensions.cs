@@ -40,13 +40,13 @@ namespace QPay.API
     {
         public static void AddServices(this IServiceCollection services)
         {
-            
+
             services.AddHttpClient();
             services.AddSingleton<IJwtTokenService, JwtTokenService>();
             services.AddSingleton<IEmailService, EmailService>();
 
             #region Dependencies  PSD DI       
-            
+
             services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
             services.AddSingleton<IAssignmentRepository, AssignmentRepository>();
             services.AddSingleton<IBillableDaysRepository, BillableDaysRepository>();
@@ -86,7 +86,7 @@ namespace QPay.API
             services.AddScoped<ICorporateBankRepository, CorporateBankRepository>();
             services.AddScoped<ICostCenterMappingRepository, CostCenterMappingRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDesignationRepository, DesignationRepository>();           
+            services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IITCalenderRepository, ITCalenderRepository>();
             services.AddScoped<IPayFrequencyRepository, PayFrequencyRepository>();
@@ -199,11 +199,12 @@ namespace QPay.API
             //services.AddScoped<ITDSSlabMasterRepository, TDSSlabMasterRepository>();
             //services.AddScoped<IBranchMasterRepository, BranchMasterRepository>();
             //services.AddScoped<IComputationRuleRepository, ComputationRuleRepository>();
-           
+
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
-            services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>(); 
+            services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
             services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
+            services.AddScoped<IInputAggregatorAttendanceRepository, InputAggregatorAttendanceRepository>();
 
             services.AddScoped<ISalaryReleasePendingApprovalRepository, SalaryReleasePendingApprovalRepository>();
             services.AddScoped<IBatchGenerationRepository, BatchGenerationRepository>();
