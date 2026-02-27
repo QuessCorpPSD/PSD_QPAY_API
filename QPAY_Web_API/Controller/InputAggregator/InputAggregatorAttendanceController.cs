@@ -182,12 +182,12 @@ namespace QPay.API.Controller.InputAggregator
 
         [HttpPost]
         [Route("Upload")]
-        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
+        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId, [FromForm] string PayPeriodId)
         {
             if (file == null || file.Length == 0)
                 return Ok("File is missing.");
 
-            var result = await _IRepository.Upload(file, CreatedBy, CompanyId);
+            var result = await _IRepository.Upload(file, CreatedBy, CompanyId, PayPeriodId);
             return Ok(result);
         }
 
