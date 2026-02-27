@@ -344,7 +344,7 @@ namespace QPay.BAL.Repository
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Sp_Get_Quess_Client_Attendance_Attributes_Mapping_detail", parameters, 1500);
         }
 
-        public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId)
+        public async Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId, [FromForm] string PayPeriodId)
         {
             RequestResponse poDetails = new RequestResponse();
 
@@ -436,7 +436,8 @@ namespace QPay.BAL.Repository
                 parameter.Add("@XML_File", xmlInput);
                 parameter.Add("@CreatedBy", CreatedBy);
                 parameter.Add("@Company_Id", CompanyId);
-                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+                parameter.Add("@Pay_Period_Id", PayPeriodId);
+                var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameter);
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     try

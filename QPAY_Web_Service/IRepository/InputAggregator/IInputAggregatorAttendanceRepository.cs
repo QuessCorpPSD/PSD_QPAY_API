@@ -35,7 +35,7 @@ namespace QPay.BAL.IRepository
 
         Task<RequestResponse> AttributesMappingUpload(IFormFile file, [FromForm] string CreatedBy);
 
-        Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId);
+        Task<RequestResponse> Upload(IFormFile file, [FromForm] string CreatedBy, [FromForm] string CompanyId, [FromForm] string PayPeriodId);
 
         Task<DataSet> billableReport(int? companyId, int? payPeriodId);
     }
