@@ -9,7 +9,7 @@ namespace QPay.UI.Models.SalaryReleaseInvoice
     public class InBatchGeneration
     {
         public long BankAdviceApprovalsId { get; set; }
-        public string InvoiceNo { get; set; }
+        public string Invoice_No { get; set; }
         public string CompanyCode { get; set; }
         public string PayPeriod { get; set; }
         public string MapName { get; set; } = string.Empty;
