@@ -22,7 +22,7 @@ namespace QPay.UI.Models
         public string Invoice_DateTime { get; set; }
         public string Remarks { get; set; }        
         public string Invoice_Status { get; set; }
- public string FileNames { get; set; }
+        public string FileNames { get; set; }
         public bool Ismatching => Input_Headcount == Output_Headcount;
       
 

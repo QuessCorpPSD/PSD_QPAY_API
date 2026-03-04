@@ -93,20 +93,28 @@ namespace QPay.API.Controller
             var status = await this._assignment.UserLotValidation(userLotValidationRequest);
             return Ok(status);
         }
+
         [HttpPost]
-        [Route("CheckINFileDownload")]
-        [HttpPost]
+        [Route("CheckINFileDownload")]       
         public IActionResult CheckINFileDownload(CheckINSheetUI checkINSheetUI)
         {
             var response = new FileResponse();
 
+            if(checkINSheetUI.Revised==0)
+            {
+                response.File = "N";
+                response.FileName = "Directory not found";
+                return Ok(response);
+            }
+
+            int revised = checkINSheetUI.Revised - 1;
             // Build directory path safely
             string directoryPath = Path.Combine(
-                _config["FilePath"],
+                _config["FilePath"] ?? "",
                 checkINSheetUI.CompanyCode,
                 checkINSheetUI.PayPeriod,
                 checkINSheetUI.LotNo.ToString(),
-                checkINSheetUI.Revised.ToString()
+                revised.ToString()
             );
 
             // Build file name
