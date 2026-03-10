@@ -95,7 +95,8 @@ namespace QPay.API.Controller
         }
 
         [HttpPost]
-        [Route("CheckINFileDownload")]       
+        [Route("CheckINFileDownload")]
+        [HttpPost]
         public IActionResult CheckINFileDownload(CheckINSheetUI checkINSheetUI)
         {
             var response = new FileResponse();

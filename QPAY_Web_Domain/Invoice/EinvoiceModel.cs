@@ -359,6 +359,7 @@ namespace QPay.UI.Invoice
         public string Company_Code { get; set; } = "";
         public int Pay_Period_Id { get; set; }
         public string Pay_Period { get; set; } = "";
+        public string data_from { get; set; } = "";
 
     }
 }

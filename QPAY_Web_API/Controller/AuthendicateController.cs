@@ -113,7 +113,7 @@ namespace QPAY_Web_API.Controller
                 if (user is { User_Id: > 0 })
                     {
 
-                   // var mail =await OTPSend(user.UserName, user.Mail_Id);
+                    // var mail =await OTPSend(user.UserName, user.Mail_Id);
 
                     //user.otp = mail.Otp;
                     //user.expirytime = 3;
@@ -122,7 +122,7 @@ namespace QPAY_Web_API.Controller
             new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
             new Claim(ClaimTypes.Role, user.Role_Id.ToString()),
             new Claim(ClaimTypes.Email, user.Mail_Id ?? string.Empty),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
+            new Claim(ClaimTypes.NameIdentifier, user.User_Id.ToString()??string.Empty)
         });
 
                         user.token = _jwtTokenService.GenerateAccessToken(identity);

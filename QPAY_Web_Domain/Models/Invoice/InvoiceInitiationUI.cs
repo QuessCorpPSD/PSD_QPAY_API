@@ -160,6 +160,8 @@ namespace QPay.UI.Models.Invoice
     public class IntiationExportRequest
     {
         public int? Company_Id { get; set; }
+        public string? Company_Code { get; set; }
+        public string? Pay_Period { get; set; }
         public int? PayPeriod_Id { get; set; }
         public string? LotNo { get; set; }
         public string? ReqNo { get; set; }

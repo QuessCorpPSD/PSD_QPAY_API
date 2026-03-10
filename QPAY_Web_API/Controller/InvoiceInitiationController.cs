@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using QPay.API.Extensions;
 using QPay.API.LoggerService;
 using QPay.API.Models;
@@ -23,6 +24,7 @@ namespace QPay.API.Controller
         private readonly IConfiguration _configuration;
         private readonly ILoggerManager _logger;
         private readonly HttpClient _client;
+        private readonly IHubContext<NotificationHub> _hub;
         public InvoiceInitiationController(ILoggerManager logger, HttpClient client, IInvoiceInitiationRepository invoiceInitiationRepository, IConfiguration configuration)
         {
             this._invoiceInitiationRepository = invoiceInitiationRepository;
