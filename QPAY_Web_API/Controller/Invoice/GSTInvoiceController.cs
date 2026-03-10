@@ -484,7 +484,7 @@ namespace QPay.API.Controller.Invoice
                                company.Pay_Period,
                               invoiceNumberLotUI.Invoice_Number,
                                ".pdf");
-                    Invoicepath = Invoicepath + "\\" + fileNames;
+                    Invoicepath = fileNames;
 
                     using (var fs = new FileStream(Invoicepath, FileMode.Create, FileAccess.Write))
                     {
