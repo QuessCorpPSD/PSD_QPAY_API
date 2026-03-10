@@ -116,6 +116,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(30);
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(30);
 });
+builder.Services.AddSignalR();
 /* ============================
    BUILD APP
 ============================ */
@@ -131,7 +132,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.MapGet("/", () => Results.Ok("API is running."));
-/* ✅ CORS MUST BE HERE */
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();

@@ -50,7 +50,7 @@ namespace QPay.BAL.IRepository.Invoice
 
         EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action);
         string SaveBatchResponse(int StatusCode, string ResponseMessage, string Response, string ResponseXml, string InvoiceIds, string Mode, string UserId);
-        FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, string payPeriod);
+        FileResponse PayRegisterDownload(int companyCode, int pay_period_Id, string payPeriod,string data_from);
         DataTable GetPayRegisterSummary(int companyCode, int pay_period_Id);
         Task<List<InvoiceColors>> GetAllInvoiceTypeColors();
     }

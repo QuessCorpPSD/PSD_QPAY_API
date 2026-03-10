@@ -1329,7 +1329,7 @@ namespace QPay.API.Controller.Invoice
         public async Task<IActionResult> PayRegisterDownload(DownloadRegister downloadRegister)
         {
             FileResponse fileResponse = new FileResponse();
-            fileResponse = _gstinvoiceRepository.PayRegisterDownload(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id, downloadRegister.Pay_Period);
+            fileResponse = _gstinvoiceRepository.PayRegisterDownload(downloadRegister.Company_Id, downloadRegister.Pay_Period_Id, downloadRegister.Pay_Period, downloadRegister.data_from);
             return Ok(fileResponse);
         }
 

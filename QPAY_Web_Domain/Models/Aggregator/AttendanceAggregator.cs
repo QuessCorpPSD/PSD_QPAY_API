@@ -12,7 +12,7 @@ namespace QPay.UI.Models.Aggregator
         public int COMPANY_ID { get; set; }
         public int LEAVE_TYPE_ID { get; set; }
         public int LEAVE_TREAT_ID { get; set; }
-        public int ISACTIVE { get; set; }
+        public Boolean ISACTIVE { get; set; }
         public int ATTENDANCE_TYPE { get; set; }
     }
 
@@ -29,7 +29,7 @@ namespace QPay.UI.Models.Aggregator
     {
         public int LEAVE_TYPE_ID { get; set; }
         public string LEAVE_TYPE_NAME { get; set; }
-        public int ISACTIVE { get; set; }
+        public Boolean ISACTIVE { get; set; }
     }
 
     public class leaveTypeMasterRequest
