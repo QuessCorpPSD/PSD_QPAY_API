@@ -507,7 +507,7 @@ namespace QPay.BAL.Repository.Invoice
             parameter.Add("@flag", flag);
 
 
-            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard_Test", parameter);
+            var res = await _dbRepository.GetItemsSecondaryAsync("SP_Billing_dashboard_Test", parameter);
             if(res.Any())
             {
                 billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };

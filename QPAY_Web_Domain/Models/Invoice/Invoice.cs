@@ -30,6 +30,8 @@ namespace QPay.UI.Models.Invoice
             public string? ReqUserName {get;set;}
             public string? AssignedTo { get;set;}
 
+            public bool isedit { get; set; }
+
             public DateTime? AllocationDatetime {  get; set; }  
             public DateTime? Invoice_Created_Date {  get; set; }
 

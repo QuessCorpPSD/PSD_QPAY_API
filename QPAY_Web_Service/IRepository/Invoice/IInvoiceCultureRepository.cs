@@ -20,7 +20,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<DataSet> GetAllPayCodeFromCompanyOI(int companyId);
         Task<DataSet> Create(string xml, int createdBy, string mode, string invoiceType);
 
-        Task<List<InvoiceStructure>> GetAllInvoiceCulture(int companyId);
+        Task<List<InvoiceStructure>> GetAllInvoiceCulture(int companyId,int spiltTypeId);
         Task<string> PostInvoiceCulture(string xmlString, string userId);
         DataSet InvoiceCultureExport(int companyId);
 

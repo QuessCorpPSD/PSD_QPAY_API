@@ -100,14 +100,15 @@ namespace QPay.BAL.Repository.Invoice
             return this._dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetAllPayCodeFromCompanyOtherincomePayCode", parameters);
         }
 
-        public async Task<List<InvoiceStructure>> GetAllInvoiceCulture(int companyId)
+        public async Task<List<InvoiceStructure>> GetAllInvoiceCulture(int companyId,int spiltTypeId)
         {
             var parameters = new Dictionary<string, object>
             {
                 ["@CompanyCode"] = companyId,
+                ["@SpiltTypeId"] = spiltTypeId
             };
                 
-            var res = await this._dbRepository.GetItemsAsync("sp_GetAllInvoiceStructure", parameters);
+            var res = await this._dbRepository.GetItemsAsync("sp_GetAllInvoiceStructure_new_api", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {

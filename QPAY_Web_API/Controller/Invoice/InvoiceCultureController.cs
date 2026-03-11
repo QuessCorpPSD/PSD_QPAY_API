@@ -52,10 +52,10 @@ namespace QPay.API.Controller.Invoice
             return Ok(response);
         }
 
-        [HttpGet, Route("GetAllInvoiceCulture/{companyId}")]
-        public async Task<IActionResult> GetAllInvoiceCulture(int companyId)
+        [HttpGet, Route("GetAllInvoiceCulture/{companyId}/{spiltTypeId}")]
+        public async Task<IActionResult> GetAllInvoiceCulture(int companyId,int spiltTypeId)
         {
-            var response = await _InvoiceCulture.GetAllInvoiceCulture(companyId);
+            var response = await _InvoiceCulture.GetAllInvoiceCulture(companyId, spiltTypeId);
             return Ok(response);
         }
 
