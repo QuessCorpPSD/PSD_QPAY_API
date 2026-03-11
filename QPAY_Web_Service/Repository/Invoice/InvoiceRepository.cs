@@ -205,7 +205,7 @@ namespace QPay.BAL.Repository.Invoice
 
             string xml = GenerateXmlForMerge(requests);
 
-            string storeProcedure = "USP_Performa_Invoice_Merge_11";
+            string storeProcedure = "USP_Performa_Invoice_Merge";
             var parameters = new DynamicParameters();
 
             parameters.Add("@xmlinput", xml);
