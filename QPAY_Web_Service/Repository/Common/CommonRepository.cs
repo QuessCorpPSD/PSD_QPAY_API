@@ -194,7 +194,7 @@ namespace QPay.IRepository.Repository.Common
         }
         public async Task<List<CityUI>> GetCityByStateId(int stateId)
         {
-            string storeProcedure = "[dbo].[sp_GetAllStates]" ?? "";
+            string storeProcedure = "[dbo].[sp_GetAllCityByStateId]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@StateId", stateId);
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
@@ -256,6 +256,5 @@ namespace QPay.IRepository.Repository.Common
             }
             return new List<Paycodes>();
         }
-
     }
 }

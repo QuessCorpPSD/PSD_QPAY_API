@@ -127,6 +127,13 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetCityByStateId/{stateId}")]
+        public async Task<IActionResult> GetCityByStateId(int stateId)
+        {
+            var state = await this._icompanyCode.GetCityByStateId(stateId);
+            return Ok(state);
+        }
+
         [HttpGet, Route("GetPayPeriod")]
         public async Task<IActionResult> GetPayPeriod()
         {

@@ -1517,165 +1517,143 @@ namespace QPay.BAL.Repository.Invoice
             }
             else if (Data_From == "Split")
             {
-                var parameters = new DynamicParameters();
-                parameters.Add("@Company_Id", companyCode);
-                parameters.Add("@Pay_Period_Id", pay_period_Id);
-
+                var parameters = new Dictionary<string, object?>
+                {
+                    ["@Company_Id"] = companyCode,
+                    ["@Pay_Period_Id"] = pay_period_Id
+                };
                 string storeProcedure = "";
                 storeProcedure = "sp_PayRegister_Split_Register";
 
-                var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
+                var res = this._dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync(storeProcedure, parameters,5000);
                 if (res != null)
                 {
                     try
                     {
-                        payregister_dt = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
-                        if (payregister_dt != null)
+                        using var workbook = new XLWorkbook();
+                        int sheetIndex = 1;
+                        DataSet ds = res;
+                        foreach (DataTable table in ds.Tables)
                         {
-                            if (payregister_dt.Rows.Count > 0)
+                            //DataTable dt = (DataTable)JsonConvert.DeserializeObject<DataTable>(table);
+                            payregister_dt = table;
+                            if (payregister_dt != null)
                             {
-                                DataRow lastRow = payregister_dt.Rows[payregister_dt.Rows.Count - 1];
-                                List<string> RemoveColums = new List<string>();
-                                DataRow dtrow = payregister_dt.NewRow();
-                                foreach (DataColumn column in payregister_dt.Columns)
+                                if (payregister_dt.Rows.Count > 0)
                                 {
-                                    var value = lastRow[column];
-
-                                    if (column.DataType.Name == "Double")
+                                    DataRow lastRow = payregister_dt.Rows[payregister_dt.Rows.Count - 1];
+                                    List<string> RemoveColums = new List<string>();
+                                    DataRow dtrow = payregister_dt.NewRow();
+                                    foreach (DataColumn column in payregister_dt.Columns)
                                     {
+                                        var value = lastRow[column];
 
-                                        var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>(column)) ?? 0;
-                                        dtrow[column] = columnsum;
-                                        if (column.ColumnName.ToLower() == "lot_number")
+                                        if (column.DataType.Name == "Double")
                                         {
-                                            var column_Unique = GetUniqueColumnValues(payregister_dt, column.ColumnName);
-                                            dtrow[column] = column_Unique[0];
 
-                                        }
-                                        if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
-                                        {
-                                            RemoveColums.Add(column.ToString());
-                                        }
-                                    }
-                                    else if (column.DataType.Name == "Int64")
-                                    {
-                                        var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<Int64?>(column)) ?? 0;
-                                        dtrow[column] = columnsum;
-                                        if (column.ColumnName.ToLower() == "lot_number")
-                                        {
-                                            var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
-                                            dtrow[column] = column_Unique[0];
-
-                                        }
-                                        if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
-                                        {
-                                            RemoveColums.Add(column.ToString());
-                                        }
-
-
-                                    }
-                                    else
-                                    {
-                                        dtrow[column] = "";
-                                    }
-                                }
-
-                                payregister_dt.Rows.Add(dtrow);
-                                foreach (var item in RemoveColums)
-                                {
-                                    payregister_dt.Columns.Remove(item);
-                                }
-                                var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
-                                               .Where(col => payregister_dt.AsEnumerable().All(row =>
-                                               {
-                                                   var value = row[col];
-                                                   return value == null || string.IsNullOrWhiteSpace(value.ToString());
-                                               }))
-                                                .Select(col => col.ColumnName)
-                                                .ToList();
-                                foreach (var columnName in emptyColumns)
-                                    payregister_dt.Columns.Remove(columnName);
-
-
-
-                                var comayName = CompanyNameByCode(companyCode);
-                                var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
-
-                                DataTable payregistersummary_dt = new DataTable();
-                                if (payregister_dt.Columns.Count > 1)
-                                {
-                                    using var workbook = new XLWorkbook();
-                                    {
-                                        for (int i = 0; i < 2; i++)
-                                        {
-                                            if (i == 0)
+                                            var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<double?>(column)) ?? 0;
+                                            dtrow[column] = columnsum;
+                                            if (column.ColumnName.ToLower() == "lot_number")
                                             {
-                                                var ws = workbook.AddWorksheet(payregister_dt, "PayRegister");
-                                                ws.Table(0).ShowAutoFilter = false;
-                                                ws.Table(0).Theme = XLTableTheme.None;
+                                                var column_Unique = GetUniqueColumnValues(payregister_dt, column.ColumnName);
+                                                dtrow[column] = column_Unique[0];
 
-                                                ws.Row(1).InsertRowsAbove(3);
-                                                ws.Range("A1:Z1").Merge();
-                                                ws.Range("A2:Z2").Merge();
-                                                ws.Range("A3:Z3").Merge();
-
-                                                var usedRange = ws.RangeUsed();
-
-                                                if (usedRange != null)
-                                                {
-                                                    foreach (var cell in usedRange.Cells())
-                                                    {
-                                                        cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                                                        cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                                                        cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                                                        cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-
-                                                        cell.Style.Border.TopBorderColor = XLColor.Black;
-                                                        cell.Style.Border.BottomBorderColor = XLColor.Black;
-                                                        cell.Style.Border.LeftBorderColor = XLColor.Black;
-                                                        cell.Style.Border.RightBorderColor = XLColor.Black;
-                                                    }
-                                                }
-
-                                                ws.Cell(1, 1).Value = comapny.Client_Name;
-                                                ws.Cell(1, 1).Style.Font.Bold = true;
-                                                ws.Cell(2, 1).Value = string.Format("SALARY FOR THE MONTH OF {0}", pay_period);
-                                                ws.Cell(2, 1).Style.Font.Bold = true;
-                                                var lastrow = ws.LastRowUsed().RowNumber();
-
-                                                ws.Cell(lastrow, 1).Value = "Grand Total";
                                             }
-
+                                            if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
+                                            {
+                                                RemoveColums.Add(column.ToString());
+                                            }
                                         }
-
-                                        using (MemoryStream stream = new MemoryStream())
+                                        else if (column.DataType.Name == "Int64")
                                         {
-                                            workbook.SaveAs(stream);
-                                            var bytes = Convert.ToBase64String(stream.ToArray());
-                                            //  FileResponse fileResponse = new FileResponse();
-                                            fileResponse.FileName = "Split_PayRegister.xlsx";
-                                            fileResponse.File = bytes;
+                                            var columnsum = payregister_dt.AsEnumerable().Sum(row => row.Field<Int64?>(column)) ?? 0;
+                                            dtrow[column] = columnsum;
+                                            if (column.ColumnName.ToLower() == "lot_number")
+                                            {
+                                                var column_Unique = GetUniqueColumnValuesByInt(payregister_dt, column.ColumnName);
+                                                dtrow[column] = column_Unique[0];
 
+                                            }
+                                            if (Convert.ToString(columnsum).ToLower() == ("0").ToLower())
+                                            {
+                                                RemoveColums.Add(column.ToString());
+                                            }
                                         }
-
+                                        else
+                                        {
+                                            dtrow[column] = DBNull.Value;
+                                        }
                                     }
 
+                                    payregister_dt.Rows.Add(dtrow);
+                                    foreach (var item in RemoveColums)
+                                    {
+                                        payregister_dt.Columns.Remove(item);
+                                    }
+                                    var emptyColumns = payregister_dt.Columns.Cast<DataColumn>()
+                                                   .Where(col => payregister_dt.AsEnumerable().All(row =>
+                                                   {
+                                                       var value = row[col];
+                                                       return value == null || string.IsNullOrWhiteSpace(value.ToString());
+                                                   }))
+                                                    .Select(col => col.ColumnName)
+                                                    .ToList();
+                                    foreach (var columnName in emptyColumns)
+                                        payregister_dt.Columns.Remove(columnName);
+
+
+
+                                    var comayName = CompanyNameByCode(companyCode);
+                                    var comapny = JsonConvert.DeserializeObject<List<ClientModel>>(comayName).FirstOrDefault();
+
+                                    DataTable payregistersummary_dt = new DataTable();
+                                    if (payregister_dt.Columns.Count > 1)
+                                    {
+                                        string sheetName = GetSheetName(sheetIndex);
+
+                                        var ws = workbook.AddWorksheet(payregister_dt, sheetName);
+                                        ws.Table(0).ShowAutoFilter = false;
+                                        ws.Table(0).Theme = XLTableTheme.None;
+
+                                        ws.Row(1).InsertRowsAbove(3);
+                                        ws.Range("A1:Z1").Merge();
+                                        ws.Range("A2:Z2").Merge();
+                                        ws.Range("A3:Z3").Merge();
+
+                                        var usedRange = ws.RangeUsed();
+
+                                        if (usedRange != null)
+                                        {
+                                            foreach (var cell in usedRange.Cells())
+                                            {
+                                                cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                                                cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                                                cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                                                cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                                                cell.Style.Border.TopBorderColor = XLColor.Black;
+                                                cell.Style.Border.BottomBorderColor = XLColor.Black;
+                                                cell.Style.Border.LeftBorderColor = XLColor.Black;
+                                                cell.Style.Border.RightBorderColor = XLColor.Black;
+                                            }
+                                        }
+
+                                        ws.Cell(1, 1).Value = comapny.Client_Name;
+                                        ws.Cell(1, 1).Style.Font.Bold = true;
+
+                                        ws.Cell(2, 1).Value = $"SALARY FOR THE MONTH OF {pay_period}";
+                                        ws.Cell(2, 1).Style.Font.Bold = true;
+
+                                        var lastrow = ws.LastRowUsed().RowNumber();
+                                        ws.Cell(lastrow, 1).Value = "Grand Total";
+
+                                        sheetIndex++;
+                                    }
                                 }
                                 else
                                 {
-                                    using (MemoryStream stream = new MemoryStream())
-                                    {
-
-                                        using var workbook = new XLWorkbook();
-                                        {
-                                            workbook.SaveAs(stream);
-                                            var bytes = Convert.ToBase64String(stream.ToArray());
-
-                                            fileResponse.FileName = "PayRegister.xlsx";
-                                            fileResponse.File = bytes;
-                                            fileResponse = fileResponse;
-                                        }
-                                    }
+                                    fileResponse.File = "No";
+                                    fileResponse.FileName = "Not Existing";
                                 }
                             }
                             else
@@ -1684,12 +1662,14 @@ namespace QPay.BAL.Repository.Invoice
                                 fileResponse.FileName = "Not Existing";
                             }
                         }
-                        else
+                        using (MemoryStream stream = new MemoryStream())
                         {
-                            fileResponse.File = "No";
-                            fileResponse.FileName = "Not Existing";
-                        }
+                            workbook.SaveAs(stream);
+                            var bytes = Convert.ToBase64String(stream.ToArray());
 
+                            fileResponse.FileName = "Split_PayRegister.xlsx";
+                            fileResponse.File = bytes;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1703,14 +1683,14 @@ namespace QPay.BAL.Repository.Invoice
                     fileResponse.File = "No";
                     fileResponse.FileName = "Not Existing";
                 }
+
             }
             else
             {
                 fileResponse.File = "No";
                 fileResponse.FileName = "Not Existing";
             }
-
-                return fileResponse;
+            return fileResponse;
         }
 
         public string CompanyNameByCode(int company_Id)
@@ -1781,6 +1761,29 @@ namespace QPay.BAL.Repository.Invoice
             }
 
             return new List<InvoiceColors>();
+        }
+
+        private string GetSheetName(int i)
+        {
+            string sheetName = string.Empty;
+            switch (i)
+            {
+                case 1:
+                    sheetName = "Consolidated Register";
+                    break;
+                case 2:
+                    sheetName = "Arrear";
+                    break;
+                case 3:
+                    sheetName = "Regular";
+                    break;
+
+                default:
+                    sheetName = "PayRegister";
+                    return sheetName;
+            }
+            return sheetName;
+
         }
 
     }

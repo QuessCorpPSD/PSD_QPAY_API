@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QPay.UI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -55,7 +56,6 @@ namespace QPay.UI.Models.Customer
     public class AddressRequest
     {
         public string? Action { get; set; }
-        public string? SearchText { get; set; }
         public int? UserId { get; set; }
         public string? XmlData { get; set; }
         public int? ClientAddressId { get; set; }
@@ -68,13 +68,21 @@ namespace QPay.UI.Models.Customer
         public Boolean IsShippingAddressSameAsBilling { get; set; }
         public string? ShippingClientName { get; set; }
         public string? ShippingAddress { get; set; }
-        public DateTime EffectiveDate { get; set; }
+        public int? ShippingStateId { get; set; }
+        public string? EffectiveDate { get; set; }
+        public Boolean SEZ_Applicable { get; set; }
+        //public string? SEZ_Document { get; set; }
+        public string? SEZ_ExpiryDate {get; set;}
+        public string? LUT_Number {get; set;}
+	    public string? LUT_Date {get; set;}
+        public string? LUT_ExpiryDate { get; set; }
+        public string? VendorCode { get; set; }
         public string? SAC_Code { get; set; }
         public string? GstNumber { get; set; }
         public int? CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public string? CreatedOn { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime ModifiedOn { get; set; }
+        public string? ModifiedOn { get; set; }
         public int? PageNo { get; set; }
         public int? PageSize { get; set; }
         public string? SortField { get; set; }
@@ -85,8 +93,16 @@ namespace QPay.UI.Models.Customer
         public string? Map_Name { get; set; }
         public string? BillingStateName { get; set; }
         public string? ShippingStateName { get; set; }
+        public int? BillingLocationId { get; set; }
+        public int? BillingPinCode {get; set;}
+	    public int? ShippingLocationId {get; set;}
+        public int? ShippingPinCode {get; set;}
+	    public string? City_Name {get; set;}
+	    public string? ShippingCity_Name {get; set;}
+	    public string? SapBillTo {get; set;}
+	    public string? SapShipTo {get; set;}
+	    public string? AddressCode {get; set;}
         public string? ClientGstNumber { get; set; }
-        public Boolean GstApplicable { get; set; }
     }
 
     public class ClientAddressResponse
