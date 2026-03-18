@@ -51,6 +51,8 @@ namespace QPay.UI.Models.Customer
         public string? SapBillTo { get; set; }
         public string? SapShipTo { get; set; }
         public string? AddressCode { get; set; }
+        public int? BillingLocationId { get; set; }
+        public int? ShippingLocationId { get; set; }
     }
 
     public class AddressRequest

@@ -209,7 +209,7 @@ namespace QPay.API
             services.AddScoped<ISalaryReleasePendingApprovalRepository, SalaryReleasePendingApprovalRepository>();
             services.AddScoped<IBatchGenerationRepository, BatchGenerationRepository>();
             services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
+            services.AddScoped<IClientGSTRepository, ClientGSTRepository>();
         }
     }
-
 }
