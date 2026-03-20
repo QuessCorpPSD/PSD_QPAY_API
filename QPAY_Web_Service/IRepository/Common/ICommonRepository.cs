@@ -25,6 +25,8 @@ namespace QPay.BAL.IRepository.Common
         Task<List<CityUI>> GetCityByStateId(int stateId);
         Task<List<CityName>> GetAutoEntityLocation(int CompanyId);
         Task<List<StateResponse>> GetClientGstStateList(int companyId);
+        Task<List<GSTType>> GetGSTTypes(int stateId);
+        Task<List<InvoiceCategories>> GetInvoiceCategory();
 
     }
 }

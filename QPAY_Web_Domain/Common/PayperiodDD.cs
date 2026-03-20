@@ -76,4 +76,16 @@ namespace QPay.UI.Common
         public string Paycode_Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
+
+    public class GSTType
+    {
+        public int? GstTypeId { get; set; }
+        public string GstTypeName { get; set; } = "";
+    }
+
+    public class InvoiceCategories
+    {
+        public int? InvoiceCategoryId { get; set; }
+        public string InvoiceCategory { get; set; } = "";
+    }
 }
