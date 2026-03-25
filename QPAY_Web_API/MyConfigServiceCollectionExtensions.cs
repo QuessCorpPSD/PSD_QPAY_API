@@ -4,6 +4,7 @@ using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
+using QPay.BAL.IRepository.Common.Invoices;
 using QPay.BAL.IRepository.Customer;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.BAL.IRepository.Invoice;
@@ -211,6 +212,8 @@ namespace QPay.API
             services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
             services.AddScoped<IClientGSTRepository, ClientGSTRepository>();
             services.AddScoped<IVendorClientAddressRespository, VendorClientAddressRespository>();
+            services.AddScoped<ISEZWOPRepositoryService, SEZWOPRepositoryService>();
+
 
         }
     }
