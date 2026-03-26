@@ -90,7 +90,7 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@SapBillTo", addressRequest.SapBillTo);
             parameters.Add("@SapShipTo", addressRequest.SapShipTo);
             parameters.Add("@AddressCode", addressRequest.AddressCode);
-            parameters.Add("@ClientGstNumber", addressRequest.ClientGstNumber);
+            //parameters.Add("@ClientGstNumber", addressRequest.ClientGstNumber);
 
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientAddress", parameters);
 

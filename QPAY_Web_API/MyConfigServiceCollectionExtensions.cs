@@ -211,6 +211,8 @@ namespace QPay.API
             services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
             services.AddScoped<IClientGSTRepository, ClientGSTRepository>();
             services.AddScoped<IVendorClientAddressRespository, VendorClientAddressRespository>();
+            services.AddScoped<IVendorClientGstRepository, VendorClientGSTRepository>();
+
 
         }
     }
