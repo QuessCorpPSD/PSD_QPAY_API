@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Office.Word;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
@@ -194,7 +195,7 @@ namespace QPay.IRepository.Repository.Common
         }
         public async Task<List<CityUI>> GetCityByStateId(int stateId)
         {
-            string storeProcedure = "[dbo].[sp_GetAllStates]" ?? "";
+            string storeProcedure = "[dbo].[sp_GetAllCityByStateId]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@StateId", stateId);
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
@@ -255,6 +256,28 @@ namespace QPay.IRepository.Repository.Common
                 return JsonConvert.DeserializeObject<List<Paycodes>>(res) ?? new List<Paycodes>();
             }
             return new List<Paycodes>();
+        }
+
+        public async Task<List<GSTType>> GetGSTTypes(int stateId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@StateId", stateId);
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetGstTypebyStateId", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<GSTType>>(res) ?? new List<GSTType>();
+            }
+            return new List<GSTType>();
+        }
+        public async Task<List<InvoiceCategories>> GetInvoiceCategory()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetAllInvoiceCategories", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<InvoiceCategories>>(res) ?? new List<InvoiceCategories>();
+            }
+            return new List<InvoiceCategories>();
         }
 
     }

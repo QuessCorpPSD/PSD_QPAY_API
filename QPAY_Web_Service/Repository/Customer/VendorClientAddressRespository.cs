@@ -2,21 +2,27 @@
 using Newtonsoft.Json;
 using QPay.BAL.IRepository.Customer;
 using QPay.DAL.Repository;
-using QPay.UI.Customer;
 using QPay.UI.Models.Customer;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static QPay.BAL.Repository.Invoice.InvoiceRepository;
 
 namespace QPay.BAL.Repository.Customer
 {
-    public class ClientAddressRepository : IClientAddressRespository
+    public class VendorClientAddressRespository : IVendorClientAddressRespository
     {
+
         private readonly DbRepository _dbRepository;
 
-        public ClientAddressRepository(DbRepository dbRepository)
+        public VendorClientAddressRespository(DbRepository dbRepository)
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<ClientAddress>> GetAllClientAddressDetails(int userId)
+        public async Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(int userId)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
@@ -25,22 +31,22 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@PageSize", 999999);
 
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientAddress", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientAddress", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
-                return JsonConvert.DeserializeObject<List<ClientAddress>>(res) ?? new List<ClientAddress>();
+                return JsonConvert.DeserializeObject<List<VendorClientAddress>>(res) ?? new List<VendorClientAddress>();
             }
 
-            return new List<ClientAddress>();
+            return new List<VendorClientAddress>();
         }
 
-        public async Task<string> PostAddClientAddress(AddressRequest addressRequest)
+        public async Task<string> PostAddVendorClientAddress(VendorAddressRequest addressRequest)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", addressRequest.Action);
             parameters.Add("@UserId", addressRequest.UserId);
-            parameters.Add("@ClientAddressId", addressRequest.ClientAddressId);
+            parameters.Add("@VendorClientAddressId", addressRequest.VendorClientAddressId);
             parameters.Add("@CompanyId", addressRequest.CompanyId);
             parameters.Add("@StateId", addressRequest.StateId);
             parameters.Add("@CostCenterMappingId", addressRequest.CostCenterMappingId);
@@ -84,9 +90,9 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@SapBillTo", addressRequest.SapBillTo);
             parameters.Add("@SapShipTo", addressRequest.SapShipTo);
             parameters.Add("@AddressCode", addressRequest.AddressCode);
-            parameters.Add("@ClientGstNumber", addressRequest.ClientGstNumber);
+            //parameters.Add("@ClientGstNumber", addressRequest.ClientGstNumber);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientAddress", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientAddress", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -97,14 +103,14 @@ namespace QPay.BAL.Repository.Customer
 
         }
 
-        public async Task<string> PostDeleteClientAddress(int ClientAddressId, int UserId)
+        public async Task<string> PostDeleteVendorClientAddress(int ClientAddressId, int UserId)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Delete");
             parameters.Add("@UserId", UserId);
-            parameters.Add("@ClientAddressId", ClientAddressId);
+            parameters.Add("@VendorClientAddressId", ClientAddressId);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientAddress", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientAddress", parameters);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -115,15 +121,15 @@ namespace QPay.BAL.Repository.Customer
 
         }
 
-        public async Task<ClientAddressResponse> PostClientAddressUpload(string xmlString, string userId)
+        public async Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string userId)
         {
-            ClientAddressResponse clientAddressDetails = new ClientAddressResponse();
+            VendorClientAddressResponse clientAddressDetails = new VendorClientAddressResponse();
 
             var parameters = new DynamicParameters();
             parameters.Add("@XML_File", xmlString);
             parameters.Add("@CreatedBy", userId);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_Upload_ClientAddress", parameters);
+            var res = await this._dbRepository.GetItemsAsync("Proc_Upload_VendorClientAddress", parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             {
@@ -158,19 +164,19 @@ namespace QPay.BAL.Repository.Customer
             return clientAddressDetails;
 
         }
-        public DataSet ClientAddressExport(int userId)
+        public DataSet VendorClientAddressExport(int userId)
         {
-            DataSet ds = this._dbRepository.ClientAddressExport(userId);
-            if (ds != null && ds.Tables.Count > 0)
+            var parameters = new Dictionary<string, object?>
             {
-                return ds;
-            }
-            else
-            {
-                throw new Exception("No data found for the given Parameters.");
-            }
+                ["@Action"] = "Export",
+                ["@UserId"] = userId,
+                ["@PageNo"] = 1,
+                ["@PageSize"] = 99999,
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_ManageVendorClientAddress", parameters, 1500);
+
 
         }
-
     }
 }

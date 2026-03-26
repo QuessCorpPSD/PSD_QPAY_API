@@ -81,6 +81,34 @@ namespace QPay.BAL.Repository.GlobalMaster
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_CreateUpdateFormula", parameters);
         }
 
+        public async Task<DataSet> GetPayrollType()
+        {
+            var parameters = new Dictionary<string, object>
+            {
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetPayrollType", parameters); ;
+
+        }
+
+        public async Task<DataSet> CreateMC(MCFormulasRequest items)
+        {
+
+            //var parentdata = GenericSerializer<Entity>.Serialize(items.parentDetail);
+            var formulaResponse = new MCFormulaResponse();
+            formulaResponse.FormulaDetails = new MCFormulas[1];
+            formulaResponse.FormulaDetails[0] = items.detail;
+
+            string formulaResponseSerialize = GenericSerializer<MCFormulaResponse>.Serialize(formulaResponse);
+
+            var parameters = new Dictionary<string, object>
+            {
+                ["@xmlInput"] = formulaResponseSerialize,
+                ["@mode"] = items.mode,
+                ["@CreatedBy"] = items.createdBy,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_CreateUpdateMCFormula", parameters);
+        }
+
 
     }
 }

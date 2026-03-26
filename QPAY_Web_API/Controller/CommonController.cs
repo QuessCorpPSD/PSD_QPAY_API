@@ -127,6 +127,13 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetCityByStateId/{stateId}")]
+        public async Task<IActionResult> GetCityByStateId(int stateId)
+        {
+            var state = await this._icompanyCode.GetCityByStateId(stateId);
+            return Ok(state);
+        }
+
         [HttpGet, Route("GetPayPeriod")]
         public async Task<IActionResult> GetPayPeriod()
         {
@@ -155,7 +162,21 @@ namespace QPay.API.Controller
             var state = await this._icompanyCode.GetClientGstStateList(companyId);
             return Ok(state);
         }
-        
+
+        [HttpGet, Route("GetGSTTypes/{stateId}")]
+        public async Task<IActionResult> GetGSTTypes(int stateId)
+        {
+            var state = await this._icompanyCode.GetGSTTypes(stateId);
+            return Ok(state);
+        }
+
+        [HttpGet, Route("GetInvoiceCategory")]
+        public async Task<IActionResult> GetInvoiceCategory()
+        {
+            var state = await this._icompanyCode.GetInvoiceCategory();
+            return Ok(state);
+        }
+
 
     }
 }

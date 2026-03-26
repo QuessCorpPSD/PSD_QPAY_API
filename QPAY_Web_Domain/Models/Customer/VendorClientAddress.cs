@@ -1,18 +1,14 @@
-﻿using QPay.UI.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace QPay.UI.Models.Customer
 {
-    public class ClientAddress
+    public class VendorClientAddress
     {
-        public int? ClientAddressId { get; set; }
+        public int? VendorClientAddressId { get; set; }
         public int? CompanyId { get; set; }
         public string? Company_Code { get; set; }
         public int? StateId { get; set; }
@@ -55,12 +51,12 @@ namespace QPay.UI.Models.Customer
         public int? ShippingLocationId { get; set; }
     }
 
-    public class AddressRequest
+    public class VendorAddressRequest
     {
         public string? Action { get; set; }
         public int? UserId { get; set; }
         public string? XmlData { get; set; }
-        public int? ClientAddressId { get; set; }
+        public int? VendorClientAddressId { get; set; }
         public int? CompanyId { get; set; }
         public int? StateId { get; set; }
         public int? CostCenterMappingId { get; set; }
@@ -74,9 +70,9 @@ namespace QPay.UI.Models.Customer
         public string? EffectiveDate { get; set; }
         public Boolean SEZ_Applicable { get; set; }
         //public string? SEZ_Document { get; set; }
-        public string? SEZ_ExpiryDate {get; set;}
-        public string? LUT_Number {get; set;}
-	    public string? LUT_Date {get; set;}
+        public string? SEZ_ExpiryDate { get; set; }
+        public string? LUT_Number { get; set; }
+        public string? LUT_Date { get; set; }
         public string? LUT_ExpiryDate { get; set; }
         public string? VendorCode { get; set; }
         public string? SAC_Code { get; set; }
@@ -96,18 +92,18 @@ namespace QPay.UI.Models.Customer
         public string? BillingStateName { get; set; }
         public string? ShippingStateName { get; set; }
         public int? BillingLocationId { get; set; }
-        public int? BillingPinCode {get; set;}
-	    public int? ShippingLocationId {get; set;}
-        public int? ShippingPinCode {get; set;}
-	    public string? City_Name {get; set;}
-	    public string? ShippingCity_Name {get; set;}
-	    public string? SapBillTo {get; set;}
-	    public string? SapShipTo {get; set;}
-	    public string? AddressCode {get; set;}
+        public int? BillingPinCode { get; set; }
+        public int? ShippingLocationId { get; set; }
+        public int? ShippingPinCode { get; set; }
+        public string? City_Name { get; set; }
+        public string? ShippingCity_Name { get; set; }
+        public string? SapBillTo { get; set; }
+        public string? SapShipTo { get; set; }
+        public string? AddressCode { get; set; }
         public string? ClientGstNumber { get; set; }
     }
 
-    public class ClientAddressResponse
+    public class VendorClientAddressResponse
     {
         public string response { get; set; } = string.Empty;
         public List<string> errors { get; set; } = new List<string>();

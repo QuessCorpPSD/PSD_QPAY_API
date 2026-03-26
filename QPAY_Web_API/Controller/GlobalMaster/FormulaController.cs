@@ -74,5 +74,46 @@ namespace QPay.API.Controller.GlobalMaster
             }
         }
 
+        
+        [HttpGet]
+        [Route("GetPayrollType")]
+        public async Task<IActionResult> GetPayrollType()
+        {
+            var response = await _IRepository.GetPayrollType();
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
+
+        [HttpPost]
+        [Route("CreateMC")]
+        public async Task<IActionResult> CreateMC([FromBody] MCFormulasRequest request)
+        {
+            var response = await _IRepository.CreateMC(request);
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                string message = response.Tables[0].Rows[0]["Error_Message"].ToString();
+                if (!(message.Contains("Successfully")))
+                {
+                    return Ok(new { StatusCode = "400", Message = response.Tables[0].Rows[0]["Error_Message"].ToString() });
+                }
+                else
+                {
+                    var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                    return Ok(_outputResponse);
+                }
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "Details are not saved" });
+            }
+        }
+
     }
 }
