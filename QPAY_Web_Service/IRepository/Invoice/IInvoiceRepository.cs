@@ -23,8 +23,9 @@ namespace QPay.BAL.IRepository.Invoice
         Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
            [FromForm] string payperiodId, [FromForm] string CreatedBy);
         Task<InvoiceResponse> PerformaInvoiceMergeNew(List<MergeNewRequest> request);
-        Task<List<BillingDashboard>> BillingDashboard(int userId, string flag);
-        Task<DataSet> BillingDashboardExport(int userId, string flag);
+       // Task<List<BillingDashboard>> BillingDashboard(int userId, string flag);
+         Task<DataSet> BillingDashboardExport(int userId, string flag, DateTime? fromDate, DateTime? toDate);
+        Task<List<BillingDashboard>> BillingDashboard(int userId, string flag, DateTime? fromDate, DateTime? toDate);
         Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType);
 
     }

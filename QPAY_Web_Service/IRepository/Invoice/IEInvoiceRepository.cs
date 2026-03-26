@@ -32,7 +32,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<DataTable> GetInvoiceSummaryByInvoiceId(string Invoice_Number);
         Task<DataSet> GetConsolidateInvoiceSummary(int companyId, int payperiodid);
         DataTable PayRegisterDownload(int companyId, int payperiodid, string payperiod);
-
+        Task<DataSet> NetPaySummaryByCompanyIDAndPayperiodId(int companyId, int pay_period_Id);
         DataTable GetPayRegisterSummary(int companyCode, int pay_period_Id);
 
 

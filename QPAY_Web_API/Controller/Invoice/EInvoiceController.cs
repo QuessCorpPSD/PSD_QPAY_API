@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.API.Extensions;
+using QPay.API.Models;
 using QPay.BAL.IRepository.Invoice;
 using QPay.UI.Common;
 using QPay.UI.Invoice;
@@ -28,17 +29,16 @@ namespace QPay.API.Controller.Invoice
         private readonly IEInvoiceRepository _ieinvoice;
         private readonly IConfiguration _configuration;
         private readonly IInvoiceRepository _invoiceRepository;
-        
+        private readonly HttpClient _httpClient;
         private ILogger<EInvoiceController> _logger;
 
-        public EInvoiceController(IEInvoiceRepository ieinvoice,  ILogger<EInvoiceController> logger, IInvoiceRepository invoiceRepository,  IConfiguration configuration)
+        public EInvoiceController(IHttpClientFactory httpClientFactory, IEInvoiceRepository ieinvoice,  ILogger<EInvoiceController> logger, IInvoiceRepository invoiceRepository,  IConfiguration configuration)
         {
             _ieinvoice = ieinvoice;
             _configuration = configuration;            
             _invoiceRepository = invoiceRepository;
             _logger = logger;
-            
-
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         [HttpGet]
@@ -1063,23 +1063,22 @@ namespace QPay.API.Controller.Invoice
         //}
         [HttpPost]
         [Route("InitiateIRN")]
-        public ActionResult InitiateIRN(InitiateIRN initiateIRN)
+        public async Task<ActionResult> InitiateIRN(InitiateIRN initiateIRN)
         {
-            //string invoiceIds, int CompanyId, int PayPeriodId, string UserId
-            //string[] invoiceIds = initiateIRN.invoiceIds.Select(id => id.ToString()).ToArray();
-            string invoiceIds = string.Join(",", initiateIRN.invoiceIds);
-            string UserId = initiateIRN.userId;
-            var invoiceDetails = GetEInvoiceData(invoiceIds, UserId, "GetEInvoiceData");
-            string JsonString = JsonConvert.SerializeObject(invoiceDetails).ToString();
-            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(invoiceDetails);
-
-
-            Task<string> task = Task.Run(async () => await CallFynamicsAPI(JsonString, invoiceIds, UserId));
-            string Response = task.Result;
-
-            var payload = ResponseWrapManager.ResponseWrapper(Response, HttpContext);
+            string UserId = initiateIRN.userId ?? "0";
+            IRNModelRequest request = new IRNModelRequest()
+            {
+                invoiceIds = initiateIRN.invoiceIds,
+                Mode = "GetEInvoiceData",
+                userId = UserId
+            };
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_configuration["IRNRequestURL"], content);
+            var result = await response.Content.ReadAsStringAsync();
+            var cleartaxRespose = Newtonsoft.Json.JsonConvert.DeserializeObject<ClearTaxResponse>(result);            
+            var payload = ResponseWrapManager.ResponseWrapper(cleartaxRespose, HttpContext);
             return Ok(payload);
-
         }
         public EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action)
         {
@@ -1239,6 +1238,59 @@ namespace QPay.API.Controller.Invoice
                 fileResponse.File = "No";
                 return Ok(fileResponse);
             }
+
+        }
+        private string sheetName(int sheetId)
+        {
+            return sheetId switch
+            {
+                0 => "Net Pay Summary Report",
+                1 => "Net Pay Summary Details",
+                2 => "Partial Hold Summary Report",
+                3 => "Gratuity Summary Report",
+                4 => "DBT Hold Summary Report",
+                5 => "Deduction Flush Out Report"
+            };
+            
+        }
+
+        [HttpGet, Route("GetNetPaySummary/{companyId}/{PayPeriodId}")]
+        public async Task<IActionResult> GetNetPaySummary(int companyId,int PayPeriodId)
+        {
+            DataSet ds = await _ieinvoice.NetPaySummaryByCompanyIDAndPayperiodId(companyId, PayPeriodId);
+            FileResponse fileResponse = new FileResponse();
+            if (ds.Tables.Count > 0)
+            {
+                int i = 0;
+                using var workbook = new XLWorkbook();
+                {
+                    foreach (DataTable table in ds.Tables)
+                    {
+                        var ws = workbook.AddWorksheet(table, sheetName(i));
+                        ws.Table(0).ShowAutoFilter = false;
+                        ws.Table(0).Theme = XLTableTheme.None;
+                        i++;
+                    }
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var bytes = Convert.ToBase64String(stream.ToArray());
+
+                        string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
+                        fileResponse.FileName = "Consolidated_InvoiceSummary" + fileName;
+                        fileResponse.File = bytes;
+                        return Ok(fileResponse);
+                    }
+                }
+            }
+            else
+            {
+                fileResponse.File = "N";
+                return Ok(fileResponse);
+            }
+           
+
+
 
         }
     }
