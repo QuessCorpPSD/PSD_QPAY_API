@@ -21,7 +21,9 @@ namespace QPay.BAL.IRepository.GlobalMaster
         Task<DataSet> CreateMC(MCFormulasRequest request);
 
         Task<DataSet> GetPayrollType();
-        
+
+        Task<DataSet> MCSearch();
+
 
         //Task<DataSet> GetCriteria(int? CriteriaTypeId);
         //Task<List<CategoryUI>> GetCategory();

@@ -150,6 +150,14 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetMultiCommercialPaycodes")]
+        public async Task<IActionResult> GetMultiCommercialPaycodes()
+        {
+            var response = await _icompanyCode.GetMultiCommercialPaycodes();
+
+            return Ok(response);
+        }
+
         [HttpGet, Route("GetAllState")]
         public async Task<IActionResult> GetAllState()
         {

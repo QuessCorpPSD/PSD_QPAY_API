@@ -258,6 +258,17 @@ namespace QPay.IRepository.Repository.Common
             return new List<Paycodes>();
         }
 
+        public async Task<List<Paycodes>> GetMultiCommercialPaycodes()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("sp_GetAllMultiCommercialPaycode", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<Paycodes>>(res) ?? new List<Paycodes>();
+            }
+            return new List<Paycodes>();
+        }
+
         public async Task<List<GSTType>> GetGSTTypes(int stateId)
         {
             var parameters = new DynamicParameters();

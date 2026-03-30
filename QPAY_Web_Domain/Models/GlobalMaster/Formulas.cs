@@ -60,8 +60,8 @@ namespace QPay.UI.GlobalMaster
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Formula_Id { get; set; }
-        public int PayrollType { get; set; }
-        public string PayrollTypeName { get; set; }
+        public string PayrollType { get; set; }
+        public int PayrollTypeId { get; set; }
         public Int64 Paycode_Id { get; set; }
         public string Paycode_Code { get; set; }
         public string Formula_Name { get; set; }
