@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using QPay.API.Models;
 using QPay.BAL.IRepository.Reports;
 using QPay.UI.Common;
 using QPay.UI.Models;
@@ -54,6 +56,42 @@ namespace QPay.API.Controller.Reports
             response = await _poReport.GetPOYears();
 
             return Ok(response);
+        }
+        [HttpPost]
+        [Route("GetGrossMarginReport")]
+        public async Task<IActionResult> GetGrossMarginReport(GrossMarginRequestModel request)
+        {
+            var fileResponse = new FileResponse
+            {
+                File = "N",
+                FileName = "GrossMarginReport.xlsx"
+            };
+
+            var result = await _poReport.GetGrossMarginReport(
+                request.Pay_Period,
+                Convert.ToInt32(request.Submit)
+            );
+
+            if (result?.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
+            {
+                var dt = result.Tables[0];
+
+                using var workbook = new XLWorkbook();
+                var ws = workbook.Worksheets.Add(dt, "InvoiceSummary");
+
+                ws.Tables.First().ShowAutoFilter = false;
+                ws.Tables.First().Theme = XLTableTheme.None;
+
+                using var stream = new MemoryStream();
+                workbook.SaveAs(stream);
+
+                stream.Position = 0;
+
+                fileResponse.File = Convert.ToBase64String(stream.ToArray());
+                fileResponse.FileName = "GrossMarginReport.xlsx";
+            }
+
+            return Ok(fileResponse);
         }
 
         [HttpGet, Route("GetVerticals/{userId}/{potype}")]
