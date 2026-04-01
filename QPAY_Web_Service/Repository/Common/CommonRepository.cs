@@ -290,6 +290,16 @@ namespace QPay.IRepository.Repository.Common
             }
             return new List<InvoiceCategories>();
         }
+        public async Task<List<Frequency>> GetCommonPayperiod()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetAllFrequency", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<Frequency>>(res) ?? new List<Frequency>();
+            }
+            return new List<Frequency>();
+        }
 
     }
 }

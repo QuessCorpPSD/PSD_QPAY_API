@@ -28,6 +28,6 @@ namespace QPay.BAL.IRepository.Common
         Task<List<StateResponse>> GetClientGstStateList(int companyId);
         Task<List<GSTType>> GetGSTTypes(int stateId);
         Task<List<InvoiceCategories>> GetInvoiceCategory();
-
+        Task<List<Frequency>> GetCommonPayperiod();
     }
 }
