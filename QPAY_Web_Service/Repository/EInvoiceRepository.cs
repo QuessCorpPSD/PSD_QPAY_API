@@ -68,7 +68,7 @@ namespace QPay.BAL.Repository
                 ["@Action"] = "GetInvoiceHtml"
             };
 
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("c", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetInvoiceDetails", parameters, 1500);
         }
 
         public UI.Invoice.EInvoice GetEInvoiceData(string invoiceIds, string UserId, string Action)
