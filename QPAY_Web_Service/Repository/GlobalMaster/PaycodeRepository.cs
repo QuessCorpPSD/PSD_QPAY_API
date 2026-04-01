@@ -4,6 +4,7 @@ using QPay.BAL.IRepository.GlobalMaster;
 using QPay.DAL.Repository;
 using QPay.UI.GlobalMaster;
 using QPay.UI.Models;
+using QPay.UI.Models.GlobalMaster;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,6 +22,21 @@ namespace QPay.BAL.Repository.GlobalMaster
         public PaycodeRepository(DbRepository dbRepository)
         {
             this._dbRepository = dbRepository;
+        }
+        public async Task<List<PayCodeUI>> GetPayCodeByCompanyId(int companyId)
+        {
+
+            var paramerter=new DynamicParameters();
+            paramerter.Add("@CompanyId", companyId);
+            var res = await this._dbRepository.GetItemsAsync("SP_CompanyPayCodeByCompanyId", paramerter);
+            if(res.Any())
+            {
+                return JsonConvert.DeserializeObject<List<PayCodeUI>>(res).ToList()?? new List<PayCodeUI>();
+            }
+            else
+            {
+                return new List<PayCodeUI>();
+            }
         }
 
         public async Task<DataSet> Search(string strPayCode, int? intPayTypeId, int? IsTaxable, int? PayId)

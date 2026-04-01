@@ -205,7 +205,7 @@ namespace QPay.API
             services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
             services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
             services.AddScoped<IInputAggregatorAttendanceRepository, InputAggregatorAttendanceRepository>();
-
+            services.AddSingleton<ISezRepository, SezRepository>();
             services.AddScoped<ISalaryReleasePendingApprovalRepository, SalaryReleasePendingApprovalRepository>();
             services.AddScoped<IBatchGenerationRepository, BatchGenerationRepository>();
             services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();

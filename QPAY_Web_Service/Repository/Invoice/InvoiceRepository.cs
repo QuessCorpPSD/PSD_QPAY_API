@@ -499,15 +499,20 @@ namespace QPay.BAL.Repository.Invoice
             }
             return invoiceDetails;
         }
-        public async Task<List<BillingDashboard>> BillingDashboard(int userId, string flag)
+        public async Task<List<BillingDashboard>> BillingDashboard(int userId, string flag ,DateTime? fromDate,DateTime? toDate)
         {
             List<BillingDashboard> billingDashboards = new List<BillingDashboard>();
             var parameter = new DynamicParameters();
             parameter.Add("@UserId", userId);
             parameter.Add("@flag", flag);
+            if (fromDate != null && toDate != null)
+            {
+                parameter.Add("@FromDate", fromDate);
+                parameter.Add("@ToDate", toDate);
+            }
 
 
-            var res = await _dbRepository.GetItemsSecondaryAsync("SP_Billing_dashboard_Test", parameter);
+            var res = await _dbRepository.GetItemsSecondaryAsync("SP_Billing_dashboard", parameter);
             if(res.Any())
             {
                 billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };
@@ -515,14 +520,30 @@ namespace QPay.BAL.Repository.Invoice
             return billingDashboards;
         }
 
-        public async Task<DataSet> BillingDashboardExport(int userId, string flag)
+        public async Task<DataSet> BillingDashboardExport(int userId, string flag, DateTime? fromDate, DateTime? toDate)
         {
-            var parameters = new Dictionary<string, object?>
+           
+            if (fromDate != null && toDate != null)
             {
-                ["@UserId"] = userId,
-                ["@flag"] = flag
-            };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard_Test", parameters, 1500);
+                var parameters = new Dictionary<string, object?>
+                {
+                    ["@UserId"] = userId,
+                    ["@flag"] = flag,
+                    ["@FromDate"]= fromDate,
+                    ["@ToDate"]= toDate
+                };
+                return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard", parameters, 1500);
+            }
+            else
+            {
+                var parameters = new Dictionary<string, object?>
+                {
+                    ["@UserId"] = userId,
+                    ["@flag"] = flag
+                };
+                return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard", parameters, 1500);
+            }
+            
         }
 
         public async Task<DataTable> DraftInvoiceEmployeeByRequestId(int requestId, string invoiceType)

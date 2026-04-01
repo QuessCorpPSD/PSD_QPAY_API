@@ -11,12 +11,12 @@ namespace QPay.API.Extensions
         public NotificationHub(IInvoiceRepository _iinvoice) { 
         this._iinvoice = _iinvoice;
         }
-        public async Task SendGridUpdate()
-        {
-            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var dashboard = await _iinvoice.BillingDashboard(Convert.ToInt32(userId), "S");
+        //public async Task SendGridUpdate()
+        //{
+        //    var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //  //  var dashboard = await _iinvoice.BillingDashboard(Convert.ToInt32(userId), "S");
             
-            await Clients.All.SendAsync("GridUpdated", dashboard);
-        }
+        //    await Clients.All.SendAsync("GridUpdated", dashboard);
+        //}
     }
 }

@@ -16,5 +16,6 @@ namespace QPay.BAL.IRepository.Reports
         Task<string> GetVerticals(string userId, string poType);
         Task<string> POActiveReportGrid(POActiveInactive pOActiveInactive);
         DataSet GetAllMonthWisePOReport(string txtFromDate, string txtToDate);
+        Task<DataSet> GetGrossMarginReport(string pay_Period, int submit);
     }
 }

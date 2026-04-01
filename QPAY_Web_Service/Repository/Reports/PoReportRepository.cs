@@ -33,6 +33,8 @@ namespace QPay.BAL.Repository.Reports
 
             return "No data found";
         }
+
+        //public async Task<>
         public async Task<string> GetAllPOEmployeeReportOld(string employeeId)
         {
             var parameters = new DynamicParameters();
@@ -60,6 +62,17 @@ namespace QPay.BAL.Repository.Reports
             }
 
             return "No data found";
+        }
+        public async Task<DataSet> GetGrossMarginReport(string pay_Period,int submit)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                
+                ["@Pay_Period"] = pay_Period,
+                ["@Submit"] = submit
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GrossMarginReport", parameters, 1500);
         }
 
         public async Task<string> GetVerticals(string userId, string poType)

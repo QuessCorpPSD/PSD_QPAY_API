@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using QPay.API.Models;
 using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
+using QPay.UI.Common;
 using QPay.UI.Invoice;
 using QPay.UI.Models.Invoice;
 using System;
@@ -787,6 +788,17 @@ namespace QPay.BAL.Repository
             {
                 ["@Company_id"] = companyId,
                 ["@Pay_Period_id"] = payperiodid,
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);
+        }
+
+        public async Task<DataSet> NetPaySummaryByCompanyIDAndPayperiodId( int companyId,int pay_period_Id)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Company_id"] = companyId,
+                ["@Pay_Period_id"] = pay_period_Id,
             };
 
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SpInvoiceDetails_Report_Companywise", parameters, 1500);

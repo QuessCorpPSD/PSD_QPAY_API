@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using QPay.UI.Models.GlobalMaster;
+using System.Data;
 
 namespace QPay.BAL.IRepository.GlobalMaster
 {
@@ -8,6 +9,7 @@ namespace QPay.BAL.IRepository.GlobalMaster
         Task<DataSet> Create(string strXmlDetails, string mode, int userId);
         Task<DataSet> GetPageType();
         Task<string> GetPayType();
+        Task<List<PayCodeUI>> GetPayCodeByCompanyId(int companyId);
 
         //Task<ActivationResponse> UploadEmployeeActivation(IFormFile file, [FromForm] string User,
         //    [FromForm] string COMPANY_CODE, [FromForm] string FLAG);            

@@ -119,7 +119,7 @@ namespace QPay.API.Controller
             );
 
             // Build file name
-            string fileName = $"{checkINSheetUI.CompanyCode}_{checkINSheetUI.CompanyName}_{checkINSheetUI.PayPeriod}_{checkINSheetUI.LotNo}_{checkINSheetUI.Revised}.xlsx";
+            string fileName = $"{checkINSheetUI.CompanyCode}_{checkINSheetUI.CompanyName}_{checkINSheetUI.PayPeriod}_{checkINSheetUI.LotNo}_{revised}.xlsx";
 
             // Full file path
             string filePath = Path.Combine(directoryPath, fileName);
@@ -266,7 +266,7 @@ namespace QPay.API.Controller
                                         lotStatusrequestModel.Pay_Period,0)
                 };
 
-
+                this._logger.LogInfo("PayRegister Generated Verify Request");
 
                 if (fileResponse.File!="No")
                 {

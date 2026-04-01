@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using QPay.API.Extensions;
+using QPay.API.Models;
 using QPay.BAL.IRepository.Invoice;
 using QPay.UI.Common;
 using QPay.UI.Models;
 using System.Data;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 using static QPay.UI.Models.Invoice.Invoice;
 
 namespace QPay.API.Controller.Invoice
@@ -93,19 +95,26 @@ namespace QPay.API.Controller.Invoice
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("BillingDashboardByUserId/{userId}/{flag}")]
-        public async Task<IActionResult> BillingDashboardByUserId(int userId, string flag)
+        //[HttpGet]
+        //[Route("BillingDashboardByUserId/{userId}/{flag}")]
+        //public async Task<IActionResult> BillingDashboardByUserId(int userId, string flag)
+        //{
+        //    var dashboard =await _iinvoice.BillingDashboard(userId, flag);
+        //    return Ok(dashboard);
+        //}
+
+        [HttpPost]
+        [Route("BillingDashboardByUserId")]
+        public async Task<IActionResult> BillingDashboardByUserId(DashboardModelRequest modelRequest)
         {
-            var dashboard =await _iinvoice.BillingDashboard(userId, flag);
+            var dashboard = await _iinvoice.BillingDashboard(modelRequest.userId, modelRequest.flag, modelRequest.fromDate, modelRequest.toDate);
             return Ok(dashboard);
         }
-        [HttpGet]
-        [Route("BillingDashboardExport/{userId}/{flag}")]
-        public async Task<IActionResult> BillingDashboardExport(int userId, string flag)
+        [HttpPost]
+        [Route("BillingDashboardExport")]
+        public async Task<IActionResult> BillingDashboardExport(DashboardModelRequest modelRequest)
         {
-
-            DataSet ds = await _iinvoice.BillingDashboardExport(userId, flag);
+            DataSet ds = await _iinvoice.BillingDashboardExport(modelRequest.userId, modelRequest.flag, modelRequest.fromDate, modelRequest.toDate);
             if (ds != null && ds.Tables.Count > 0)
             {
                 using var workbook = new XLWorkbook();
@@ -145,8 +154,54 @@ namespace QPay.API.Controller.Invoice
                 };
                 return Ok(response);
             }
-
         }
+        //[HttpGet]
+        //[Route("BillingDashboardExport/{userId}/{flag}")]
+        //public async Task<IActionResult> BillingDashboardExport(int userId, string flag)
+        //{
+
+        //    DataSet ds = await _iinvoice.BillingDashboardExport(userId, flag);
+        //    if (ds != null && ds.Tables.Count > 0)
+        //    {
+        //        using var workbook = new XLWorkbook();
+
+        //        ds.Tables[0].TableName = "Not Alloted";
+        //        ds.Tables[1].TableName = "Pending";
+        //        ds.Tables[2].TableName = "Completed";
+
+
+        //        for (int i = 0; i < ds.Tables.Count; i++)
+        //        {
+        //            var ws = workbook.AddWorksheet(ds.Tables[i], ds.Tables[i].TableName);
+        //            ws.Table(0).ShowAutoFilter = false;
+        //            ws.Table(0).Theme = XLTableTheme.None;
+        //        }
+
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            workbook.SaveAs(stream);
+        //            var bytes = Convert.ToBase64String(stream.ToArray());
+        //            FileResponse fileResponse = new FileResponse();
+        //            string fileName = DateTime.Now.ToString("_yyyyMMddhhmmssffff");
+        //            fileResponse.FileName = "InvoiceAllotExport" + fileName;
+        //            fileResponse.File = bytes;
+
+        //            return Ok(fileResponse);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var response = new APIResponse<object>
+        //        {
+        //            statuscode = 400,
+        //            message = "Failure",
+        //            data = "",
+        //            error = ""
+        //        };
+        //        return Ok(response);
+        //    }
+
+        //}
         [HttpGet]
         [Route("DraftInvoiceEmployeeByRequestId/{reqNo}/{invoiceType}")]
         public async Task<IActionResult> DraftInvoiceEmployeeByRequestId(int reqNo, string invoiceType)

@@ -4,22 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QPay.API.Extensions;
 using QPay.API.LoggerService;
+using QPay.API.Models;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
+using QPay.UI.Common;
 using QPay.UI.Invoice;
+using QPay.UI.Models;
 using QRCoder;
 using SelectPdf;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO.Compression;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
-using QPay.UI.Models;
-using System.IO.Compression;
-using QPay.UI.Common;
 
 
 namespace QPay.API.Controller.Invoice
@@ -33,7 +35,8 @@ namespace QPay.API.Controller.Invoice
         private readonly ILoggerManager _logger;
         private readonly HttpClient _client;
         private readonly ICommonRepository _icommon;
-        public GSTInvoiceController(ILoggerManager logger, HttpClient client, IGSTInvoiceRepository gstinvoiceRepository
+        private readonly HttpClient _httpClient;
+        public GSTInvoiceController(IHttpClientFactory httpClientFactory,ILoggerManager logger, HttpClient client, IGSTInvoiceRepository gstinvoiceRepository
             , IConfiguration configuration, ICommonRepository icommon)
         {
             this._gstinvoiceRepository = gstinvoiceRepository;
@@ -41,6 +44,7 @@ namespace QPay.API.Controller.Invoice
             this._logger = logger;
             this._client = client;
             this._icommon = icommon;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         [HttpGet, Route("GetGSTInvoice/{userId}")]
@@ -484,7 +488,7 @@ namespace QPay.API.Controller.Invoice
                                company.Pay_Period,
                               invoiceNumberLotUI.Invoice_Number,
                                ".pdf");
-                    Invoicepath = fileNames;
+                    Invoicepath = Invoicepath+"\\"+fileNames;
 
                     using (var fs = new FileStream(Invoicepath, FileMode.Create, FileAccess.Write))
                     {
@@ -939,38 +943,95 @@ namespace QPay.API.Controller.Invoice
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
         }
-        [HttpPost, Route("BulkApproveInvoice")]
+        [HttpPost]
+        [Route("BulkApproveInvoice")]
         public async Task<IActionResult> BulkApproveInvoice([FromBody] UI.Models.Invoice.InvoiceCancelApprovalRequest request)
         {
-            // Call repository
-            var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
-
-            // Only process credit note IRNs for SUCCESS invoices from backend
-            if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
+            try
             {
-                string bulkInvoiceIds = string.Join(",", ds.CreditnoteInvoices.InvoiceIds);
+                // Call repository
+                var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
 
-                // Prepare payload for credit note IRN generation
-                var invoiceDetails = InitiateCreditNoteIRN(bulkInvoiceIds, request.userId);
-
-                string JsonString = JsonConvert.SerializeObject(invoiceDetails);
-
-                try
+                // Process Credit Note IRN only for approved invoices
+                if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
                 {
-                    await CallFynamicsAPIForCreditNote(JsonString, bulkInvoiceIds, request.userId);
+                    string userId = request.userId ?? "0";
+
+                    var apiRequest = new IRNModelRequest
+                    {
+                        invoiceIds = ds.CreditnoteInvoices.InvoiceIds,
+                        Mode = "GetEInvoiceCreditNoteData",
+                        userId = userId
+                    };
+
+                    string json = JsonConvert.SerializeObject(apiRequest);
+
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    string apiUrl = _configuration["IRNRequestURL"];
+
+                    var response = await _httpClient.PostAsync(apiUrl, content);
+
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("Credit Note IRN API failed: " + result);
+
+                        ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
+                        ds.Message += " | Credit Note IRN API failed";
+                    }
                 }
-                catch (Exception ex)
-                {
-                    // Log error, mark partial success
-                    _logger.LogError(ex + "Credit note API call failed");
-                    ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
-                    ds.Message += " | Credit note API call failed";
-                }
+
+                var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+
+                return Ok(payload);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex + " Error in BulkApproveInvoice");
 
-            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
-            return Ok(payload);
+                return StatusCode(500, new
+                {
+                    Status = "FAILED",
+                    Message = "Internal server error"
+                });
+            }
         }
+
+
+        //[HttpPost, Route("BulkApproveInvoice")]
+        //public async Task<IActionResult> BulkApproveInvoice([FromBody] UI.Models.Invoice.InvoiceCancelApprovalRequest request)
+        //{
+        //    // Call repository
+        //    var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
+
+        //    // Only process credit note IRNs for SUCCESS invoices from backend
+        //    if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
+        //    {
+        //        string bulkInvoiceIds = string.Join(",", ds.CreditnoteInvoices.InvoiceIds);
+
+        //        // Prepare payload for credit note IRN generation
+        //        var invoiceDetails = InitiateCreditNoteIRN(bulkInvoiceIds, request.userId);
+
+        //        string JsonString = JsonConvert.SerializeObject(invoiceDetails);
+
+        //        try
+        //        {
+        //            await CallFynamicsAPIForCreditNote(JsonString, bulkInvoiceIds, request.userId);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Log error, mark partial success
+        //            _logger.LogError(ex + "Credit note API call failed");
+        //            ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
+        //            ds.Message += " | Credit note API call failed";
+        //        }
+        //    }
+
+        //    var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+        //    return Ok(payload);
+        //}
         [HttpPost, Route("BulkRejectCancelRequest")]
         public async Task<IActionResult> BulkRejectInvoice([FromBody] UI.Models.Invoice.InvoiceCancelApprovalRequest request)
         {
@@ -1218,25 +1279,45 @@ namespace QPay.API.Controller.Invoice
             return Ok(payload);
         }
 
+        //[HttpPost]
+        //[Route("InitiateIRN")]
+        //public ActionResult InitiateIRN(InitiateIRN initiateIRN)
+        //{
+        //    //string invoiceIds, int CompanyId, int PayPeriodId, string UserId
+        //    //string[] invoiceIds = initiateIRN.invoiceIds.Select(id => id.ToString()).ToArray();
+        //    string invoiceIds = string.Join(",", initiateIRN.invoiceIds);
+        //    string UserId = initiateIRN.userId;
+        //    var invoiceDetails = GetEInvoiceData(invoiceIds, UserId, "GetEInvoiceData");
+        //    string JsonString = JsonConvert.SerializeObject(invoiceDetails).ToString();
+        //    //var json = Newtonsoft.Json.JsonConvert.SerializeObject(invoiceDetails);
+
+
+        //    Task<string> task = Task.Run(async () => await CallFynamicsAPI(JsonString, invoiceIds, UserId));
+        //    string Response = task.Result;
+
+        //    var payload = ResponseWrapManager.ResponseWrapper(Response, HttpContext);
+        //    return Ok(payload);
+
+        //}
+
         [HttpPost]
         [Route("InitiateIRN")]
-        public ActionResult InitiateIRN(InitiateIRN initiateIRN)
+        public async Task<ActionResult> InitiateIRN(InitiateIRN initiateIRN)
         {
-            //string invoiceIds, int CompanyId, int PayPeriodId, string UserId
-            //string[] invoiceIds = initiateIRN.invoiceIds.Select(id => id.ToString()).ToArray();
-            string invoiceIds = string.Join(",", initiateIRN.invoiceIds);
-            string UserId = initiateIRN.userId;
-            var invoiceDetails = GetEInvoiceData(invoiceIds, UserId, "GetEInvoiceData");
-            string JsonString = JsonConvert.SerializeObject(invoiceDetails).ToString();
-            //var json = Newtonsoft.Json.JsonConvert.SerializeObject(invoiceDetails);
-
-
-            Task<string> task = Task.Run(async () => await CallFynamicsAPI(JsonString, invoiceIds, UserId));
-            string Response = task.Result;
-
-            var payload = ResponseWrapManager.ResponseWrapper(Response, HttpContext);
+            string UserId = initiateIRN.userId ?? "0";
+            IRNModelRequest request = new IRNModelRequest()
+            {
+                invoiceIds = initiateIRN.invoiceIds,
+                Mode = "GetEInvoiceData",
+                userId = UserId
+            };
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_configuration["IRNRequestURL"], content);
+            var result = await response.Content.ReadAsStringAsync();
+            var cleartaxRespose = Newtonsoft.Json.JsonConvert.DeserializeObject<ClearTaxResponse>(result);
+            var payload = ResponseWrapManager.ResponseWrapper(cleartaxRespose, HttpContext);
             return Ok(payload);
-
         }
 
         public async Task<string> CallFynamicsAPI(string JsonString, string InvoiceIds, string UserId)
