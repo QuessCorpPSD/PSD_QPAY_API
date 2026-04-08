@@ -2,6 +2,7 @@
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.BAL.IRepository.AccountReceivable;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
@@ -213,7 +214,7 @@ namespace QPay.API
             services.AddScoped<IVendorClientAddressRespository, VendorClientAddressRespository>();
             services.AddScoped<IVendorClientGstRepository, VendorClientGSTRepository>();
             services.AddScoped<ISEZRepositoryService, SEZRepositoryService>();
-
+            services.AddScoped<IClientAdvancePaymentRepository, ClientAdvancePaymentRepository>();
 
         }
     }
