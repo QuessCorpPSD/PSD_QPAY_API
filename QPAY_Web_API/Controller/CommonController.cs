@@ -150,6 +150,14 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetMultiCommercialPaycodes")]
+        public async Task<IActionResult> GetMultiCommercialPaycodes()
+        {
+            var response = await _icompanyCode.GetMultiCommercialPaycodes();
+
+            return Ok(response);
+        }
+
         [HttpGet, Route("GetAllState")]
         public async Task<IActionResult> GetAllState()
         {
@@ -174,6 +182,13 @@ namespace QPay.API.Controller
         public async Task<IActionResult> GetInvoiceCategory()
         {
             var state = await this._icompanyCode.GetInvoiceCategory();
+            return Ok(state);
+        }
+
+        [HttpGet, Route("GetCommonPayperiod")]
+        public async Task<IActionResult> GetCommonPayperiod()
+        {
+            var state = await this._icompanyCode.GetCommonPayperiod();
             return Ok(state);
         }
 

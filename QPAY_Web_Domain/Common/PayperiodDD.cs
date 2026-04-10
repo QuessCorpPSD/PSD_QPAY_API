@@ -88,4 +88,11 @@ namespace QPay.UI.Common
         public int? InvoiceCategoryId { get; set; }
         public string InvoiceCategory { get; set; } = "";
     }
+
+    public class Frequency
+    {
+        public int? Frequencey_Id { get; set; }
+        public int? Financial_Year_Id {get; set;}
+        public string? Pay_Period {get; set;}
+    }
 }

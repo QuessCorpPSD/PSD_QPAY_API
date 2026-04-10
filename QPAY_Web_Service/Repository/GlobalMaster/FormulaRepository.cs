@@ -92,8 +92,6 @@ namespace QPay.BAL.Repository.GlobalMaster
 
         public async Task<DataSet> CreateMC(MCFormulasRequest items)
         {
-
-            //var parentdata = GenericSerializer<Entity>.Serialize(items.parentDetail);
             var formulaResponse = new MCFormulaResponse();
             formulaResponse.FormulaDetails = new MCFormulas[1];
             formulaResponse.FormulaDetails[0] = items.detail;
@@ -107,6 +105,16 @@ namespace QPay.BAL.Repository.GlobalMaster
                 ["@CreatedBy"] = items.createdBy,
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_CreateUpdateMCFormula", parameters);
+        }
+
+        public async Task<DataSet> MCSearch()
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["@Formula_Id"] = 0,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetAllMCFormula", parameters); ;
+
         }
 
 

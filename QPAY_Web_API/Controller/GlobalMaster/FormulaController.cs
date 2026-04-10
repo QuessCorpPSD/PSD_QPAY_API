@@ -115,5 +115,21 @@ namespace QPay.API.Controller.GlobalMaster
             }
         }
 
+        [HttpGet]
+        [Route("MCSearch")]
+        public async Task<IActionResult> MCSearch()
+        {
+            var response = await _IRepository.MCSearch();
+            if (response.Tables[0].Rows.Count > 0)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
+
     }
 }

@@ -258,6 +258,17 @@ namespace QPay.IRepository.Repository.Common
             return new List<Paycodes>();
         }
 
+        public async Task<List<Paycodes>> GetMultiCommercialPaycodes()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("sp_GetAllMultiCommercialPaycode", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<Paycodes>>(res) ?? new List<Paycodes>();
+            }
+            return new List<Paycodes>();
+        }
+
         public async Task<List<GSTType>> GetGSTTypes(int stateId)
         {
             var parameters = new DynamicParameters();
@@ -278,6 +289,16 @@ namespace QPay.IRepository.Repository.Common
                 return JsonConvert.DeserializeObject<List<InvoiceCategories>>(res) ?? new List<InvoiceCategories>();
             }
             return new List<InvoiceCategories>();
+        }
+        public async Task<List<Frequency>> GetCommonPayperiod()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetAllFrequency", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<Frequency>>(res) ?? new List<Frequency>();
+            }
+            return new List<Frequency>();
         }
 
     }
