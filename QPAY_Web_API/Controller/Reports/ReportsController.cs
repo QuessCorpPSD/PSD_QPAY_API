@@ -17,12 +17,15 @@ namespace QPay.API.Controller.Reports
     {
         private readonly IPoReportRepository _poReport;
         private readonly IConfiguration _configuration;
+        private readonly string[] _companyCode;
+           
 
         public ReportsController(
             IPoReportRepository iporeport, IConfiguration configuration)
         {
             this._poReport = iporeport;
             this._configuration = configuration;
+            this._companyCode = _configuration.GetSection("GetAccrualsTemplateColumn:CoulumnName").Get<string[]>() ?? Array.Empty<string>();
         }
 
         [HttpGet, Route("GetAllPOEmployeeReport/{employeeId}/{emlpoyeeType}")]
@@ -92,6 +95,24 @@ namespace QPay.API.Controller.Reports
             }
 
             return Ok(fileResponse);
+        }
+
+        [HttpGet,Route("GetAccrualsTemplate")]
+        public IActionResult GetAccrualsTemplate()
+        {
+            FileResponse files = new FileResponse();
+            
+        
+            return Ok(files);
+        }
+
+        [HttpPost, Route("AccrualsTemplateUpload")]
+        public IActionResult AccrualsTemplateUpload()
+        {
+            FileResponse files = new FileResponse();
+
+
+            return Ok(files);
         }
 
         [HttpGet, Route("GetVerticals/{userId}/{potype}")]

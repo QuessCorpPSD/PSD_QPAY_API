@@ -92,7 +92,13 @@ namespace QPay.API.Controller.GlobalMaster
             }
         }
 
-
+        [HttpGet]
+        [Route("GetPayCode/{CompanyId}")]
+        public async Task<IActionResult> GetPayCode(int CompanyId)
+        {
+            var paycodes= await this._IRepository.GetPayCodeByCompanyId(CompanyId);
+            return Ok(paycodes);
+        }
 
 
     }
