@@ -75,6 +75,18 @@ namespace QPay.BAL.Repository.Reports
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GrossMarginReport", parameters, 1500);
         }
 
+        public async Task<DataSet> GetUnProcessedGrossMarginReport(string pay_Period)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+
+                ["@Pay_Period"] = pay_Period
+               
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("UnProcessed_GrossMargin_Payregister", parameters, 1500);
+        }
+
         public async Task<string> GetVerticals(string userId, string poType)
         {
             var parameters = new DynamicParameters();
