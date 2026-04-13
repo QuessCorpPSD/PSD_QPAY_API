@@ -112,11 +112,11 @@ namespace QPay.UI.Models.Invoice
             [XmlIgnore]
             public int createdBy { get; set; }
             [XmlIgnore]
-            public string mode { get; set; }
+            public string? mode { get; set; }
             [XmlElement("InvoiceStructure")]
-            public InvoiceStructure parentDetail { get; set; }
+            public InvoiceStructure? parentDetail { get; set; }
             [XmlElement("InvoiceStructureDetails")]
-            public List<TypeOfInvoiceForInvoiceStructure> childDetail { get; set; }
+            public List<TypeOfInvoiceForInvoiceStructure>? childDetail { get; set; }
 
         }
 

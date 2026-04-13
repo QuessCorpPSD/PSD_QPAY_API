@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
+using QPay.API.Models;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.UI.GlobalMaster;
 using QPay.UI.Models;
+using System.Linq;
 using System.Net;
 
 namespace QPay.API.Controller.GlobalMaster
@@ -96,8 +98,14 @@ namespace QPay.API.Controller.GlobalMaster
         [Route("GetPayCode/{CompanyId}")]
         public async Task<IActionResult> GetPayCode(int CompanyId)
         {
-            var paycodes= await this._IRepository.GetPayCodeByCompanyId(CompanyId);
-            return Ok(paycodes);
+            var paycodes = await this._IRepository.GetPayCodeByCompanyId(CompanyId);
+            var paycode = paycodes.Select(x => new UI.Models.Invoice.SelectedItems()
+            {
+            value = x.PayCode_Id.ToString(),
+            text = x.PayCodeName
+             })
+            .ToList();
+            return Ok(paycode);
         }
 
 

@@ -6,4 +6,9 @@
 
         public string Company_Code { get; set; } = "";
     }
+    public class PayCodeListUI
+    {
+        public int? value { get; set; }
+        public string? text { get; set; }
+    }
 }

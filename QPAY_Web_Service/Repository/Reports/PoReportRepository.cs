@@ -1,13 +1,16 @@
 ﻿using Dapper;
-using QPay.DAL.Repository;
+using Newtonsoft.Json;
 using QPay.BAL.IRepository.Reports;
+using QPay.DAL.Repository;
+using QPay.UI.Models;
+using QPay.UI.Models.Reports;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using QPay.UI.Models.Reports;
 
 namespace QPay.BAL.Repository.Reports
 {
@@ -74,6 +77,15 @@ namespace QPay.BAL.Repository.Reports
 
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GrossMarginReport", parameters, 1500);
         }
+        //public async Task<FileResponse> AccuralFileFormat()
+        //{
+        //    var parameter = new DynamicParameters();
+        //    var res = await _dbRepository.GetItemsAsync("SP_Accrual_Format_download", parameter);
+        //    if(res.Any())
+        //    {
+        //        DataTable dataTable= JsonConvert.DeserializeObject<DataTable>>(res).ToList();
+        //    }
+        //}
 
         public async Task<DataSet> GetUnProcessedGrossMarginReport(string pay_Period)
         {

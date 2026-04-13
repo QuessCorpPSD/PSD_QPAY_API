@@ -39,7 +39,7 @@ namespace QPay.BAL.Repository
                 //["@UserId"] = userId,
             };
 
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_ManageEInvoice_NewUI_2", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_ManageEInvoice_NewUI", parameters, 1500);
         }
 
         public async Task<DataSet> EInvoiceExport(int companyId, int payPeriodId)

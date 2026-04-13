@@ -117,7 +117,15 @@ namespace QPay.API.Controller.Invoice
                 string message = response.Tables[0].Rows[0]["Error_Message"].ToString();
                 if (!(message.Contains("Successfully")))
                 {
-                    return Ok(new { StatusCode = "400", Message = response.Tables[0].Rows[0]["Error_Message"].ToString() });
+                    DataTable dt = new DataTable();
+                    dt.Columns.Add("SerialNo", typeof(string));
+                    dt.Columns.Add("Error_Message", typeof(string));
+                    dt.Rows.Add("1", response.Tables[0].Rows[0]["Error_Message"].ToString());
+                    DataSet ds = new DataSet();
+                    ds.Tables.Add(dt);
+                    var _outputResponse = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+                    return Ok(_outputResponse);
+                    //return Ok(new { StatusCode = "400", Message = response.Tables[0].Rows[0]["Error_Message"].ToString() });
                 }
                 else
                 {
