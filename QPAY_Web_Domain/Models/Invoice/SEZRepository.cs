@@ -24,6 +24,8 @@ namespace QPay.UI.Models.Invoice
         public List<SelectedRecords> selectedrecordsList { get; set; }
         public string? ApprovalStatus { get; set; }
         public string? UploadStatus { get; set; }
+        public string? RequestedBy { get; set; }
+        public string? AckNo { get; set; }
     }
     public class SelectedRecords
     {

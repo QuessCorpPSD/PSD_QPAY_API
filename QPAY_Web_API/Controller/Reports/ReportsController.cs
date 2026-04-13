@@ -60,57 +60,57 @@ namespace QPay.API.Controller.Reports
 
             return Ok(response);
         }
-        [HttpPost]
-        [Route("GetGrossMarginReport")]
-        public async Task<IActionResult> GetGrossMarginReport(GrossMarginRequestModel request)
-        {
-            var fileResponse = new FileResponse
-            {
-                File = "N",
-                FileName = "GrossMarginReport.xlsx"
-            };
+        //[HttpPost]
+        //[Route("GetGrossMarginReport")]
+        //public async Task<IActionResult> GetGrossMarginReport(GrossMarginRequestModel request)
+        //{
+        //    var fileResponse = new FileResponse
+        //    {
+        //        File = "N",
+        //        FileName = "GrossMarginReport.xlsx"
+        //    };
 
 
-            DataSet result = request.ReportType switch
-            {
-                "GM" => await _poReport.GetGrossMarginReport(
-                    request.Pay_Period,
-                    Convert.ToInt32(request.Submit)
-                ) ,
-                "UGM" => await _poReport.GetUnProcessedGrossMarginReport(
-                    request.Pay_Period),
-                 _=> CreateEmptyDataSet()
+        //    DataSet result = request.ReportType switch
+        //    {
+        //        "GM" => await _poReport.GetGrossMarginReport(
+        //            request.Pay_Period,
+        //            Convert.ToInt32(request.Submit)
+        //        ) ,
+        //        "UGM" => await _poReport.GetUnProcessedGrossMarginReport(
+        //            request.Pay_Period),
+        //         _=> CreateEmptyDataSet()
 
-            };
+        //    };
 
             
 
-                if (result?.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
-                {
-                    var dt = result.Tables[0];
+        //        if (result?.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
+        //        {
+        //            var dt = result.Tables[0];
 
-                    using var workbook = new XLWorkbook();
-                    var ws = workbook.Worksheets.Add(dt, "InvoiceSummary");
+        //            using var workbook = new XLWorkbook();
+        //            var ws = workbook.Worksheets.Add(dt, "InvoiceSummary");
 
-                    ws.Tables.First().ShowAutoFilter = false;
-                    ws.Tables.First().Theme = XLTableTheme.None;
+        //            ws.Tables.First().ShowAutoFilter = false;
+        //            ws.Tables.First().Theme = XLTableTheme.None;
 
-                    using var stream = new MemoryStream();
-                    workbook.SaveAs(stream);
+        //            using var stream = new MemoryStream();
+        //            workbook.SaveAs(stream);
 
-                    stream.Position = 0;
+        //            stream.Position = 0;
 
-                    fileResponse.File = Convert.ToBase64String(stream.ToArray());
-                if(request.ReportType=="GM")
-                    fileResponse.FileName = "GrossMarginReport.xlsx";
-                else
-                    fileResponse.FileName = "UnprossedGrossMarginReport.xlsx";
+        //            fileResponse.File = Convert.ToBase64String(stream.ToArray());
+        //        if(request.ReportType=="GM")
+        //            fileResponse.FileName = "GrossMarginReport.xlsx";
+        //        else
+        //            fileResponse.FileName = "UnprossedGrossMarginReport.xlsx";
 
-            }
+        //    }
             
 
-            return Ok(fileResponse);
-        }
+        //    return Ok(fileResponse);
+        //}
         private DataSet CreateEmptyDataSet()
         {
             var ds = new DataSet();
