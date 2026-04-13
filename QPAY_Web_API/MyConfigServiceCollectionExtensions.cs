@@ -212,6 +212,7 @@ namespace QPay.API
             services.AddScoped<IClientGSTRepository, ClientGSTRepository>();
             services.AddScoped<IVendorClientAddressRespository, VendorClientAddressRespository>();
             services.AddScoped<IVendorClientGstRepository, VendorClientGSTRepository>();
+            services.AddScoped<IVendorServiceChargeRepository, VendorServiceChargeRepository>();
             services.AddScoped<ISEZRepositoryService, SEZRepositoryService>();
 
 
