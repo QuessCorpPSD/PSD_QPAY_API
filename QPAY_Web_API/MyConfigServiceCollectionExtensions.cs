@@ -223,6 +223,9 @@ namespace QPay.API
             services.AddScoped<IInvoiceCollectionReport, InvoiceCollectionreport>();
 
 
+            services.AddScoped<ILTDSReport, LTDSReport>();
+            services.AddScoped<IClientledger, Clientledger>();
+            services.AddScoped<IUnpaidinvoice, Unpaidinvoice>();
 
         }
     }
