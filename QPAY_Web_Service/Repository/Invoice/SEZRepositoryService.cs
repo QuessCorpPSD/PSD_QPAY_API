@@ -32,7 +32,7 @@ namespace QPay.BAL.Repository.Invoice
             parameters.Add("@Year", Year);
             parameters.Add("@Action", "Search");
 
-            var res = await this._dbRepository.GetItemsAsync("sp_ManageSEZWOPRepository", parameters);
+            var res = await this._dbRepository.GetItemsAsync("sp_ManageSEZWOPRepository_NewUI", parameters);
             if (res != null)
             {
                 return JsonConvert.DeserializeObject<List<SEZRepository>>(res) ?? new List<SEZRepository>() { new SEZRepository() };
