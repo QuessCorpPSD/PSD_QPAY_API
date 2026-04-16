@@ -27,6 +27,8 @@ namespace QPay.UI.Models.Invoice
         public string? RequestedBy { get; set; }
         public string? AckNo { get; set; }
     }
+
+
     public class SelectedRecords
     {
         public int Serial_No { get; set; }
@@ -62,5 +64,23 @@ namespace QPay.UI.Models.Invoice
       public string? Remarks { get; set; }
       public string? UserId { get; set; }
       public string? Action { get; set; }
+    }
+
+    public class SEZCertificate
+    {
+        public int Serial_No { get; set; }
+        public int Id { get; set; }
+        public int Company_Id { get; set; }
+        public string? Company_Code { get; set; }
+        public string? Document_Name { get; set; }
+        public string? AckNo { get; set; }
+        public string? Valid_From {get; set;}
+        public string? Valid_To { get; set; }
+        public string? Uploaded_Date { get; set; }
+        public string? Document_FilePath { get; set; }
+        public string? Document_Remarks { get; set; }
+        public string? RequestedBy { get; set; }
+        public string? ApprovalStatus { get; set; }
+        public string? UploadStatus { get; set; }
     }
 }

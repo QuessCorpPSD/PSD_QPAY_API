@@ -72,5 +72,120 @@ namespace QPay.API.Controller.Invoice
             var result = await _iSEZ.BulkApproveSEZ(request);
             return Ok(result);
         }
+
+        [HttpGet, Route("SearchSEZCertificate/{companyId}")]
+        public async Task<IActionResult> SearchSEZCertificate(int companyId)
+        {
+            var stauts = await _iSEZ.SearchSEZCertificate(companyId);
+            return Ok(stauts);
+        }
+
+        [HttpGet, Route("GetUploadedCertificate/{Id}")]
+        public IActionResult GetUploadedCertificate(int Id)
+        {
+            try
+            {
+                var filejson = _iSEZ.GetUploadedCertificate(Id);
+                var fileList = JsonConvert.DeserializeObject<List<SEZJson>>(filejson);
+                if (fileList == null || fileList.Count == 0 || string.IsNullOrEmpty(fileList[0]?.FilePath))
+                {
+                    return BadRequest(new { message = "FilePath not found." });
+                }
+                //string? fileName = fileList?[0].FileName;
+                string? filePath = fileList?[0].FilePath;
+                string? fileName = Path.GetFileName(filePath);
+                string? fullPath = filePath; //.Replace(@"\", @"\\");
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    return BadRequest(new { message = "File not found." });
+                }
+                var fileBytes = System.IO.File.ReadAllBytes(fullPath);
+                string base64String = Convert.ToBase64String(fileBytes);
+                FileResponse fileResponse = new FileResponse();
+                fileResponse.FileName = fileName;
+                fileResponse.File = base64String;
+
+                return Ok(fileResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        [Route("UploadSEZCertificate")]
+        public async Task<IActionResult> UploadSEZDocument(
+                        [FromForm] string companyId,
+                        [FromForm] string userId,
+                        [FromForm] string validFrom,
+                        [FromForm] string validTo,
+                        [FromForm] string remarks,
+                        [FromForm] string AckNo,
+                        [FromForm][Required] IFormFile file)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                FileDetails fileDetails = new FileDetails();
+
+                fileDetails = await SaveFileAsync(file);
+
+                Task<string> Error_Message = _iSEZ.SaveUploadData(companyId, userId, validFrom, validTo, remarks, AckNo, fileDetails.OriginalFileName
+                    , fileDetails.FileName, fileDetails.FilePath, "SaveFilepath");
+
+                return Ok(new
+                {
+                    Status = "Success",
+                    Message = Error_Message
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
+        private async Task<FileDetails> SaveFileAsync(IFormFile? file)
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            string? basePath = _configuration["ClaimDocPath"];
+
+            if (string.IsNullOrWhiteSpace(basePath))
+                throw new Exception("ClaimDocPath not configured.");
+
+            string directoryPath = Path.Combine(basePath, "SEZCertificate");
+
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            string fileExtension = Path.GetExtension(file.FileName);
+
+            string originalfileName = Path.GetFileNameWithoutExtension(file.FileName);
+            string fileName = $"SEZCert_{originalfileName}{DateTime.UtcNow:yyyyMMddHHmmssfff}{fileExtension}";
+
+            string filePath = Path.Combine(directoryPath, fileName);
+
+            FileDetails fileDetails = new FileDetails
+            {
+                OriginalFileName = originalfileName,
+                FileName = fileName,
+                FilePath = filePath
+            };
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return fileDetails;
+        }
+
     }
 }

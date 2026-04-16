@@ -475,9 +475,10 @@ namespace QPay.API.Controller.Invoice
                     {
                         if (Directory.Exists(Invoicepath))
                         {
-                            Directory.Delete(Invoicepath, true);
+                            //Directory.Delete(Invoicepath, true);
+                            Directory.CreateDirectory(Invoicepath);
                         }
-                        Directory.CreateDirectory(Invoicepath);
+
                     }
                     else
                     {

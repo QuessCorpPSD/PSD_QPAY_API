@@ -10,6 +10,8 @@ using QPay.DAL.Repository;
 using Dapper;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository.Invoice;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.ComponentModel.DataAnnotations;
 
 namespace QPay.BAL.Repository.Invoice
 {
@@ -77,6 +79,64 @@ namespace QPay.BAL.Repository.Invoice
 
             return "No data found";
 
+        }
+
+        public async Task<List<SEZCertificate>> SearchSEZCertificate(int companyId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Company_Id", companyId);
+            parameters.Add("@Action", "Search");
+
+            var res = await this._dbRepository.GetItemsAsync("sp_ManageSEZCertificate_Upload", parameters);
+            if (res != null)
+            {
+                return JsonConvert.DeserializeObject<List<SEZCertificate>>(res) ?? new List<SEZCertificate>() { new SEZCertificate() };
+            }
+            else
+            {
+                return new List<SEZCertificate>() { new SEZCertificate() };
+            }
+        }
+        public string GetUploadedCertificate(int Id)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Id", Id);
+            parameters.Add("@Action", "GetFilePath");
+
+            var res = this._dbRepository.GetItemsAsync("sp_ManageSEZCertificate_Upload", parameters).Result;
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+
+        }
+
+
+        public async Task<string> SaveUploadData(string companyId, string userId, string validFrom, string validTo, string remarks, string AckNo, string OriginalFileName
+            , string FileName, string FilePath, string Action)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", companyId);
+            parameters.Add("@CreatedBy", userId);
+            parameters.Add("@UploadRemarks", remarks);
+            parameters.Add("@AckNo", AckNo);
+            parameters.Add("@ValidFrom", validFrom);
+            parameters.Add("@ValidTo", validTo);
+            parameters.Add("@OriginalFilename", OriginalFileName);
+            parameters.Add("@FileName", FileName);
+            parameters.Add("@FilePath", FilePath);
+            parameters.Add("@Action", "SaveFilepath");
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_SEZCertificate_Upload", parameters);
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
         }
     }
 }
