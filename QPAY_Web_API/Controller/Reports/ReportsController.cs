@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QPay.API.Models;
 using QPay.BAL.IRepository.Reports;
 using QPay.UI.Common;
+using QPay.UI.GrossMargin;
 using QPay.UI.Models;
 using QPay.UI.Models.Reports;
 using System.Data;
@@ -60,6 +61,14 @@ namespace QPay.API.Controller.Reports
 
             return Ok(response);
         }
+        [HttpPost]
+        [Route("AccuralsUpload")]
+        public async Task<AccuralsModelResponse> AccuralsUpload(AccuralsModelRequest accuralsModelRequest)
+        {
+            var result=await _poReport.AccuralFileupload(accuralsModelRequest);
+            return result;
+        }
+
         [HttpPost]
         [Route("GetGrossMarginReport")]
         public async Task<IActionResult> GetGrossMarginReport(GrossMarginRequestModel request)
@@ -121,19 +130,12 @@ namespace QPay.API.Controller.Reports
         public IActionResult GetAccrualsTemplate()
         {
             FileResponse files = new FileResponse();
+            var accural = this._poReport.AccuralFileFormat().Result;
             
+            return Ok(accural);
+        }
+
         
-            return Ok(files);
-        }
-
-        [HttpPost, Route("AccrualsTemplateUpload")]
-        public IActionResult AccrualsTemplateUpload()
-        {
-            FileResponse files = new FileResponse();
-
-
-            return Ok(files);
-        }
 
         [HttpGet, Route("GetVerticals/{userId}/{potype}")]
         public async Task<IActionResult> GetVerticals(string userId, string potype)

@@ -1,4 +1,6 @@
-﻿using QPay.UI.Models.Reports;
+﻿using QPay.UI.GrossMargin;
+using QPay.UI.Models;
+using QPay.UI.Models.Reports;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,5 +20,7 @@ namespace QPay.BAL.IRepository.Reports
         DataSet GetAllMonthWisePOReport(string txtFromDate, string txtToDate);
         Task<DataSet> GetGrossMarginReport(string pay_Period, int submit);
         Task<DataSet> GetUnProcessedGrossMarginReport(string pay_Period);
+        Task<FileResponse> AccuralFileFormat();
+        Task<AccuralsModelResponse> AccuralFileupload(AccuralsModelRequest accuralsModelRequest);
     }
 }

@@ -216,6 +216,7 @@ namespace QPay.API
             services.AddScoped<ISEZRepositoryService, SEZRepositoryService>();
 
 
+            services.AddScoped<IAdvanceUtilizationRepository, AvanceUtilizationRepository>();
         }
     }
 }
