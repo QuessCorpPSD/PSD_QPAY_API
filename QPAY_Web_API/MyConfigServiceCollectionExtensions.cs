@@ -2,6 +2,7 @@
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.BAL.IRepository.Admin;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
@@ -13,6 +14,7 @@ using QPay.BAL.IRepository.Reports;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.IRepository.Tools;
 using QPay.BAL.Repository;
+using QPay.BAL.Repository.Admin;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
 using QPay.BAL.Repository.Customer;
@@ -209,6 +211,9 @@ namespace QPay.API
             services.AddScoped<ISalaryReleasePendingApprovalRepository, SalaryReleasePendingApprovalRepository>();
             services.AddScoped<IBatchGenerationRepository, BatchGenerationRepository>();
             services.AddScoped<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
+            services.AddScoped<IAdminmenuRepository, AdminmenuRepository>();
+            services.AddScoped<IRolesRepository, RolesRepository>();
+            services.AddScoped<ICompanyPermissionRepository,CompanyPermissionRepository>();
         }
     }
 
