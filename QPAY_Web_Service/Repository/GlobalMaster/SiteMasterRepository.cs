@@ -233,8 +233,8 @@ namespace QPay.BAL.Repository.GlobalMaster
                     //new XElement("LEAVE_TYPE_ID", ""),
                     //new XElement("PLE_Formula", ""),
                     //new XElement("GRTCT", "")
-                    new XElement("Value", emp.Po_Salary),
-                    new XElement("Value", emp.Po_OtherIncome)
+                    new XElement("Po_Salary", emp.Po_Salary),
+                    new XElement("Po_OtherIncome", emp.Po_OtherIncome)
                     )
                 ),
 
