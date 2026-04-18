@@ -226,13 +226,15 @@ namespace QPay.BAL.Repository.GlobalMaster
                         //new XElement("Flex2", ""),
                         new XElement("SalaryDate", emp.SalaryDate),
                         new XElement("Portal_Payslip_Format", emp.Portal_Payslip_Format),
-                        new XElement("Value", emp.Value)
+                        new XElement("Value", emp.Value),
                     //new XElement("PF_Code_Location", ""),
                     //new XElement("PF_ID", ""),
                     //new XElement("LEAVE_ID", ""),
                     //new XElement("LEAVE_TYPE_ID", ""),
                     //new XElement("PLE_Formula", ""),
                     //new XElement("GRTCT", "")
+                    new XElement("Value", emp.Po_Salary),
+                    new XElement("Value", emp.Po_OtherIncome)
                     )
                 ),
 

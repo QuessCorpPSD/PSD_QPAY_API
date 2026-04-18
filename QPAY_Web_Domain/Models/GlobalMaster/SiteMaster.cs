@@ -50,5 +50,7 @@ namespace QPay.UI.Models.GlobalMaster
         public string? SalaryDate { get; set; }
         public string? Portal_Payslip_Format { get; set; }
         public int? Value { get; set; }
+        public int? Po_Salary { get; set; }
+        public int? Po_OtherIncome { get; set; }
     }
 }
