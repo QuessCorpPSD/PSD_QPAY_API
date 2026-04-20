@@ -36,7 +36,15 @@ namespace QPay.API.Controller.Billing
         [Route("DownloadTemplate/{UploadType}")]
         public async Task<IActionResult> DownloadTemplate(string UploadType)
         {
-            var response = await _IRepository.DownloadTemplate(UploadType);
+            string UploadTypeTrim = string.Empty;
+
+            if (!string.IsNullOrEmpty(UploadType))
+            {
+                UploadTypeTrim = UploadType.Replace(" ", "");
+            }
+
+            var response = await _IRepository.DownloadTemplate(UploadTypeTrim);
+
             if (response != null)
             {
                 var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);

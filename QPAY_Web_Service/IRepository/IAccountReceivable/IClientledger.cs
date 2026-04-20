@@ -13,6 +13,6 @@ namespace QPay.BAL.IRepository.IAccountReceivable
     public interface IClientledger
     {
         Task<DataSet> GetFinancialYear(int? financialYearId);
-        Task<DataSet> ExportClientLedger(ClientLedgerExportRequest request);
+        Task<DataSet> ClientLedgerExportToExcel(ClientLedgerExportRequest request);
     }
 }

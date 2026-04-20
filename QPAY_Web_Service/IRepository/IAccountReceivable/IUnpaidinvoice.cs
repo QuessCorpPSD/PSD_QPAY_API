@@ -11,6 +11,6 @@ namespace QPay.BAL.IRepository.IAccountReceivable
     public interface IUnpaidinvoice
     {
         Task<DataSet> GetEntity(string flag);
-        Task<DataSet> ExportToExcel(CommonExport payload);
+        Task<DataSet> UnpaidInvoiceExportToExcel(CommonExport1 payload);
     }
 }
