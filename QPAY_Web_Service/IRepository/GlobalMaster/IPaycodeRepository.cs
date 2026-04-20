@@ -9,8 +9,8 @@ namespace QPay.BAL.IRepository.GlobalMaster
         Task<DataSet> Create(string strXmlDetails, string mode, int userId);
         Task<DataSet> GetPageType();
         Task<string> GetPayType();
-        Task<List<PayCodeUI>> GetPayCodeByCompanyId(int companyId);
-
+        // Task<List<PayCodeUI>> GetPayCodeByCompanyId(int companyId);
+        Task<DataSet> GetPayCodeByCompanyId(int companyId, int invoiceCultureId, string type);
         //Task<ActivationResponse> UploadEmployeeActivation(IFormFile file, [FromForm] string User,
         //    [FromForm] string COMPANY_CODE, [FromForm] string FLAG);            
         //Task<ActivationResponse> UploadEmployeeLWD(IFormFile file, [FromForm] string User,

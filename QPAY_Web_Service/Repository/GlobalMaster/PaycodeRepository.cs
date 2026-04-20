@@ -23,20 +23,31 @@ namespace QPay.BAL.Repository.GlobalMaster
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<PayCodeUI>> GetPayCodeByCompanyId(int companyId)
+        public async Task<DataSet> GetPayCodeByCompanyId(int companyId,int invoiceCultureId,string type)
         {
 
-            var paramerter=new DynamicParameters();
-            paramerter.Add("@CompanyId", companyId);
-            var res = await this._dbRepository.GetItemsAsync("SP_CompanyPayCodeByCompanyId", paramerter);
-            if(res.Any())
+            //var paramerter=new DynamicParameters();
+            //paramerter.Add("@CompanyId", companyId);
+            //paramerter.Add("@InvoiceCulture_Id", invoiceCultureId);
+            //paramerter.Add("@Type", type);
+            var parameters = new Dictionary<string, object?>
             {
-                return JsonConvert.DeserializeObject<List<PayCodeUI>>(res).ToList()?? new List<PayCodeUI>();
-            }
-            else
-            {
-                return new List<PayCodeUI>();
-            }
+                ["@CompanyId"] = companyId,
+                ["@InvoiceCulture_Id"] = invoiceCultureId,
+                ["@Type"] = type,
+            };
+
+         return   _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_CompanyPayCodeByCompanyId", parameters, 1500);
+
+            //var res = await this._dbRepository.GetItemsAsync("SP_CompanyPayCodeByCompanyId", paramerter);
+            //if(res.Any())
+            //{
+            //    return JsonConvert.DeserializeObject<List<PayCodeUI>>(res).ToList()?? new List<PayCodeUI>();
+            //}
+            //else
+            //{
+               //return new List<PayCodeUI>();
+            //}
         }
 
         public async Task<DataSet> Search(string strPayCode, int? intPayTypeId, int? IsTaxable, int? PayId)
