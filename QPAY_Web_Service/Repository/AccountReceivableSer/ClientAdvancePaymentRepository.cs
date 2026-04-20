@@ -7,7 +7,7 @@ using QPay.DAL.Repository;
 using System.Data;
 using System.Text;
 using static QPay.UI_Domain.Models.AccountReceivable.ClientAdvancePayment;
-
+    
 public class ClientAdvancePaymentRepository : IClientAdvancePaymentRepository
 {
     private readonly DbRepository _dbRepository;
@@ -208,7 +208,7 @@ public class ClientAdvancePaymentRepository : IClientAdvancePaymentRepository
             {
                 await file.CopyToAsync(stream);
             }
-
+             
             // Read Excel
             DataTable dt = ReadExcelToDataTable(filePath);
 

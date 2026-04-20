@@ -37,8 +37,7 @@ namespace QPay.API.Controller.AccountReceivableCont
                     return Ok(ResponseWrapManager.ResponseWrapper("No Data To Export", HttpContext));
 
                 using (XLWorkbook wb = new XLWorkbook())
-                {
-                    // ✅ SAFE LOOP (no crash)
+                {                  
                     for (int i = 1; i < ds.Tables.Count; i++)
                     {
                         string sheetName = "Sheet" + i;

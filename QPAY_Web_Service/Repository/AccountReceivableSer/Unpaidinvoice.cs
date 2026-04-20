@@ -35,9 +35,6 @@ namespace QPay.BAL.Repository.AccountReceivableSer
         {
             var parameters = new Dictionary<string, object?>
             {
-                //["@Company_Id"] = Convert.ToInt32(payload.companyId),
-                //["@From_Date"] = payload.fromDate,
-                //["@To_Date"] = payload.toDate,
                 ["@Action"] = "Export",
                 ["@AllEntityId"] = 0
             };
