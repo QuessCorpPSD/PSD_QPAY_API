@@ -8,7 +8,7 @@ namespace QPay.BAL.IRepository.IAccountReceivable
     {
         Task<DataSet> GetLTDSReportType(string action);
         Task<DataSet> GetFinancialYear(int? financialYearId);
-        Task<DataSet> ExportToExcel(LTDSExportRequest request);
+        Task<DataSet> LTDSReportExportToExcel(LTDSExportRequest request);
         Task<DataSet> GetBusinessUnits(int reportTypeId);
     }
 }
