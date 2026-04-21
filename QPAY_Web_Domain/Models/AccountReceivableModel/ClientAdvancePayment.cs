@@ -59,9 +59,16 @@ namespace QPay.UI_Domain.Models.AccountReceivable
             public int? FinancialYearId { get; set; }
         }
 
+        public class CommonExport3
+        {
+            public int? companyId { get; set; }
+            public int? payPeriodId { get; set; }
+        }
+
+
 
 
     }
 
-   
+
 }
