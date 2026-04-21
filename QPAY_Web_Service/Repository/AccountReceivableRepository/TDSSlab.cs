@@ -9,10 +9,10 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static QPay.UI.Models.AccountReceivableMod.TDSSlabModels;
+using static QPay.UI.Models.AccountReceivableModel.TDSSlabModels;
 using static QPay.UI_Domain.Models.AccountReceivable.ClientAdvancePayment;
 
-namespace QPay.BAL.Repository.AccountReceivableSer
+namespace QPay.BAL.Repository.AccountReceivableRepository
 {
     public class TDSSlab : ITDSSlab
     {

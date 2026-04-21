@@ -17,6 +17,7 @@ using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.IRepository.Tools;
 using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
+using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;

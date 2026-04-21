@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QPay.UI.Models.AccountReceivableMod
+namespace QPay.UI.Models.AccountReceivableModel
 {
     public class TDSSlabModels
     {

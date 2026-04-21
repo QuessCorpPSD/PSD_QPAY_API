@@ -5,7 +5,7 @@ using QPay.BAL.IRepository.IAccountReceivable;
 using System.Data;
 using static QPay.UI_Domain.Models.AccountReceivable.ClientAdvancePayment;
 
-namespace QPay.API.Controller.AccountReceivableCont
+namespace QPay.API.Controller.AccountReceivable
 {
     [Route("api/[controller]")]
     [ApiController]

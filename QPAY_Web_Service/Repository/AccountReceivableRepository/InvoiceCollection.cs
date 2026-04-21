@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QPay.BAL.Repository.AccountReceivableSer
+namespace QPay.BAL.Repository.AccountReceivableRepository
 {
     public class InvoiceCollection : IInvoiceCollectionRepository
     {
