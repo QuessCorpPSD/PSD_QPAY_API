@@ -18,6 +18,7 @@ namespace QPay.BAL.IRepository.IAccountReceivable
         Task<APARAdjustmentUploadResponse> UploadAPARAdjustmentCancel(IFormFile file, string User);
 
         Task<string> EditAPARAdjustment(APARAdjustmentEditRequest request);
+        Task<APARAdjustmentUploadResponse> UploadAPARAdjustment(IFormFile file, string User);
 
 
     }

@@ -49,6 +49,19 @@ namespace QPay.API.Controller.AccountReceivableCont
         }
 
         [HttpPost]
+        [Route("UploadAPARAdjustment")]
+        public async Task<IActionResult> UploadAPARAdjustment(IFormFile file, [FromForm] string User)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is missing.");
+
+            var result = await _iapar.UploadAPARAdjustment(file, User);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost]
         [Route("UploadAPARAdjustmentCancel")]
         public async Task<IActionResult> UploadAPARAdjustmentCancel(IFormFile file, [FromForm] string User)
         {
@@ -59,6 +72,7 @@ namespace QPay.API.Controller.AccountReceivableCont
 
             return Ok(result);
         }
+
 
         [HttpPost]
         [Route("EditAPARAdjustment")]
