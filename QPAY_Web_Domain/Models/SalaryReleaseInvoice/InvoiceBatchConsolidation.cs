@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QPay.UI.Models.SalaryReleaseInvoice
+﻿namespace QPay.UI.Models.SalaryReleaseInvoice
 {
-    internal class InvoiceBatchConsolidation
+    public class InvoiceBatchExport
     {
+        public string AllEntityId { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string TxtSearch { get; set; }
+        public string ReportType { get; set; }
     }
 }

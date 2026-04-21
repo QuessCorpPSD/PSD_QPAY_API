@@ -1,25 +1,20 @@
 ﻿using Microsoft.Extensions.Configuration;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.DAL.Repository;
-using System;
-using System.Collections.Generic;
+using QPay.UI.Models.SalaryReleaseInvoice;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QPay.BAL.Repository.SalaryReleaseInvoice
 {
-    public class InvoiceBatchConsolidationRepository: IinvoiceBatchConsolidationRepository
+    public class InvoiceBatchConsolidationRepository : IinvoiceBatchConsolidationRepository
     {
-
         private readonly DbRepository _dbRepository;
         private readonly IConfiguration _configuration;
 
         public InvoiceBatchConsolidationRepository(DbRepository dbRepository, IConfiguration configuration)
         {
-            this._dbRepository = dbRepository;
-            this._configuration = configuration;
+            _dbRepository = dbRepository;
+            _configuration = configuration;
         }
 
         public async Task<DataSet> GetBusinessUnitName()
@@ -33,7 +28,22 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
             );
         }
 
+        public async Task<DataSet> InvoiceBatchConsolidationExport(InvoiceBatchExport payload)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = payload.ReportType,
+                ["@From_Date"] = payload.FromDate,
+                ["@To_Date"] = payload.ToDate,
+                ["@txtsearch"] = payload.TxtSearch,
+                ["@AllEntityId"] = payload.AllEntityId
+            };
 
-
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync(
+    "Proc_BatchConsolidationReport",
+    parameters,
+    1500
+);
+        }
     }
 }
