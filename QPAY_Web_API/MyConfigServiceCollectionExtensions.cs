@@ -222,7 +222,7 @@ namespace QPay.API
             services.AddScoped<IUnpaidinvoice, Unpaidinvoice>();
             services.AddScoped<IInvoiceCollectionRepository, InvoiceCollection>();
             services.AddScoped<ITDSSlab, TDSSlab>();
-
+            services.AddScoped<IReIssueApprove, ReIssueApprove>();
 
         }
     }
