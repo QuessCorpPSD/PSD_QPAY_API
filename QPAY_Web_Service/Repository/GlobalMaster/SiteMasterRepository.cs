@@ -365,6 +365,75 @@ namespace QPay.BAL.Repository.GlobalMaster
             return sitemasterDetails;
         }
 
+        public async Task<List<SiteInchargeUI>> GetSiteIncharge()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetSiteIncharge", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<SiteInchargeUI>>(res) ?? new List<SiteInchargeUI>();
+            }
+
+            return new List<SiteInchargeUI>();
+        }
+
+        public async Task<List<SMCityUI>> GetCity(string keyword)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Key", keyword);
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetSiteIncharge", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<SMCityUI>>(res) ?? new List<SMCityUI>();
+            }
+
+            return new List<SMCityUI>();
+        }
+
+        public async Task<List<PFCategoryUI>> GetPFCategory()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "PF_CATEGORY");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<PFCategoryUI>>(res) ?? new List<PFCategoryUI>();
+            }
+
+            return new List<PFCategoryUI>();
+        }
+
+        public async Task<List<LeaveCategoryUI>> GetLeaveCategory()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "LEAVE_CATEGORY");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<LeaveCategoryUI>>(res) ?? new List<LeaveCategoryUI>();
+            }
+
+            return new List<LeaveCategoryUI>();
+        }
+
+        public async Task<List<LeaveTypeUI>> GetLeaveType()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "LEAVE_TYPE");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<LeaveTypeUI>>(res) ?? new List<LeaveTypeUI>();
+            }
+
+            return new List<LeaveTypeUI>();
+        }
+
         public static DataSet ExcelToDataSet(string filePath)
         {
             using var workbook = new XLWorkbook(filePath);

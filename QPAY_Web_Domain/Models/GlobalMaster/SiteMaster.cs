@@ -80,7 +80,7 @@ namespace QPay.UI.Models.GlobalMaster
         public string? Flex2 { get; set; }
         public string? SalaryDate { get; set; }
         public string? Portal_Payslip_Format { get; set; }
-        public string? PF_Code_Location { get; set; }        
+        public string? PF_Code_Location { get; set; }
         public int? PF_ID { get; set; }
         public int? LEAVE_ID { get; set; }
         public int? LEAVE_TYPE_ID { get; set; }
@@ -92,4 +92,35 @@ namespace QPay.UI.Models.GlobalMaster
         public int? Po_Salary { get; set; }
         public int? Po_OtherIncome { get; set; }
     }
+
+    public class SiteInchargeUI
+    {
+        public string Site_Incharge_Id { get; set; } = "";
+        public string Site_Incharge { get; set; } = "";
+    }
+
+    public class SMCityUI
+    {
+        public string CITY_ID { get; set; } = "";
+        public string City_Name { get; set; } = "";
+        public string State_Name { get; set; } = "";
+    }
+
+    public class PFCategoryUI
+    {
+        public string PF_ID { get; set; } = "";
+        public string PF_CATEGORY { get; set; } = "";
+    }
+    public class LeaveCategoryUI
+    {
+        public string LEAVE_ID { get; set; } = "";
+        public string LEAVE_CATEGORY { get; set; } = "";
+    }
+
+    public class LeaveTypeUI
+    {
+        public string LEAVE_TYPE_ID { get; set; } = "";
+        public string LEAVE_TYPE { get; set; } = "";
+    }
+
 }
