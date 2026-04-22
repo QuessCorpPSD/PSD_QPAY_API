@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using QPay.API.Controller.AccountReceivableCont;
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.BAL.IRepository.AccountReceivable;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
 using QPay.BAL.IRepository.GlobalMaster;
+using QPay.BAL.IRepository.IAccountReceivable;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Process;
@@ -13,6 +16,9 @@ using QPay.BAL.IRepository.Reports;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.IRepository.Tools;
 using QPay.BAL.Repository;
+using QPay.BAL.Repository.AccountReceivable;
+using QPay.BAL.Repository.AccountReceivableRepository;
+using QPay.BAL.Repository.AccountReceivableSer;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
 using QPay.BAL.Repository.Customer;
@@ -214,6 +220,21 @@ namespace QPay.API
             services.AddScoped<IVendorClientGstRepository, VendorClientGSTRepository>();
             services.AddScoped<IVendorServiceChargeRepository, VendorServiceChargeRepository>();
             services.AddScoped<ISEZRepositoryService, SEZRepositoryService>();
+            services.AddScoped<IClientAdvancePaymentRepository, ClientAdvancePaymentRepository>();
+            services.AddScoped<IClientAdvancePaymentReportRepository, ClientAdvancePaymentRepositoryReport>();
+            services.AddScoped<IForecastRepository, ForecastRepository>();
+            services.AddScoped<ICollectionPendingReportRepository, CollectionPendingReportRepository>();
+            services.AddScoped<IInvoiceCollectionReport, InvoiceCollectionreport>();
+
+            services.AddScoped<ILTDSReport, LTDSReport>();
+            services.AddScoped<IClientledger, Clientledger>();
+            services.AddScoped<IUnpaidinvoice, Unpaidinvoice>();
+            services.AddScoped<IcreditnoteupdateRepository, creditnoteupdateRepository>();
+            services.AddScoped<IAPARAdjustmentRepository, APARAdjustmentReposioty>();
+            services.AddScoped<IinvoiceBatchConsolidationRepository, InvoiceBatchConsolidationRepository>();
+
+            services.AddScoped<IInvoiceCollectionRepository, InvoiceCollection>();
+            services.AddScoped<ITDSSlab, TDSSlab>();
 
 
         }

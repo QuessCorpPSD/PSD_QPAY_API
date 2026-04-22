@@ -16,7 +16,7 @@ namespace QPay.BAL.IRepository.Billing
     public interface IGenericUploadRepository
     {
         Task<DataSet> masters(int userId);
-        Task<DataTable> DownloadTemplate(string UploadType);
+        Task<DataSet> DownloadTemplate(string UploadType);
         Task<GenericUploadResponse> FileUpload(IFormFile file, [FromForm] string uploadType, [FromForm] int createdBy);
 
     }
