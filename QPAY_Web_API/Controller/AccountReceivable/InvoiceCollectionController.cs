@@ -100,7 +100,7 @@ namespace QPay.API.Controller.AccountReceivable
         }
         [HttpPost]
         [Route("ExportInvoiceCollectionToExcel")]
-        public async Task<IActionResult> ExportInvoiceCollectionToExcel([FromBody] CommonExport1 payload)
+        public async Task<IActionResult> ExportInvoiceCollectionToExcel([FromBody] CommonExport3 payload)
         {
             var ds = await _repo.ExportInvoiceCollectionToExcel(
                 payload.companyId,

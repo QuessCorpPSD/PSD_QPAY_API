@@ -276,6 +276,87 @@ namespace QPay.BAL.Repository.AccountReceivableSer
             return sb.ToString();
         }
 
+        public async Task<APARAdjustmentUploadResponse> UploadAPARAdjustment(IFormFile file, string user)
+        {
+            APARAdjustmentUploadResponse response = new APARAdjustmentUploadResponse();
+
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    response.response = "File not found";
+                    return response;
+                }
+
+                var dirPath = Path.Combine(_configuration["ClaimDocPath"], "APARAdjustmentUpload");
+
+                if (!Directory.Exists(dirPath))
+                    Directory.CreateDirectory(dirPath);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string filePath = Path.Combine(dirPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Read Excel
+                DataTable dt = ReadExcelToDataTable(filePath);
+
+                if (dt.Rows.Count == 0)
+                {
+                    response.response = "Excel sheet is empty.";
+                    return response;
+                }
+
+                // Convert to XML
+                dt.TableName = "Table";
+                DataSet ds = new DataSet("NewDataSet");
+                ds.Tables.Add(dt);
+
+                string xmlInput;
+                using (var sw = new StringWriter())
+                {
+                    ds.WriteXml(sw);
+                    xmlInput = sw.ToString();
+                }
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@XML_File", xmlInput);
+                parameters.Add("@CreatedBy", user);
+
+                string spName = "Upload_APARAdjustmentbulkApproval"; // ✅ MVC SP
+
+                var res = await _dbRepository.GetItemsAsync(spName, parameters);
+
+                if (!string.IsNullOrWhiteSpace(res))
+                {
+                    if (res.ToLower().Contains("success"))
+                    {
+                        response.response = res;
+                    }
+                    else
+                    {
+                        response.response = "Upload completed with errors";
+                        response.errors = res
+                            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                            .ToList();
+                    }
+                }
+                else
+                {
+                    response.response = "Failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.response = ex.Message;
+            }
+
+            return response;
+        }
+
     }
 
 
