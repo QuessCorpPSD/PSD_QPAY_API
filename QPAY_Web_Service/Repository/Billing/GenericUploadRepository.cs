@@ -53,10 +53,23 @@ namespace QPay.BAL.Repository.Billing
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("USP_CommonDropDowns", parameters);
         }
 
-        public async Task<DataTable> DownloadTemplate(string UploadType)
+        public async Task<DataSet> DownloadTemplate(string UploadType)
         {
+            UploadType = UploadType?.Trim();
+
             DataTable dt = GetExcelColumnNames(UploadType);
-            return dt;
+
+            if (dt.Rows.Count == 0)
+            {
+                var row = dt.NewRow();
+                dt.Rows.Add(row);
+            }
+
+            DataSet ds = new DataSet();
+            dt.TableName = "Table0";
+            ds.Tables.Add(dt);
+
+            return ds;
         }
 
         public async Task<GenericUploadResponse> FileUpload(IFormFile file, [FromForm] string uploadType, [FromForm] int createdBy)
@@ -90,6 +103,7 @@ namespace QPay.BAL.Repository.Billing
 
                 DataSet ds = new DataSet("DocumentElement");
                 ds = ExcelToDataSet(filePath);
+                ds.Tables[0].TableName = "Table";
                 //Convert dt to XML
                 if (ds.Tables.Count == 0)
                 {
@@ -118,7 +132,7 @@ namespace QPay.BAL.Repository.Billing
                 string storeProcedure = @"Proc_Upload_PartialHoldEmployeeSalary";
                 var parameters = new DynamicParameters();
 
-                parameters.Add("@xmlInput", xmlInput);
+                parameters.Add("@XML_File", xmlInput);
                 parameters.Add("@UploadType", uploadType);
                 parameters.Add("@CreatedBy", createdBy);
                 var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
