@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
 using QPay.BAL.IRepository.AccountReceivable;
-using QPay.BAL.IRepository.IAccountReceivable;
-using QPay.UI.Models.AccountReceivableMod;
+using QPay.BAL.IRepository.SalaryReleaseInvoice;
+using QPay.UI.Models.SalaryReleaseInvoice;
 
-namespace QPay.API.Controller.AccountReceivableCont
+namespace QPay.API.Controller.SalaryReleaseInvoice
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,28 +17,29 @@ namespace QPay.API.Controller.AccountReceivableCont
         {
             _repo = repo;
         }
+        // CONTROLLER
+
         [HttpGet]
-        [Route("SearchReIssueApprove/{CompanyId}/{PayPeriodId}/{ReIssueTypes}/{vPayperiods}/{Status}")]
+        [Route("SearchReIssueApprove/{CompanyId}/{PayPeriodId}/{ReIssueTypes}/{FromDate}/{ToDate}/{param}/{Status}")]
         public async Task<IActionResult> SearchReIssueApprove(
             int CompanyId,
             int PayPeriodId,
             string ReIssueTypes,
-            string vPayperiods,
-            string Status,
-            [FromQuery] int? PaytypeId)
+            string FromDate,
+            string ToDate,
+            int param,
+            string Status)
         {
-            var ds = await _repo.SearchReIssueApprove(
-                CompanyId,
-                PayPeriodId,
-                ReIssueTypes,
-                PaytypeId,
-                vPayperiods,
+            var ds = await _repo.SearchReIssueApprove(CompanyId,PayPeriodId,
+          ReIssueTypes,
+                FromDate,
+                ToDate,
+                param,
                 Status);
 
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
         }
-
         [HttpGet("GetDropdown/{flag}")]
         public async Task<IActionResult> GetDropdown(string flag)
         {
@@ -63,11 +64,16 @@ namespace QPay.API.Controller.AccountReceivableCont
             var res = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(res);
         }
+        // CONTROLLER
+
         [HttpPost]
         [Route("CreateReIssueApproveReject")]
-        public async Task<IActionResult> CreateReIssueApproveReject([FromBody] ReIssueApproveRejectRequest request)
+        public async Task<IActionResult> CreateReIssueApproveReject(
+            [FromBody] ReIssueApproveRejectRequest request)
         {
-            var result = await _repo.CreateReIssueApproveReject(request);
+            var result =
+                await _repo.CreateReIssueApproveReject(request);
+
             return Ok(result);
         }
     }
