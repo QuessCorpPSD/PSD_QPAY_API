@@ -53,6 +53,7 @@ namespace QPay.API.Controller
         public async Task<IActionResult> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel)
       {
             var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
+           // var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
             return Ok(invoicesearch);
         }
 
