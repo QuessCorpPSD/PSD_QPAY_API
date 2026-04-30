@@ -15,6 +15,7 @@ namespace QPay.API.Controller.AccountReceivable
         {
             _repo = repo;
         }
+
         [HttpGet("GetFinancialYear")]
         public async Task<IActionResult> GetFinancialYear(int? id)
         {
@@ -24,6 +25,7 @@ namespace QPay.API.Controller.AccountReceivable
 
             return Ok(payload);
         }
+
         [HttpGet]
         [Route("Search/{CompanyId}/{FinancialYearId}")]
         public async Task<IActionResult> Search(int? CompanyId, int? FinancialYearId)
@@ -32,14 +34,16 @@ namespace QPay.API.Controller.AccountReceivable
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
         }
+
         [HttpPost]
         [Route("ExportToExcel")]
         public async Task<IActionResult> ExportToExcel([FromBody] CommonExport2 payload)
         {
-            var ds = await _repo.ExportToExcel(payload);   // await is required
+            var ds = await _repo.ExportToExcel(payload);
             var res = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(res);
         }
+
         [HttpPost]
         [Route("UploadTDSSlab")]
         public async Task<IActionResult> UploadTDSSlab(IFormFile file, [FromForm] string createdBy)
@@ -50,6 +54,7 @@ namespace QPay.API.Controller.AccountReceivable
             var result = await _repo.UploadTDSSlab(file, createdBy);
             return Ok(result);
         }
+
         [HttpPost]
         [Route("UploadLTDSSlab")]
         public async Task<IActionResult> UploadLTDSSlab(IFormFile file, [FromForm] int userId)
@@ -60,13 +65,15 @@ namespace QPay.API.Controller.AccountReceivable
             var result = await _repo.UploadLTDSSlab(file, userId);
             return Ok(result);
         }
+
         [HttpPost]
         [Route("TdsSlabCreate")]
         public async Task<IActionResult> TdsSlabCreate([FromBody] TdsSlabSaveRequest request)
         {
-            var result = await _repo.TdsSlabCreate(request.TdsDetails, request.action, request.userId);
+            var result = await _repo.TdsSlabCreate(request);
             return Ok(result);
         }
+
         [HttpGet]
         [Route("GetCompanyNameByCode/{companyCode}")]
         public async Task<IActionResult> GetCompanyNameByCode(string companyCode)

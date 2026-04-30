@@ -190,6 +190,36 @@ namespace QPay.BAL.Repository.AccountReceivableRepository
 
             return dt;
         }
+        private string BuildTdsSlabXml(TdsSlabSaveRequest request)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<TdsDetails>");
+
+            foreach (var item in request.TdsDetails)
+            {
+                sb.Append("<ClientTdsSlabMaster>");
+                sb.AppendFormat("<TdsSlabMaster_Id>{0}</TdsSlabMaster_Id>", item.TdsSlabMaster_Id);
+                sb.AppendFormat("<Company_Id>{0}</Company_Id>", item.Company_Id);
+                sb.AppendFormat("<Company_Name>{0}</Company_Name>", item.Company_Name ?? "");
+                sb.AppendFormat("<Company_Code>{0}</Company_Code>", item.Company_Code ?? "");
+                sb.AppendFormat("<TypeOfSelection>{0}</TypeOfSelection>", item.TypeOfSelection);
+                sb.AppendFormat("<Value>{0}</Value>", item.Value);
+                sb.AppendFormat("<Percentage>{0}</Percentage>", item.Percentage);
+                sb.AppendFormat("<FromDate>{0}</FromDate>", item.FromDate ?? "");
+                sb.AppendFormat("<ToDate>{0}</ToDate>", item.ToDate ?? "");
+                sb.AppendFormat("<NatureOfBusiness>{0}</NatureOfBusiness>", item.NatureOfBusiness ?? "");
+                sb.AppendFormat("<TAN>{0}</TAN>", item.TAN ?? "");
+                sb.AppendFormat("<PAN>{0}</PAN>", item.PAN ?? "");
+                sb.AppendFormat("<Client_Id>{0}</Client_Id>", item.Client_Id);
+                sb.AppendFormat("<Serial_No>{0}</Serial_No>", item.Serial_No);
+                sb.AppendFormat("<Financial_Year_Id>{0}</Financial_Year_Id>", item.Financial_Year_Id);
+                sb.AppendFormat("<Financial_Year_Name>{0}</Financial_Year_Name>", item.Financial_Year_Name ?? "");
+                sb.Append("</ClientTdsSlabMaster>");
+            }
+
+            sb.Append("</TdsDetails>");
+            return sb.ToString();
+        }
         public async Task<UploadResponse> UploadLTDSSlab(IFormFile file, int userId)
         {
             UploadResponse response = new UploadResponse();
@@ -291,17 +321,25 @@ namespace QPay.BAL.Repository.AccountReceivableRepository
 
             return response;
         }
-        public async Task<List<TdsSlabResult>> TdsSlabCreate(string tdsDetails, string action, int userId)
+        public async Task<TdsSlabSaveResponse> TdsSlabCreate(TdsSlabSaveRequest request)
         {
-            List<TdsSlabResult> result = new List<TdsSlabResult>();
+            TdsSlabSaveResponse response = new TdsSlabSaveResponse();
 
             try
             {
+                if (request == null || request.TdsDetails == null || !request.TdsDetails.Any())
+                {
+                    response.response = "Invalid request.";
+                    return response;
+                }
+
+                string xmlInput = BuildTdsSlabXml(request);
+
                 var parameters = new Dictionary<string, object?>
                 {
-                    ["@xmlInput"] = tdsDetails,
-                    ["@mode"] = action,
-                    ["@CreatedBy"] = userId
+                    ["@xmlInput"] = xmlInput,
+                    ["@mode"] = request.action,
+                    ["@CreatedBy"] = request.userId
                 };
 
                 DataSet ds = _dbRepository.ExecuteStoredProcedureToDataSetAsync(
@@ -312,21 +350,32 @@ namespace QPay.BAL.Repository.AccountReceivableRepository
 
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    foreach (DataRow row in ds.Tables[0].Rows)
+                    var errors = ds.Tables[0].AsEnumerable()
+                        .Select(x => x["Error_Message"]?.ToString())
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToList();
+
+                    if (errors.Any())
                     {
-                        result.Add(new TdsSlabResult
-                        {
-                            Error_Message = Convert.ToString(row["Error_Message"])
-                        });
+                        response.response = "Completed with errors.";
+                        response.errors = errors;
+                    }
+                    else
+                    {
+                        response.response = "Completed successfully.";
                     }
                 }
+                else
+                {
+                    response.response = "Completed successfully.";
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return new List<TdsSlabResult>();
+                response.response = ex.Message;
             }
 
-            return result;
+            return response;
         }
         public async Task<List<CompanyNameByCodeResult>> GetCompanyNameByCode(string companyCode)
         {
