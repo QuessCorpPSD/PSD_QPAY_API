@@ -235,6 +235,8 @@ namespace QPay.API
 
             services.AddScoped<IInvoiceCollectionRepository, InvoiceCollection>();
             services.AddScoped<ITDSSlab, TDSSlab>();
+            services.AddScoped<IAttributesRepository, AttributesRepository>();
+
 
 
         }
