@@ -124,7 +124,7 @@ namespace QPay.API
             services.AddScoped<ICreditNoteApproveRepository, CreditNoteApproveRepository>();
             services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
             services.AddScoped<ICreditNoteUpdateRepository, CreditNoteUpdateRepository>();
-            //services.AddScoped<IDraftNewRepository, DraftNewRepository>();
+            services.AddScoped<IDraftNewRepository, DraftNewRepository>();
             services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
             services.AddScoped<IInvoiceCultureRepository, InvoiceCultureRepository>();
             services.AddScoped<BAL.IRepository.Invoice.IInvoiceInitiationRepository, BAL.Repository.Invoice.InvoiceInitiationRepository>();
