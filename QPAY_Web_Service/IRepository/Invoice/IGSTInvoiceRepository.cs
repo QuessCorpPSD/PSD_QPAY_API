@@ -40,7 +40,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<UI.Models.Invoice.InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
         Task<ClientPeriodUI> CompanyPayPeriod(int payperiod);
         Task<InvoiceNumberLotUI> IRNStatusGenerationUpdate(string Invoice_Number);
-        Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI);
+        Task<List<UI.Models.Invoice.AttributeUI>> GetAllAttribute(UI.Models.Invoice.AttributeUI attributeUI);
         Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
            [FromForm] string payperiodId, [FromForm] string CreatedBy);
         Task<DataTable> GetConsolidateInvoiceSummary(int companyId, int payperiodid);

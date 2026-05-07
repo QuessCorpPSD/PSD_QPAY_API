@@ -698,7 +698,7 @@ namespace QPay.BAL.Repository.Invoice
             }
         }
 
-        public async Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI)
+        public async Task<List<UI.Models.Invoice.AttributeUI>> GetAllAttribute(UI.Models.Invoice.AttributeUI attributeUI)
             {
             var parameter = new DynamicParameters();
             parameter.Add("@Id", attributeUI.id);
@@ -712,12 +712,12 @@ namespace QPay.BAL.Repository.Invoice
 
             if (res != null)
             {
-                var attribute = JsonConvert.DeserializeObject<List<AttributeUI>>(res);
+                var attribute = JsonConvert.DeserializeObject<List<UI.Models.Invoice.AttributeUI>>(res);
                 return attribute;
             }
             else
             {
-                return new List<AttributeUI>();
+                return new List<UI.Models.Invoice.AttributeUI>();
             }
         }
 

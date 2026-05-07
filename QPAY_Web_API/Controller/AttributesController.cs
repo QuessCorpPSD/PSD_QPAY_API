@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
+using QPay.API.Model;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Extensions;
 using QPay.UI.Models;
-using Qzone.IRepository.iRepository.Common;
 using System.Data;
 
 namespace QPay.API.Controllers
