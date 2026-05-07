@@ -37,7 +37,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<InvoiceCancelResponse> BulkApproveInvoice(InvoiceCancelApprovalRequest request);
         Task<string> BulkRejectInvoice(InvoiceCancelApprovalRequest request);
         string GetFilename(int invoice_Id);
-        Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
+        Task<UI.Models.Invoice.InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
         Task<ClientPeriodUI> CompanyPayPeriod(int payperiod);
         Task<InvoiceNumberLotUI> IRNStatusGenerationUpdate(string Invoice_Number);
         Task<List<AttributeUI>> GetAllAttribute(AttributeUI attributeUI);

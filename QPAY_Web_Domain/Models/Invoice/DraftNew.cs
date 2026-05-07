@@ -9,55 +9,6 @@ namespace QPay.UI.Models.Invoice
 {
     public class DraftNew
     {
-        public class InvoiceBackDatedUI
-        {
-            public int StatusCode { get; set; }
-            public string BackDated { get; set; } = "";
-            public string MonthDate { get; set; } = "";
-        }
-
-        public class SplitParams
-        {
-            public int? company_id { get; set; }
-            public int? Pay_Period_Id { get; set; }
-            public string? LotNo { get; set; }
-            public string? Map_Name_Id { get; set; }
-            public string? Invoice_Category_Id { get; set; }
-        }
-
-        public class PushData
-        {
-            public int? CompanyId { get; set; }
-            public int? PayPeriodId { get; set; }
-            public string? LotNumbers { get; set; }
-            public string? Input_No { get; set; }
-            public string? Employee_Head_Count { get; set; }
-            public int? Map_Name_Id { get; set; }
-            public string? Map_Name { get; set; }
-            public decimal? NetPay { get; set; }
-            public int? Invoice_Category_Id { get; set; }
-            public string? Invoice_Category { get; set; }
-            public int? InvoiceType_Id { get; set; }
-            public string? Service_Charge_Master { get; set; }
-        }
-
-
-        [XmlRoot("Main")]
-        public class PushModel
-        {
-            [XmlElement("InvoiceInitiateRequest")]
-            public List<PushData> details { get; set; }
-            [XmlIgnore]
-            public int company_id { get; set; }
-            [XmlIgnore]
-            public int Pay_Period_Id { get; set; }
-            [XmlIgnore]
-            public string Action { get; set; }
-            [XmlIgnore]
-            public string? CreatedBy { get; set; }
-            [XmlIgnore]
-            public int DraftTypeId { get; set; }
-        }
         public class InvoiceResponse
         {
             public string response { get; set; } = string.Empty;
@@ -106,6 +57,7 @@ namespace QPay.UI.Models.Invoice
             public string CreatedBy { get; set; } = string.Empty;
             public string ActionType { get; set; } = string.Empty;
             public string InvoiceDateType { get; set; } = string.Empty;
+            public string InvoiceRequestRemarks { get; set; } = string.Empty;
         }
 
         public class InvoiceInitiateRequest
@@ -128,6 +80,14 @@ namespace QPay.UI.Models.Invoice
             public string Section_billing { get; set; } = string.Empty;
             [XmlIgnore]
             public Int16? DraftType { get; set; }
+            [XmlIgnore]
+            public int InvoiceCount { get; set; }
+            [XmlIgnore]
+            public double? Net_CTC { get; set; }
+            [XmlIgnore]
+            public double? Subtotal { get; set; }
+            public int? InvoiceCulture_id { get; set; }
+
 
         }
 
@@ -176,6 +136,7 @@ namespace QPay.UI.Models.Invoice
         public class PerformaToActualUI
         {
             public int RowNumber { get; set; }
+            public string PRO_Invoice_Number { get; set; } = string.Empty;
             public int Company_Id { get; set; }
             public int Pay_Period_Id { get; set; }
             public int Map_Name_Id { get; set; }
@@ -197,8 +158,9 @@ namespace QPay.UI.Models.Invoice
             public int? GroupDetailId { get; set; }
             public string Group_Name { get; set; } = string.Empty;
             public decimal Net_CTC { get; set; }
-
             public decimal NetPay { get; set; }
+            public decimal SubTotal { get; set; }
+
 
             public int InvoiceCulture_id { get; set; }
             public string InvoiceCul_Ref_No { get; set; } = string.Empty;
@@ -209,7 +171,34 @@ namespace QPay.UI.Models.Invoice
             public bool IsInitiation { get; set; }
             public bool IsActive { get; set; }
             public string InvoiceNumber { get; set; } = string.Empty;
-            public string Data_from { get; set; } = string.Empty;
+            public string Data_From { get; set; } = string.Empty;
+            public string Section_billing { get; set; } = string.Empty;
+
+        }
+
+        public class PerformaToActualRequestUI
+        {
+            public List<ProfermaUI> performaToActualUIs { get; set; }
+            public int pay_period_id { get; set; }
+            public int company_Id { get; set; }
+            public string userId { get; set; } = string.Empty;
+        }
+
+        public class ProfermaUI
+        {
+            public int Company_Id { get; set; }
+            public int PayPeriod_Id { get; set; }
+            public string LotNumbers { get; set; } = "";
+            public int Input_No { get; set; }
+            public int Employee_Head_Count { get; set; }
+            public int Map_Name_Id { get; set; }
+            public string Map_Name { get; set; } = "";
+            public decimal NetPay { get; set; }
+            public int Invoice_Category_Id { get; set; }
+            public string Invoice_Category { get; set; } = "";
+            public int InvoiceType_Id { get; set; }
+            public string ServiceChargeMaster { get; set; } = "";
+            public int InvoiceCulture_id { get; set; }
         }
 
         public class ProvisionalInvoiceInitiateRequest
@@ -231,7 +220,10 @@ namespace QPay.UI.Models.Invoice
             public string CreatedBy { get; set; } = string.Empty;
             public string Isactive { get; set; } = string.Empty;
             public string Employee_code { get; set; } = string.Empty;
+
+
+
         }
+
     }
 }
-

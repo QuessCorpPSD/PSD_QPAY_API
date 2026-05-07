@@ -641,7 +641,7 @@ namespace QPay.BAL.Repository.Invoice
 
         }
 
-        public async Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId)
+        public async Task<UI.Models.Invoice.InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId)
         {
             var parameter = new DynamicParameters();
             parameter.Add("@Invoice_Id", invoiceId);
@@ -650,13 +650,13 @@ namespace QPay.BAL.Repository.Invoice
             var res = await _dbRepository.GetItemsAsync(storedProcedure, parameter);
             if (!string.IsNullOrWhiteSpace(res))
             {
-                var resultList = JsonConvert.DeserializeObject<List<InvoiceDetail>>(res);
+                var resultList = JsonConvert.DeserializeObject<List<UI.Models.Invoice.InvoiceDetail>>(res);
 
-                return resultList.FirstOrDefault() ?? new InvoiceDetail();
+                return resultList.FirstOrDefault() ?? new UI.Models.Invoice.InvoiceDetail();
             }
             else
             {
-                return new InvoiceDetail();
+                return new UI.Models.Invoice.InvoiceDetail();
             }
 
         }

@@ -15,7 +15,7 @@ namespace QPay.BAL.IRepository.Invoice
     public interface IEInvoiceRepository
     {
         Task<InvoiceNumberLotUI> IRNStatusGenerationUpdate(string Invoice_Number);
-        Task<InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
+        Task<UI.Models.Invoice.InvoiceDetail> GetInvoiceDetailByInvoiceId(int invoiceId);
         Task<ClientPeriodUI> CompanyPayPeriod(int payperiod);
         Task<DataSet> GetAllInvoiceDetails(int companyId, int payPeriodId);
         Task<DataSet> EInvoiceExport(int companyId, int payPeriodId);
