@@ -9,6 +9,7 @@ using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.Customer;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.BAL.IRepository.IAccountReceivable;
+using QPay.BAL.IRepository.IBankNonInvoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Process;
@@ -19,6 +20,7 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
 using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
+using QPay.BAL.Repository.BankNonInvoice;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
 using QPay.BAL.Repository.Customer;
@@ -238,6 +240,7 @@ namespace QPay.API
 
 
             services.AddScoped<IAdvanceUtilizationRepository, AvanceUtilizationRepository>();
+            services.AddScoped<IPartialSalaryReleaseStatusRepository, PartialSalaryReleaseStatusRepository>();
         }
     }
 }
