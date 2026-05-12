@@ -114,9 +114,19 @@ namespace QPay.API.Controller
 
         [HttpPost]
         [Route("ProvisionalInvoiceInitiate")]
-        public async Task<IActionResult> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequest provisionalrequest)
+        public async Task<IActionResult> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequestBulk request)
         {
-            var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(provisionalrequest);
+            string xml = XmlHelper2.SerializeObjectToXml(request);
+            var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(xml, request.CreatedBy);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("VendorInvoiceInitiate")]
+        public async Task<IActionResult> VendorInvoiceInitiate(VendorInvoiceInitiateRequestBulk request)
+        {
+            string xml = XmlHelper2.SerializeObjectToXml(request);
+            var result = await _invoiceInitiationRepository.VendorInvoiceInitiate(xml, request.CreatedBy);
             return Ok(result);
         }
 

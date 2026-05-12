@@ -110,7 +110,7 @@ namespace QPay.BAL.Repository
             param.Add("@UserId", invoiceDetailModel.userId);
             var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
 
-            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot_Test]" ?? "";
+            string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot_test]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
             parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
@@ -334,7 +334,7 @@ namespace QPay.BAL.Repository
                 parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
                 parameter.Add("@Invoice_Type", intiationExportRequest.Invoice_Type ?? (object)DBNull.Value);
 
-                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise_test]", parameter);
+                var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise]", parameter);
                 DataTable payregister_dt = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
 
                 try
@@ -621,51 +621,28 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
-        public async Task<InvoiceResponse> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequest provisionalrequest)
+        public async Task<string> ProvisionalInvoiceInitiate(string xml, int CreatedBy)
         {
             InvoiceResponse invoiceDetails = new InvoiceResponse();
-            string storeProcedure = "Proc_ManageInvoiceEmployeeDetail_NewUI";
-            var parameters = new Dictionary<string, object?>
-            {
-                ["@Action"] = "CreateInvoice",
-                ["@UserId"] = provisionalrequest.CreatedBy,
-                ["@CompanyId"] = provisionalrequest.CompanyId,
-                ["@CostCenterMappingId"] = provisionalrequest.Map_Name_Id,
-                ["@PayPeriodId"] = provisionalrequest.PayPeriodId,
-                ["@LotNumber"] = provisionalrequest.LotNo,
-                ["@InputNumber"] = provisionalrequest.Input_No,
-                ["@IsActive"] = provisionalrequest.Isactive,
-                ["@CreatedBy"] = provisionalrequest.CreatedBy,
-                ["@ModifiedBy"] = provisionalrequest.CreatedBy,
-                ["@PageNo"] = "1",
-                ["@PageSize"] = "10",
-                ["@Map_Name"] = provisionalrequest.Map_Name,
-                ["@Pay_Period"] = provisionalrequest.PayPeriod
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "CreateInvoice");
+            parameters.Add("@XmlData", xml);
+            parameters.Add("@UserId", CreatedBy);
 
-            };
+            var res = await this._dbRepository.GetItemsAsync("Proc_QzoneInvoiceRequest_PRO", parameters);
+            return res;
+        }
 
-            DataSet ds = _dbRepository.ExecuteStoredProcedureToDataSetAsync(storeProcedure, parameters, 1500);
-            var res = ds.Tables[1].Rows[0]["Result"].ToString();
-            if (!string.IsNullOrWhiteSpace(res))
-            {
-                try
-                {
-                    if (!string.IsNullOrWhiteSpace(res))
-                    {
-                        invoiceDetails.response = res;
-                    }
-                }
-                catch
-                {
-                    invoiceDetails.response = "Error while processing response.";
-                }
-            }
-            else
-            {
-                invoiceDetails.response = "Failed";
-            }
+        public async Task<string> VendorInvoiceInitiate(string xml, int CreatedBy)
+        {
+            InvoiceResponse invoiceDetails = new InvoiceResponse();
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "Initiate");
+            parameters.Add("@xmlData", xml);
+            parameters.Add("@Created_By", CreatedBy);
 
-            return invoiceDetails;
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorGstInvoiceInitiate_NewUI", parameters);
+            return res;
         }
 
         public async Task<DataSet> DraftExporttoExcel (InvoiceDetailModel invoiceDetailModel)
