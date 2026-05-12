@@ -241,6 +241,7 @@ namespace QPay.API
 
             services.AddScoped<IAdvanceUtilizationRepository, AvanceUtilizationRepository>();
             services.AddScoped<IPartialSalaryReleaseStatusRepository, PartialSalaryReleaseStatusRepository>();
+            services.AddScoped<IBankNEFTcultureNonInvoice,BankNeftCultureNonInvoice>();
         }
     }
 }
