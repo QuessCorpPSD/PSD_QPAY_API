@@ -148,8 +148,14 @@ namespace QPay.UI.Models.Invoice
         public string? FI_Document_Number { get; set; } = "";
         public int? Expense_ID { get; set; }
         public string? Service_Description { get; set; } = "";
-    }
+        public string? Invoice_Number { get; set; } = "";
 
+
+    }
+    public class InvoiceQCDetailUI {
+        public string ReqNo { get; set; } = "";
+        public string InvoiceNumber { get; set; } = "";
+    }
     public class InitiationRequestModel
     {
         public int? Company_Id { get; set; }
@@ -230,8 +236,17 @@ namespace QPay.UI.Models.Invoice
         public string PayPeriod { get; set; } = string.Empty;
         public string LotNo { get; set; } = string.Empty;
         public string Input_No { get; set; } = string.Empty;
+        public string Amount { get; set; } = string.Empty;
+        public string ServiceCharge { get; set; } = string.Empty;
+        public string State_Name { get; set; } = string.Empty;
+        public string State_Id { get; set; } = string.Empty;
         public string Map_Name_Id { get; set; } = string.Empty;
         public string Map_Name { get; set; } = string.Empty;
+        public string Invoice_Category_Id { get; set; } = string.Empty;
+        public string Invoice_Category { get; set; } = string.Empty;
+        public string CreatedBy { get; set; } = string.Empty;
+        public string Isactive { get; set; } = string.Empty;
+        public string Employee_code { get; set; } = string.Empty;
     }
 
     [XmlRoot("ProvisionalInvoiceInitiate")]

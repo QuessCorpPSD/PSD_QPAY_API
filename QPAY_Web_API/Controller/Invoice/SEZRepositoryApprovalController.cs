@@ -33,16 +33,21 @@ namespace QPay.API.Controller.Invoice
             return Ok(stauts);
         }
 
+    
+
         [HttpGet, Route("GetUploadedFile/{invoice_Id}")]
         public IActionResult GetUploadedFile(int invoice_Id)
         {
+            FileResponse fileResponse = new FileResponse();
             try
             {
                 var filejson = _iSEZ.GetSEZFilename(invoice_Id);
                 var fileList = JsonConvert.DeserializeObject<List<SEZJson>>(filejson);
                 if (fileList == null || fileList.Count == 0 || string.IsNullOrEmpty(fileList[0]?.FilePath))
                 {
-                    return BadRequest(new { message = "FilePath not found." });
+                    fileResponse.FileName = "FilePath not found.";
+                    fileResponse.File = "N";
+                    //return BadRequest(new { message = "FilePath not found." });
                 }
                 //string? fileName = fileList?[0].FileName;
                 string? filePath = fileList?[0].FilePath;
@@ -50,20 +55,22 @@ namespace QPay.API.Controller.Invoice
                 string? fullPath = filePath; //.Replace(@"\", @"\\");
                 if (!System.IO.File.Exists(fullPath))
                 {
-                    return BadRequest(new { message = "File not found." });
+                    fileResponse.FileName = "FilePath not found.";
+                    fileResponse.File = "N";
+                    // return BadRequest(new { message = "File not found." });
                 }
                 var fileBytes = System.IO.File.ReadAllBytes(fullPath);
-                string base64String = Convert.ToBase64String(fileBytes);
-                FileResponse fileResponse = new FileResponse();
+                string base64String = Convert.ToBase64String(fileBytes);                
                 fileResponse.FileName = fileName;
                 fileResponse.File = base64String;
-
-                return Ok(fileResponse);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                fileResponse.FileName = "FilePath not found.";
+                fileResponse.File = "N";
+                // return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
+            return Ok(fileResponse);
         }
 
         [HttpPost, Route("BulkApproveSEZ")]
@@ -83,13 +90,16 @@ namespace QPay.API.Controller.Invoice
         [HttpGet, Route("GetUploadedCertificate/{Id}")]
         public IActionResult GetUploadedCertificate(int Id)
         {
+            FileResponse fileResponse = new FileResponse();
             try
             {
                 var filejson = _iSEZ.GetUploadedCertificate(Id);
                 var fileList = JsonConvert.DeserializeObject<List<SEZJson>>(filejson);
                 if (fileList == null || fileList.Count == 0 || string.IsNullOrEmpty(fileList[0]?.FilePath))
                 {
-                    return BadRequest(new { message = "FilePath not found." });
+                    fileResponse.File = "N";
+                    fileResponse.FileName = "FilePath not found.";
+                    //return BadRequest(new { message = "FilePath not found." });
                 }
                 //string? fileName = fileList?[0].FileName;
                 string? filePath = fileList?[0].FilePath;
@@ -97,11 +107,13 @@ namespace QPay.API.Controller.Invoice
                 string? fullPath = filePath; //.Replace(@"\", @"\\");
                 if (!System.IO.File.Exists(fullPath))
                 {
-                    return BadRequest(new { message = "File not found." });
+                    fileResponse.File = "N";
+                    fileResponse.FileName = "FilePath not found.";
+                    //return BadRequest(new { message = "File not found." });
                 }
                 var fileBytes = System.IO.File.ReadAllBytes(fullPath);
                 string base64String = Convert.ToBase64String(fileBytes);
-                FileResponse fileResponse = new FileResponse();
+               
                 fileResponse.FileName = fileName;
                 fileResponse.File = base64String;
 
@@ -109,7 +121,10 @@ namespace QPay.API.Controller.Invoice
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                fileResponse.File = "N";
+                fileResponse.FileName = "FilePath not found.";
+                return Ok(fileResponse);
+                // return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
 

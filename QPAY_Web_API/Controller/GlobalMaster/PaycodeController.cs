@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.UI.GlobalMaster;
 using QPay.UI.Models;
+using QPay.UI.Models.GlobalMaster;
+using QPay.UI.Models.Invoice;
+using System.Data;
 using System.Linq;
 using System.Net;
 
@@ -94,18 +98,41 @@ namespace QPay.API.Controller.GlobalMaster
             }
         }
 
-        [HttpGet]
-        [Route("GetPayCode/{CompanyId}")]
-        public async Task<IActionResult> GetPayCode(int CompanyId)
+        [HttpPost]
+        [Route("GetPayCode")]
+        public async Task<IActionResult> GetPayCode(PaycodeModelRquest paycodeModelRquest)
         {
-            var paycodes = await this._IRepository.GetPayCodeByCompanyId(CompanyId);
-            var paycode = paycodes.Select(x => new UI.Models.Invoice.SelectedItems()
-            {
-            value = x.PayCode_Id.ToString(),
-            text = x.PayCodeName
-             })
-            .ToList();
-            return Ok(paycode);
+            var paycodes = await this._IRepository.GetPayCodeByCompanyId(paycodeModelRquest.company_Id, paycodeModelRquest.Culture_Id, paycodeModelRquest.Type);
+            Paycodes PayCodeMapping=new Paycodes();
+            DataTable available_dt = paycodes.Tables[0];
+            DataTable selected_dt = paycodes.Tables[1];
+            PayCodeMapping.availablePaycode = available_dt.AsEnumerable()
+                        .Select(dr => new SelectedItems
+                        {
+                            value = dr["PayCode_Id"].ToString(),
+                            text = dr["PayCodeName"].ToString()
+                        })
+                        .ToList();
+            PayCodeMapping.MappedPaycode = selected_dt.AsEnumerable()
+                       .Select(dr => new SelectedItems
+                       {
+                           value = dr["PayCode_Id"].ToString(),
+                           text = dr["PayCodeName"].ToString()
+                       })
+                       .ToList();
+            
+
+            //foreach (var item in paycodes.Tables)
+            //{
+
+            //}
+            //var paycode = paycodes.Select(x => new UI.Models.Invoice.SelectedItems()
+            //{
+            //value = x.PayCode_Id.ToString(),
+            //text = x.PayCodeName
+            // })
+            //.ToList();
+            return Ok(PayCodeMapping);
         }
 
 

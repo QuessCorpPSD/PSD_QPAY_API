@@ -1519,11 +1519,11 @@ namespace QPay.BAL.Repository.Invoice
             {
                 var parameters = new Dictionary<string, object?>
                 {
-                    ["@Company_Id"] = companyCode,
-                    ["@Pay_Period_Id"] = pay_period_Id
+                    ["@CompanyId"] = companyCode,
+                    ["@PayperiodId"] = pay_period_Id
                 };
                 string storeProcedure = "";
-                storeProcedure = "sp_PayRegister_Split_Register";
+                storeProcedure = "sp_SplitPayregister";
 
                 var res = this._dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync(storeProcedure, parameters,5000);
                 if (res != null)
@@ -1649,6 +1649,16 @@ namespace QPay.BAL.Repository.Invoice
 
                                         sheetIndex++;
                                     }
+                                   
+                                }
+                                else if (payregister_dt.Rows.Count == 0)
+                                {
+                                    string sheetName = GetSheetName(sheetIndex);
+
+                                    var ws = workbook.AddWorksheet(payregister_dt, sheetName);
+                                    ws.Table(0).ShowAutoFilter = false;
+                                    ws.Table(0).Theme = XLTableTheme.None;
+                                    sheetIndex++;
                                 }
                                 else
                                 {
@@ -1769,13 +1779,13 @@ namespace QPay.BAL.Repository.Invoice
             switch (i)
             {
                 case 1:
-                    sheetName = "Consolidated Register";
+                    sheetName = "Salary";
                     break;
                 case 2:
-                    sheetName = "Arrear";
+                    sheetName = "ServiceCharge";
                     break;
                 case 3:
-                    sheetName = "Regular";
+                    sheetName = "Sourcing";
                     break;
 
                 default:

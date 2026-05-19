@@ -113,5 +113,48 @@ namespace QPay.API.Controller.GlobalMaster
             var result = await _IRepository.UploadSiteMaster(file, User);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetSiteIncharge")]
+        public async Task<IActionResult> GetSiteIncharge()
+        {
+            var response = await _IRepository.GetSiteIncharge();
+            return Ok(response);
+        }
+
+
+        [HttpGet]
+        [Route("GetCity/{keyword}")]
+        public async Task<IActionResult> GetCity(string keyword)
+        {
+            var response = await _IRepository.GetCity(keyword);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetPFCategory")]
+        public async Task<IActionResult> GetPFCategory()
+        {
+            var response = await _IRepository.GetPFCategory();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetLeaveCategory")]
+        public async Task<IActionResult> GetLeaveCategory()
+        {
+            var response = await _IRepository.GetLeaveCategory();
+            return Ok(response);
+        }
+
+
+        [HttpGet]
+        [Route("GetLeaveType")]
+        public async Task<IActionResult> GetLeaveType()
+        {
+            var response = await _IRepository.GetLeaveType();
+            return Ok(response);
+        }
+
     }
 }

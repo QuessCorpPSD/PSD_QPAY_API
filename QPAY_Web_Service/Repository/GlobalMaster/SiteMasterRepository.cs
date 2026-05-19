@@ -178,62 +178,66 @@ namespace QPay.BAL.Repository.GlobalMaster
                         new XElement("Group_Name", emp.Group_Name),
                         new XElement("Client_Id", emp.Client_Id),
                         new XElement("CostCenter_Id", emp.CostCenter_Id),
-                        //new XElement("Branch_Name", ""),
-                        //new XElement("LWW_Formula", ""),
-                        //new XElement("ATB_Formula", ""),
-                        //new XElement("Auth_OT_Formula", ""),
-                        //new XElement("NFH_Formula", ""),
-                        //new XElement("Unauthorized_OT", ""),
-                        //new XElement("Additional_Formula_1", ""),
-                        //new XElement("Additional_Formula_2", ""),
-                        //new XElement("Additional_Formula_3", ""),
-                        //new XElement("AROTHRS", ""),
-                        //new XElement("ROTHRS", ""),
-                        //new XElement("GRAT", ""),
-                        //new XElement("City_Id", ""),
+                        new XElement("Branch_Name", emp.Branch_Name),
+                        new XElement("LWW_Formula", emp.LWW_Formula),
+                        new XElement("ATB_Formula", emp.ATB_Formula),
+                        new XElement("Auth_OT_Formula", emp.Auth_OT_Formula),
+                        new XElement("NFH_Formula", emp.NFH_Formula),
+                        new XElement("Unauthorized_OT", emp.Unauthorized_OT),
+                        new XElement("Additional_Formula_1", emp.Additional_Formula_1),
+                        new XElement("Additional_Formula_2", emp.Additional_Formula_2),
+                        new XElement("Additional_Formula_3", emp.Additional_Formula_3),
+                        new XElement("AROTHRS", emp.AROTHRS),
+                        new XElement("ROTHRS", emp.ROTHRS),
+                        new XElement("GRAT", emp.GRAT),
+                        new XElement("City_Id", emp.City_Id),
                         new XElement("Establishment_Name", emp.Establishment_Name),
                         new XElement("Establishment_Adress1", emp.Establishment_Adress1),
-                        //new XElement("Establishment_Adress2", ""),
-                        //new XElement("Establishment_Adress3", ""),
+                        new XElement("Establishment_Adress2", emp.Establishment_Adress2),
+                        new XElement("Establishment_Adress3", emp.Establishment_Adress3),
                         new XElement("Principal_Employer_Name", emp.Principal_Employer_Name),
                         new XElement("Principal_Employe_Address1", emp.Principal_Employe_Address1),
-                        //new XElement("Principal_Employe_Address2", ""),
-                        //new XElement("Principal_Employe_Address3", ""),
+                        new XElement("Principal_Employe_Address2", emp.Principal_Employe_Address2),
+                        new XElement("Principal_Employe_Address3", emp.Principal_Employe_Address3),
                         new XElement("Contractor_Name", emp.Contractor_Name),
                         new XElement("Contractor_Address1", emp.Contractor_Address1),
-                        //new XElement("Contractor_Address2", ""),
-                        //new XElement("Contractor_Address3", ""),
-                        //new XElement("OPS_Manager", ""),
-                        //new XElement("Site_Incharge", ""),
+                        new XElement("Contractor_Address2", emp.Contractor_Address2),
+                        new XElement("Contractor_Address3", emp.Contractor_Address3),
+                        new XElement("OPS_Manager", emp.OPS_Manager),
+                        new XElement("Site_Incharge", emp.Site_Incharge),
                         new XElement("PAYSLIP_FORMAT_Id", emp.PAYSLIP_FORMAT_Id),
                         new XElement("PAYSLIP_FORMAT", emp.PAYSLIP_FORMAT),
-                        //new XElement("PROVISION_BONUS", ""),
-                        //new XElement("Leave_Credit", ""),
-                        //new XElement("Region", ""),
-                        //new XElement("Po_HeadCount", ""),
+                        new XElement("PROVISION_BONUS", emp.PROVISION_BONUS),
+                        new XElement("Leave_Credit", emp.Leave_Credit),
+                        new XElement("Region", emp.Region),
+                        new XElement("Po_HeadCount", emp.Po_HeadCount),
                         new XElement("IsBonusPayThroughFF", emp.IsBonusPayThroughFF),
-                        //new XElement("IsExtraWorkingDaysServiceFee", ""),
+                        new XElement("IsExtraWorkingDaysServiceFee", emp.IsExtraWorkingDaysServiceFee),
                         new XElement("LeaveApplicable", emp.LeaveApplicable),
-                        //new XElement("CasualLeave", ""),
-                        //new XElement("SickLeave", ""),
-                        //new XElement("MainCustomerCode", ""),
+                        new XElement("CasualLeave", emp.CasualLeave),
+                        new XElement("SickLeave", emp.SickLeave),
+                        new XElement("MainCustomerCode", emp.MainCustomerCode),
                         new XElement("StartDate", emp.StartDate),
                         new XElement("SAP_Cust_Code", emp.SAP_Cust_Code),
                         new XElement("SAP_Cust_Name", emp.SAP_Cust_Name),
                         new XElement("WBS2", emp.WBS2),
                         new XElement("WBS_Name", emp.WBS_Name),
-                        //new XElement("Flex1", ""),
-                        //new XElement("Flex2", ""),
+                        new XElement("Flex1", emp.Flex1),
+                        new XElement("Flex2", emp.Flex2),
                         new XElement("SalaryDate", emp.SalaryDate),
                         new XElement("Portal_Payslip_Format", emp.Portal_Payslip_Format),
-                        new XElement("Value", emp.Value)
-                    //new XElement("PF_Code_Location", ""),
-                    //new XElement("PF_ID", ""),
-                    //new XElement("LEAVE_ID", ""),
-                    //new XElement("LEAVE_TYPE_ID", ""),
-                    //new XElement("PLE_Formula", ""),
-                    //new XElement("GRTCT", "")
-                    )
+                        new XElement("PF_Code_Location", emp.PF_Code_Location),
+                        new XElement("PF_ID", emp.PF_ID),
+                        new XElement("LEAVE_ID", emp.LEAVE_ID),
+                        new XElement("LEAVE_TYPE_ID", emp.LEAVE_TYPE_ID),
+                        new XElement("PLE_Formula", emp.PLE_Formula),
+                        new XElement("GRTCT", emp.GRTCT),
+                        new XElement("WorkingHours", emp.WorkingHours),
+                        new XElement("FurloughLeaveApplicability", emp.FurloughLeaveApplicability),
+                        new XElement("FurloughBillingApplicability", emp.FurloughBillingApplicability),
+                        new XElement("Po_Salary", emp.Po_Salary),
+                        new XElement("Po_OtherIncome", emp.Po_OtherIncome)
+                        )
                 ),
 
                 // ---------- GroupMasterDetailResponse ----------b
@@ -359,6 +363,75 @@ namespace QPay.BAL.Repository.GlobalMaster
                 sitemasterDetails.response = "File not found";
             }
             return sitemasterDetails;
+        }
+
+        public async Task<List<SiteInchargeUI>> GetSiteIncharge()
+        {
+            var parameters = new DynamicParameters();
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetSiteIncharge", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<SiteInchargeUI>>(res) ?? new List<SiteInchargeUI>();
+            }
+
+            return new List<SiteInchargeUI>();
+        }
+
+        public async Task<List<SMCityUI>> GetCity(string keyword)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Key", keyword);
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetSiteIncharge", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<SMCityUI>>(res) ?? new List<SMCityUI>();
+            }
+
+            return new List<SMCityUI>();
+        }
+
+        public async Task<List<PFCategoryUI>> GetPFCategory()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "PF_CATEGORY");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<PFCategoryUI>>(res) ?? new List<PFCategoryUI>();
+            }
+
+            return new List<PFCategoryUI>();
+        }
+
+        public async Task<List<LeaveCategoryUI>> GetLeaveCategory()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "LEAVE_CATEGORY");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<LeaveCategoryUI>>(res) ?? new List<LeaveCategoryUI>();
+            }
+
+            return new List<LeaveCategoryUI>();
+        }
+
+        public async Task<List<LeaveTypeUI>> GetLeaveType()
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "LEAVE_TYPE");
+            var res = await this._dbRepository.GetItemsAsync("USP_CommonDropDowns", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<LeaveTypeUI>>(res) ?? new List<LeaveTypeUI>();
+            }
+
+            return new List<LeaveTypeUI>();
         }
 
         public static DataSet ExcelToDataSet(string filePath)

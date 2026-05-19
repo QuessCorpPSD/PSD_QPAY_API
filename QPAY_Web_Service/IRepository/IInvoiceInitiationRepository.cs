@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static QPay.UI.Invoice.Invoice;
 
 namespace QPay.BAL.IRepository
 {
@@ -25,5 +26,8 @@ namespace QPay.BAL.IRepository
         Task<string> ProvisionalInvoiceInitiate(string xml, int CreatedBy);
         Task<string> VendorInvoiceInitiate(string xml, int CreatedBy);
         Task<DataSet> DraftExporttoExcel(InvoiceDetailModel invoiceDetailModel);
+        Task<InvoiceRequestResponseModel> InvoiceRequestRevoke(int reqNo, string invoiceType,int userId);
+        Task<List<InitiationRequestUI>> InvoiceQCDetail(int userId);
+        Task<InvoiceInitiationUI> PostInvoiceQCDetail(string xml, int userId);
     }
 }

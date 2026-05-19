@@ -29,6 +29,7 @@ namespace QPay.UI.Models.Invoice
 
             public string? ReqUserName {get;set;}
             public string? AssignedTo { get;set;}
+            public string? InvoiceType { get; set; }
 
             public bool isedit { get; set; }
 

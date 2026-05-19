@@ -512,7 +512,7 @@ namespace QPay.BAL.Repository.Invoice
             }
 
 
-            var res = await _dbRepository.GetItemsAsync("SP_Billing_dashboard", parameter);
+            var res = await _dbRepository.GetItemsSecondaryAsync("SP_Billing_dashboard", parameter);
             if(res.Any())
             {
                 billingDashboards = JsonConvert.DeserializeObject<List<BillingDashboard>>(res) ?? new List<BillingDashboard>() { new BillingDashboard() };
@@ -532,7 +532,7 @@ namespace QPay.BAL.Repository.Invoice
                     ["@FromDate"]= fromDate,
                     ["@ToDate"]= toDate
                 };
-                return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard", parameters, 1500);
+                return _dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync("SP_Billing_dashboard", parameters, 1500);
             }
             else
             {
@@ -541,7 +541,7 @@ namespace QPay.BAL.Repository.Invoice
                     ["@UserId"] = userId,
                     ["@flag"] = flag
                 };
-                return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_Billing_dashboard", parameters, 1500);
+                return _dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync("SP_Billing_dashboard", parameters, 1500);
             }
             
         }
