@@ -142,10 +142,14 @@ namespace QPay.UI.Models.Invoice
         public string? InvoiceType { get; set; } = "";
         public string? Invoice_remarks { get; set; } = "";
         public string? Narration { get; set; } = "";
+        public string? Invoice_Number { get; set; } = "";
 
 
     }
-
+    public class InvoiceQCDetailUI {
+        public string ReqNo { get; set; } = "";
+        public string InvoiceNumber { get; set; } = "";
+    }
     public class InitiationRequestModel
     {
         public int? Company_Id { get; set; }

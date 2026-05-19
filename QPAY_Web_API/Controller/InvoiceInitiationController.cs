@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using Azure.Core;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace QPay.API.Controller
         private readonly IConfiguration _configuration;
         private readonly ILoggerManager _logger;
         private readonly HttpClient _client;
-        private readonly IHubContext<NotificationHub> _hub;
+       // private readonly IHubContext<NotificationHub> _hub;
         public InvoiceInitiationController(ILoggerManager logger, HttpClient client, IInvoiceInitiationRepository invoiceInitiationRepository, IConfiguration configuration)
         {
             this._invoiceInitiationRepository = invoiceInitiationRepository;
@@ -51,9 +52,24 @@ namespace QPay.API.Controller
 
         [HttpPost, Route("InitiationSearchAllot")]
         public async Task<IActionResult> InitiationSearchAllot(InvoiceDetailModel invoiceDetailModel)
-      {
-            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
-           // var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
+        {
+            var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);            
+            return Ok(invoicesearch);
+        }
+
+        [HttpGet, Route("GetInvoiceQCDetail/{userId}")]
+        public async Task<IActionResult> GetInvoiceQCDetail(int userId)
+        {
+            var invoicesearch = await this._invoiceInitiationRepository.InvoiceQCDetail(userId);
+            // var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchAllot(invoiceDetailModel);
+            return Ok(invoicesearch);
+        }
+
+        [HttpPost, Route("PostInvoiceQC")]
+        public async Task<IActionResult> PostInvoiceQC(BulkInvoiceQCModelRequest bulkInvoiceQCModel)
+        {
+            string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(bulkInvoiceQCModel.invoiceQCModels, "Main");
+            var invoicesearch = await this._invoiceInitiationRepository.PostInvoiceQCDetail(xml,bulkInvoiceQCModel.CreatedBy);            
             return Ok(invoicesearch);
         }
 
@@ -72,6 +88,12 @@ namespace QPay.API.Controller
         {
             var invoicesearch = await this._invoiceInitiationRepository.InitiationSearchExport(intiationExportRequest);
             return Ok(invoicesearch);
+        }
+        [HttpGet,Route("RequestRevok/{ReqNo}/{InvoiceType}/{userId}")]
+        public async Task<IActionResult> InvoiceRequestRevoke(int ReqNo,string InvoiceType,int userId)
+        {
+            var staus=await _invoiceInitiationRepository.InvoiceRequestRevoke(ReqNo, InvoiceType, userId);
+            return Ok(staus);
         }
         [HttpPost, Route("InvoiceInitiate")]
         public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)

@@ -18,6 +18,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static QPay.UI.Invoice.Invoice;
 
 namespace QPay.BAL.Repository
 {
@@ -115,6 +116,17 @@ namespace QPay.BAL.Repository
             parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
             parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
             parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);            
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
+            return list?.ToList() ?? new List<InitiationRequestUI>();
+        }
+
+        public async Task<List<InitiationRequestUI>> InvoiceQCDetail(int userId)
+        {
+            string storeProcedure = "[dbo].[SP_Billing_dashboard_Detail]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@UserId", userId);
+            
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
             var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
             return list?.ToList() ?? new List<InitiationRequestUI>();
@@ -534,6 +546,26 @@ namespace QPay.BAL.Repository
             return fileResponse;
             
         }
+        public async Task<InvoiceRequestResponseModel> InvoiceRequestRevoke(int reqNo, string invoiceType,int userId)
+        {
+            InvoiceRequestResponseModel responseModel = new InvoiceRequestResponseModel();
+            var parameter = new DynamicParameters();
+            parameter.Add("@Req_No", reqNo);
+            parameter.Add("@Invoice_Type", invoiceType);
+            parameter.Add("@CreatedBy", userId);
+            string storeProcedure = "[dbo].[SP_PROC_Invoice_Request_revoked]" ?? "";
+            var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+            if (res != null)
+            {
+                responseModel = JsonConvert.DeserializeObject<List<InvoiceRequestResponseModel>>(res).FirstOrDefault();
+                return responseModel;
+            }
+            else
+            {
+                responseModel.Error_Message = "Invoice revoked  falied";
+                return responseModel;
+            }
+        }
 
         public async Task<InvoiceInitiationUI> InvoiceInitiate(int? TaxTypeId, string xml, string action, int userId)
         {
@@ -572,6 +604,38 @@ namespace QPay.BAL.Repository
                     Error_Message = "GST Invoice not Initiated" 
                 };
             }            
+        }
+
+        public async Task<InvoiceInitiationUI> PostInvoiceQCDetail( string xml, int userId)
+        {
+            InvoiceInitiationUI invoiceInitiationUI = new InvoiceInitiationUI();
+            string storeProcedure = "[dbo].[SP_PROC_Invoice_QC_Verification]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@XmlData", xml ?? (object)DBNull.Value);            
+            parameter.Add("@CreatedBy", userId);
+            try
+            {
+                var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+                if (res != null)
+                {
+                    var invoice = JsonConvert.DeserializeObject<List<InvoiceInitiationUI>>(res).FirstOrDefault();
+                    return invoice;
+                }
+                else
+                {
+                    invoiceInitiationUI.Error_Message = "Invoice Geneated falied";
+                    return invoiceInitiationUI;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new InvoiceInitiationUI
+                {
+                    Error_Message = "GST Invoice not Initiated"
+                };
+            }
         }
         public async Task<FileResponse> ExportToExcel(int? CompanyId, string PayPeriodId, int? TaxTypeId)
         {
@@ -621,7 +685,7 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
-        public async Task<InvoiceResponse> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequest provisionalrequest)
+        public async Task<InvoiceResponse> ProvisionalInvoiceInitiate(UI.Models.Invoice.ProvisionalInvoiceInitiateRequest provisionalrequest)
         {
             InvoiceResponse invoiceDetails = new InvoiceResponse();
             string storeProcedure = "Proc_ManageInvoiceEmployeeDetail_NewUI";

@@ -15,6 +15,12 @@ namespace QPay.UI.Invoice
             public string CreatedBy { get; set; } = string.Empty;
             public string ActionType { get; set; } = "";
         }
+        public class InvoiceRequestResponseModel
+        {
+            public int? StatusCode {  get; set; }
+            public string Error_Message { get; set; } = "";
+
+        }
 
         public class MergeNewRequest
         {

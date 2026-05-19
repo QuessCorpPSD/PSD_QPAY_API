@@ -7,4 +7,15 @@
         public int Pay_Period_Id { get; set; }
         public int? taxtypeId { get; set; }
     }
+    public class InvoiceQCModelRequest
+    {
+        public int Req_No { get; set; }
+        public string Invoice_Number { get; set; } = "";
+    }
+
+    public class BulkInvoiceQCModelRequest
+    {
+        public List<InvoiceQCModelRequest> invoiceQCModels { get; set; }
+        public int CreatedBy { get; set; }
+    }
 }
