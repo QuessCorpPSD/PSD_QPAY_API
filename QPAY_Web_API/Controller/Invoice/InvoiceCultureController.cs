@@ -221,10 +221,10 @@ namespace QPay.API.Controller.Invoice
         }
 
         [HttpPost]
-        [Route("InvoiceCultureExport/{userId}")]
-        public IActionResult InvoiceCultureExport(int userId)
+        [Route("InvoiceCultureExport")]
+        public IActionResult InvoiceCultureExport(int comapnyId)
         {
-            DataSet ds = _InvoiceCulture.InvoiceCultureExport(userId);
+            DataSet ds = _InvoiceCulture.InvoiceCultureExport(comapnyId);
             if (ds.Tables.Count > 0)
             {
                 using var workbook = new XLWorkbook();
