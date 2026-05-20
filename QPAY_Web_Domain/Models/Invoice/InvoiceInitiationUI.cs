@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace QPay.UI.Models.Invoice
 {
@@ -142,6 +143,11 @@ namespace QPay.UI.Models.Invoice
         public string? InvoiceType { get; set; } = "";
         public string? Invoice_remarks { get; set; } = "";
         public string? Narration { get; set; } = "";
+        public int? Group_Detail_Id { get; set; }
+        public string? Group_Name { get; set; } = "";
+        public string? FI_Document_Number { get; set; } = "";
+        public int? Expense_ID { get; set; }
+        public string? Service_Description { get; set; } = "";
         public string? Invoice_Number { get; set; } = "";
 
 
@@ -210,6 +216,7 @@ namespace QPay.UI.Models.Invoice
         public string Invoice_Category { get; set; } = "";
         public string Invoice_Type { get; set; } = "";
         public string State_name { get; set; } = "";
+        public string PO_Number { get; set; } = "";
         public int? RequestedBy { get; set; }
         public string RequestedDate { get; set; } = "";
         public string Initiation_Remarks { get; set; } = "";
@@ -240,9 +247,51 @@ namespace QPay.UI.Models.Invoice
         public string CreatedBy { get; set; } = string.Empty;
         public string Isactive { get; set; } = string.Empty;
         public string Employee_code { get; set; } = string.Empty;
+    }
 
+    [XmlRoot("ProvisionalInvoiceInitiate")]
+    public class ProvisionalInvoiceInitiateRequestBulk
+    {
+        [XmlElement("Details")]
+        public List<ProvisionalInvoiceInitiateRequest> request { get; set; }
+        [XmlIgnore]
+        public int CreatedBy { get; set; }
+    }
 
+    public class VendorInvoiceInitiateRequest
+    {
+        public string Company_Id { get; set; } = string.Empty;
+        public string Company_Code { get; set; } = string.Empty;
+        public string InvoiceType_Id { get; set; } = string.Empty;
+        public string CTC { get; set; } = string.Empty;
+        public string Base_Amount { get; set; } = string.Empty;
+        public string Map_Name_Id { get; set; } = string.Empty;
+        public string Map_Name { get; set; } = string.Empty;
+        public string State_Id { get; set; } = string.Empty;
+        public string State_Name { get; set; } = string.Empty;
+        public string Input_Number { get; set; } = string.Empty;
+        public string Group_Detail_Id { get; set; } = string.Empty;
+        public string Group_Name { get; set; } = string.Empty;
+        public string Pay_Period_Id { get; set; } = string.Empty;
+        public string Pay_Period { get; set; } = string.Empty;
+        public string ServiceFee { get; set; } = string.Empty;
+        public string FI_Document_Number { get; set; } = string.Empty;
+        public string Expense_Id { get; set; } = string.Empty;
+    }
 
+    [XmlRoot("InitiateDetails")]
+    public class VendorInvoiceInitiateRequestBulk
+    {
+        [XmlElement("Initiate")]
+        public List<VendorInvoiceInitiateRequest> request { get; set; }
+        [XmlIgnore]
+        public int CreatedBy { get; set; }
+        //[XmlIgnore]
+        //public int Company_Id { get; set; }
+        //[XmlIgnore]
+        //public string Pay_Period { get; set; } = string.Empty;
+        //[XmlIgnore]
+        //public string Action { get; set; } = string.Empty;
     }
 
 }

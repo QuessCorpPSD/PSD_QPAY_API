@@ -20,5 +20,10 @@ namespace QPay.UI.Billing
             public string Error_Message { get; set; }
         }
 
+        public class UploadTypeClass
+        {
+            public string uploadType { get; set; }
+        }
+
     }
 }
