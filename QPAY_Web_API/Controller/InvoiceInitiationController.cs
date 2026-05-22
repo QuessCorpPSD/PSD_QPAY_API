@@ -135,13 +135,29 @@ namespace QPay.API.Controller
             }
         }
 
+        //[HttpPost]
+        //[Route("ProvisionalInvoiceInitiate")]
+        //public async Task<IActionResult> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequestBulk request)
+        //{
+        //    string xml = XmlHelper2.SerializeObjectToXml(request);
+        //    var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(xml, request.CreatedBy);
+        //    return Ok(result);
+        //}
+
         [HttpPost]
         [Route("ProvisionalInvoiceInitiate")]
         public async Task<IActionResult> ProvisionalInvoiceInitiate(ProvisionalInvoiceInitiateRequestBulk request)
         {
-            string xml = XmlHelper2.SerializeObjectToXml(request);
-            var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(xml, request.CreatedBy);
-            return Ok(result);
+            List<string> finalResponse = new List<string>();
+
+            foreach (var item in request.request)
+            {
+                var result = await _invoiceInitiationRepository.ProvisionalInvoiceInitiate(item);
+
+                finalResponse.Add(result);
+            }
+
+            return Ok(finalResponse);
         }
 
         [HttpPost]

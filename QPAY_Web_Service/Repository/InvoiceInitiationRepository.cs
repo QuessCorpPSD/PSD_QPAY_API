@@ -685,15 +685,39 @@ namespace QPay.BAL.Repository
 
             return fileResponse;
         }
-        public async Task<string> ProvisionalInvoiceInitiate(string xml, int CreatedBy)
+        //public async Task<string> ProvisionalInvoiceInitiate(string xml, int CreatedBy)
+        //{
+        //    InvoiceResponse invoiceDetails = new InvoiceResponse();
+        //    var parameters = new DynamicParameters();
+        //    parameters.Add("@Action", "CreateInvoice");
+        //    parameters.Add("@XmlData", xml);
+        //    parameters.Add("@UserId", CreatedBy);
+
+        //    var res = await this._dbRepository.GetItemsAsync("Proc_QzoneInvoiceRequest_PRO", parameters);
+        //    return res;
+        //}
+
+        public async Task<string> ProvisionalInvoiceInitiate(UI.Models.Invoice.ProvisionalInvoiceInitiateRequest provisionalrequest)
         {
             InvoiceResponse invoiceDetails = new InvoiceResponse();
+            string storeProcedure = "Proc_ManageInvoiceEmployeeDetail_NewUI";
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "CreateInvoice");
-            parameters.Add("@XmlData", xml);
-            parameters.Add("@UserId", CreatedBy);
+            parameters.Add("@UserId", provisionalrequest.CreatedBy);
+            parameters.Add("@CompanyId", provisionalrequest.CompanyId);
+            parameters.Add("@CostCenterMappingId", provisionalrequest.Map_Name_Id);
+            parameters.Add("@PayPeriodId", provisionalrequest.PayPeriodId);
+            parameters.Add("@LotNumber", provisionalrequest.LotNo);
+            parameters.Add("@InputNumber", provisionalrequest.Input_No);
+            parameters.Add("@IsActive", provisionalrequest.Isactive);
+            parameters.Add("@CreatedBy", provisionalrequest.CreatedBy);
+            parameters.Add("@ModifiedBy", provisionalrequest.CreatedBy);
+            parameters.Add("@PageNo", "1");
+            parameters.Add("@PageSize", "10");
+            parameters.Add("@Map_Name", provisionalrequest.Map_Name);
+            parameters.Add("@Pay_Period", provisionalrequest.PayPeriod);
 
-            var res = await this._dbRepository.GetItemsAsync("Proc_QzoneInvoiceRequest_PRO", parameters);
+            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             return res;
         }
 
