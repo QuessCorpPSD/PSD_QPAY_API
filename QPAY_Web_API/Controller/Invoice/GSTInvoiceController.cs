@@ -952,7 +952,7 @@ namespace QPay.API.Controller.Invoice
             {
                 // Call repository
                 var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
-
+                _logger.LogError("Credit Note for IRN-B2B Request ");
                 // Process Credit Note IRN only for approved invoices
                 if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
                 {
@@ -970,9 +970,10 @@ namespace QPay.API.Controller.Invoice
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     string apiUrl = _configuration["IRNRequestURL"];
+                    _logger.LogError("Credit Note for IRN-B2B Request before API Call " + content);
 
                     var response = await _httpClient.PostAsync(apiUrl, content);
-
+                    _logger.LogError("Credit Note for IRN-B2B Request after API Call " + response);
                     var result = await response.Content.ReadAsStringAsync();
 
                     if (!response.IsSuccessStatusCode)

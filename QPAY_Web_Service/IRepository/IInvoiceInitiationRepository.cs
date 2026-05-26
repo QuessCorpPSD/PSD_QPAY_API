@@ -25,6 +25,7 @@ namespace QPay.BAL.IRepository
         Task<List<RemarksResponse>> getRemarksByReqNo(RequestModel requestModel);
         Task<string> ProvisionalInvoiceInitiate(string xml, int CreatedBy);
         Task<string> VendorInvoiceInitiate(string xml, int CreatedBy);
+        Task<string> MiscInvoiceInitiate(string xml, int CreatedBy);      
         Task<DataSet> DraftExporttoExcel(InvoiceDetailModel invoiceDetailModel);
         Task<InvoiceRequestResponseModel> InvoiceRequestRevoke(int reqNo, string invoiceType,int userId);
         Task<List<InitiationRequestUI>> InvoiceQCDetail(int userId);

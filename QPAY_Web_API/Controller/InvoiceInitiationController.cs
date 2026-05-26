@@ -152,6 +152,15 @@ namespace QPay.API.Controller
             var result = await _invoiceInitiationRepository.VendorInvoiceInitiate(xml, request.CreatedBy);
             return Ok(result);
         }
+        [HttpPost]
+        [Route("MiscInvoiceInitiate")]
+        public async Task<IActionResult> MiscInvoiceInitiate(MiscInvoiceInitiateRequestBulk request)
+        {
+            string xml = XmlHelper2.SerializeObjectToXml(request);
+            var result = await _invoiceInitiationRepository.MiscInvoiceInitiate(xml, request.CreatedBy);
+            return Ok(result);
+        }
+        
 
         [HttpPost, Route("DraftExporttoExcel")]
         public async Task<IActionResult> DraftExporttoExcel(InvoiceDetailModel invoiceDetailModel)

@@ -708,7 +708,17 @@ namespace QPay.BAL.Repository
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorGstInvoiceInitiate_NewUI", parameters);
             return res;
         }
+        public async Task<string> MiscInvoiceInitiate(string xml, int CreatedBy)
+        {
+            InvoiceResponse invoiceDetails = new InvoiceResponse();
+            var parameters = new DynamicParameters();
+            parameters.Add("@Action", "Import");
+            parameters.Add("@XmlData", xml);
+            parameters.Add("@UserId", CreatedBy);
 
+            var res = await this._dbRepository.GetItemsAsync("Proc_ManageMiscInvoiceInitiate", parameters);
+            return res;
+        }
         public async Task<DataSet> DraftExporttoExcel (InvoiceDetailModel invoiceDetailModel)
         {
             var parameters = new Dictionary<string, object?>
