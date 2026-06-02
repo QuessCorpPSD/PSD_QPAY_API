@@ -35,7 +35,9 @@ using QPay.BAL.Repository.Process;
 using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.Tools;
+using QPay.IRepository.iRepository.Masters;
 using QPay.IRepository.Repository.Common;
+using QPay.IRepository.Repository.Masters;
 using QPAY_Web_API.Controller;
 
 
@@ -249,6 +251,7 @@ namespace QPay.API
             services.AddScoped<IBankAdviceSplitCultureRepository, BankAdviceSplitCultureRepository>();
             services.AddScoped<ICreditNoteMatrixRepository, CreditNoteMatrixRepository>();
             services.AddScoped<IDebitNoteRepository, DebitNoteRepository>();
+            services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
         }
     }
 }
