@@ -12,10 +12,12 @@ namespace QPay.IRepository.iRepository.Masters
     {
         Task<List<InvoiceRule>> GetAllInvoiceRule(int? companyId, string? siteId);
         Task<string> PostAddInvoiceRule(InvoiceRuleAdd invoiceRuleAdd);
+        Task<string> PostUpdateInvoiceRule(InvoiceRuleUpdate invoiceruleUpdate);
         Task<string> PostDeleteInvoiceRule(int invoicingRulesID);
-        DataSet GetInvoiceRuleTemplate(int companyId, string siteName);
+        //DataSet GetInvoiceRuleTemplate(int companyId, string siteName);
         Task<string> PostInvoiceRuleUpload(string xmlString, string userId);
         DataSet InvoiceRuleExport(int companyId, int siteCode);
+        DataSet GetInvoiceruleTemplate(int? companyId, string? siteName);
 
     }
 }

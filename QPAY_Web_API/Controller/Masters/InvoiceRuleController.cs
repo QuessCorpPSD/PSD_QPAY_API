@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using QPay.API.Extensions;
 using QPay.DTo.Models.Common;
 using QPay.DTo.Models.Masters;
 using QPay.IRepository.iRepository.Masters;
@@ -39,6 +40,15 @@ namespace QPay.API.Controllers.Masters
             return Ok(response);
         }
 
+        [HttpPost("PostUpdateInvoiceRule")]
+        public async Task<IActionResult> PostUpdateInvoiceRule([FromBody] InvoiceRuleUpdate invoiceruleUpdate)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var response = await _invoiceRule.PostUpdateInvoiceRule(invoiceruleUpdate);
+            return Ok(response);
+        }
+
         [HttpPost("PostDeleteInvoiceRule")]
         public async Task<IActionResult> PostDeleteInvoiceRule([FromBody] int invoicingRulesID)
         {
@@ -47,47 +57,47 @@ namespace QPay.API.Controllers.Masters
             return Ok(response);
 
         }
-        [HttpPost]
-        [Route("GetInvoiceRuleTemplate")]
-        public IActionResult GetInvoiceRuleTemplate([FromForm] int companyId, [FromForm] string companyCode, [FromForm] string siteName)
-        {
+        //[HttpPost]
+        //[Route("GetInvoiceRuleTemplate")]
+        //public IActionResult GetInvoiceRuleTemplate([FromForm] int companyId, [FromForm] string companyCode, [FromForm] string siteName)
+        //{
 
-            DataSet ds = _invoiceRule.GetInvoiceRuleTemplate(companyId, siteName);
-            if (ds.Tables.Count > 0)
-            {
-                using var workbook = new XLWorkbook();
-                var ws = workbook.AddWorksheet("InvoiceRule");
-                ws.Cell(1, 1).InsertTable(ds.Tables[0], "NewDataSet", true);
+        //    DataSet ds = _invoiceRule.GetInvoiceRuleTemplate(companyId, siteName);
+        //    if (ds.Tables.Count > 0)
+        //    {
+        //        using var workbook = new XLWorkbook();
+        //        var ws = workbook.AddWorksheet("InvoiceRule");
+        //        ws.Cell(1, 1).InsertTable(ds.Tables[0], "NewDataSet", true);
 
-                var table = ws.Table("NewDataSet");
-                table.ShowAutoFilter = false;
-                table.Theme = XLTableTheme.None;
+        //        var table = ws.Table("NewDataSet");
+        //        table.ShowAutoFilter = false;
+        //        table.Theme = XLTableTheme.None;
 
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    var bytes = Convert.ToBase64String(stream.ToArray());
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            workbook.SaveAs(stream);
+        //            var bytes = Convert.ToBase64String(stream.ToArray());
 
-                    FileResponse fileResponse = new FileResponse();
-                    string fileName = companyCode;
-                    fileResponse.FileName = "InvoiceRule_Template_" + fileName + ".xlsx";
-                    fileResponse.File = bytes;
-                    return Ok(fileResponse);
-                }
-            }
-            else
-            {
-                var response = new APIResponse<object>
-                {
-                    statuscode = 400,
-                    message = "Failure",
-                    data = "",
-                    error = ""
-                };
-                return Ok(response);
-            }
+        //            FileResponse fileResponse = new FileResponse();
+        //            string fileName = companyCode;
+        //            fileResponse.FileName = "InvoiceRule_Template_" + fileName + ".xlsx";
+        //            fileResponse.File = bytes;
+        //            return Ok(fileResponse);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var response = new APIResponse<object>
+        //        {
+        //            statuscode = 400,
+        //            message = "Failure",
+        //            data = "",
+        //            error = ""
+        //        };
+        //        return Ok(response);
+        //    }
 
-        }
+        //}
         [HttpPost]
         [Route("PostInvoiceRuleUpload")]
         public async Task<IActionResult> PostInvoiceRuleUpload(IFormFile file, [FromForm] string userId)
@@ -208,6 +218,14 @@ namespace QPay.API.Controllers.Masters
                 return Ok(response);
             }
 
+        }
+
+        [HttpGet, Route("GetInvoiceruleTemplate/{companyId}/{siteName}")]
+        public IActionResult GetInvoiceruleTemplate(int? companyId, string? siteName)
+        {
+            var ds = _invoiceRule.GetInvoiceruleTemplate(companyId, siteName);
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
         }
     }
 }
