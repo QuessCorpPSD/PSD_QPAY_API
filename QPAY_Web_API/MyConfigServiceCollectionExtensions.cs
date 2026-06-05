@@ -6,9 +6,12 @@ using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.AccountReceivable;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
+using QPay.BAL.IRepository.CreditNoteMatrix;
 using QPay.BAL.IRepository.Customer;
+using QPay.BAL.IRepository.DebitNote;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.BAL.IRepository.IAccountReceivable;
+using QPay.BAL.IRepository.IBankNonInvoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Process;
@@ -19,9 +22,12 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
 using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
+using QPay.BAL.Repository.BankNonInvoice;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
+using QPay.BAL.Repository.CreditNoteMatrix;
 using QPay.BAL.Repository.Customer;
+using QPay.BAL.Repository.DebitNote;
 using QPay.BAL.Repository.GlobalMaster;
 using QPay.BAL.Repository.Invoice;
 using QPay.BAL.Repository.Invoice;
@@ -29,7 +35,9 @@ using QPay.BAL.Repository.Process;
 using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.Tools;
+using QPay.IRepository.iRepository.Masters;
 using QPay.IRepository.Repository.Common;
+using QPay.IRepository.Repository.Masters;
 using QPAY_Web_API.Controller;
 
 
@@ -238,6 +246,12 @@ namespace QPay.API
 
 
             services.AddScoped<IAdvanceUtilizationRepository, AvanceUtilizationRepository>();
+            services.AddScoped<IPartialSalaryReleaseStatusRepository, PartialSalaryReleaseStatusRepository>();
+            services.AddScoped<IBankTransferRepository, BankTransferhthRepository>();
+            services.AddScoped<IBankAdviceSplitCultureRepository, BankAdviceSplitCultureRepository>();
+            services.AddScoped<ICreditNoteMatrixRepository, CreditNoteMatrixRepository>();
+            services.AddScoped<IDebitNoteRepository, DebitNoteRepository>();
+            services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
         }
     }
 }

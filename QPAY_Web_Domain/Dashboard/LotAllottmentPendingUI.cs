@@ -29,6 +29,8 @@ namespace QPay.UI.Dashboard
         public string AsssignedTo { get; set; } = "";
         public int? TimeTaken { get; set; }
         public string Score { get; set; } = "";
+        public string Payroll_Type { get; set; } = "";
+
 
 
     }

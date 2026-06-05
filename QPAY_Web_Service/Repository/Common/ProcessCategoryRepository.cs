@@ -17,7 +17,7 @@ namespace QPay.BAL.Repository.Common
         {
             try
             {
-                string sql = "SELECT  Process_Category FROM   tbl_Process_Category group by Process_Category";
+                string sql = "select * from (SELECT  Process_Category FROM   tbl_Process_Category group by Process_Category union all select 'B1') as t";
                 var test = await this._dbRepository.QueryMultiAsync(sql);
                 return JsonConvert.DeserializeObject<List<ProcessCategoryUI>>(test)
                                                         ?? new List<ProcessCategoryUI>();

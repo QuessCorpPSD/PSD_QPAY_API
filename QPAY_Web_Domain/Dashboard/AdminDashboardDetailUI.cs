@@ -92,16 +92,17 @@ namespace QPay.UI.Dashboard
         public string Pay_period { get; set; } = string.Empty;
         public int Pay_Period_Id { get; set; }
 
-        
+        public string Payroll_Type { get; set; } = "";
 
-        
 
-        
-        
-        
-        
-        
-       
+
+
+
+
+
+
+
+
 
     }
 }
