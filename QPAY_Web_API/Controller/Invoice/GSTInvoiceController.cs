@@ -10,7 +10,6 @@ using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
 using QPay.UI.Common;
 using QPay.UI.Invoice;
-using QPay.UI.Models;
 using QRCoder;
 using SelectPdf;
 using System.Data;
@@ -22,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using static QPay.UI.Models.Common.Common;
 
 
 namespace QPay.API.Controller.Invoice
@@ -417,8 +417,8 @@ namespace QPay.API.Controller.Invoice
          Encoding.UTF8);
                 invoiceHtml = ds.Tables[0].Rows[0]["InvoiceHtml"].ToString();
                 fileName = ds.Tables[0].Rows[0]["InvoiceNumber"] + ".pdf";
-                applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
-                                        && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
+                //applyDigitalSignature = ds.Tables[0].Columns.Contains("ApplyDigitalSignature")
+                //                        && Convert.ToBoolean(ds.Tables[0].Rows[0]["ApplyDigitalSignature"]);
                 isHeaderFooter = ds.Tables[0].Columns.Contains("IsHeaderFooter")
                                  && Convert.ToBoolean(ds.Tables[0].Rows[0]["IsHeaderFooter"]);
                 isIRNGenerated = invoiceNumberLotUI.IsGenerated_IRN == 1 ? true : false;
@@ -436,7 +436,7 @@ namespace QPay.API.Controller.Invoice
                 System.IO.File.AppendAllText(filePath,
              $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Converting Pdf started...{Environment.NewLine}",
          Encoding.UTF8);
-                byte[] pdf = GetInvoicePdf(invoiceHtml, dateToDs, applyDigitalSignature, isHeaderFooter, isIRNGenerated, fileName);
+                byte[] pdf = GetInvoicePdf(invoiceHtml, dateToDs, false, isHeaderFooter, isIRNGenerated, fileName);
                 System.IO.File.AppendAllText(filePath,
             $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Converting Pdf compated...{Environment.NewLine}",
         Encoding.UTF8);
@@ -572,19 +572,19 @@ namespace QPay.API.Controller.Invoice
 
 
 
-                if (applyDigitalSignature)
+                //if (applyDigitalSignature)
 
-                {
+                //{
 
-                    // pdf = DocumentSigner.DigitallySignPDFFileAdvanced(pdf, certPath, dateToDs);
-
-
-                    Task<byte[]> task = Task.Run(async () => await CallSignApi(signapi, certPath, dateToDs, pdf));
-
-                    pdf = task.Result;
+                //    // pdf = DocumentSigner.DigitallySignPDFFileAdvanced(pdf, certPath, dateToDs);
 
 
-                }
+                //    Task<byte[]> task = Task.Run(async () => await CallSignApi(signapi, certPath, dateToDs, pdf));
+
+                //    pdf = task.Result;
+
+
+                //}
                 return pdf;
             }
             catch { return null; }

@@ -9,8 +9,8 @@ namespace QPay.UI.Models.GlobalMaster
 {
     public class Paycodes
     {
-        public List<SelectedItems> MappedPaycode { get; set; }
-        public List<SelectedItems> availablePaycode { get; set; }
+        public List<Invoice.SelectedItems> MappedPaycode { get; set; }
+        public List<Invoice.SelectedItems> availablePaycode { get; set; }
     }
     public class PayCodeUI
     {

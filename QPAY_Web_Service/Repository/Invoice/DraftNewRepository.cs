@@ -340,6 +340,8 @@ namespace QPay.BAL.Repository.Invoice
             parameters.Add("@CreatedBy", request.CreatedBy);
             parameters.Add("@Action", request.ActionType);
             parameters.Add("@InvoiceDateType", request.InvoiceDateType);
+            parameters.Add("@InvoiceRequestRemarks", request.RemarksText);
+
 
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameters);
 
@@ -829,7 +831,7 @@ namespace QPay.BAL.Repository.Invoice
             return new List<InvoiceInitiateRequest>();
         }
 
-        public async Task<List<InvoiceInitiateRequest>> PostInvoicePush(int company_id, int Pay_Period_Id, string xml, string CreatedBy, int DraftTypeId, string Action)
+        public async Task<string> PostInvoicePush(int company_id, int Pay_Period_Id, string xml, string CreatedBy, int DraftTypeId, string Action)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Company_Id", company_id);
@@ -841,17 +843,7 @@ namespace QPay.BAL.Repository.Invoice
 
 
             var res = await this._dbRepository.GetItemsAsync("SP_Online_detail_DraftUpadta", parameters);
-
-            if (res != null && res != "")
-            {
-                if (!string.IsNullOrWhiteSpace(res))
-                {
-                    var DraftInformation = JsonConvert.DeserializeObject<List<InvoiceInitiateRequest>>(res);
-                    return DraftInformation.ToList() ?? new List<InvoiceInitiateRequest>();
-
-                }
-            }
-            return new List<InvoiceInitiateRequest>();
+            return (res);
 
         }
     }

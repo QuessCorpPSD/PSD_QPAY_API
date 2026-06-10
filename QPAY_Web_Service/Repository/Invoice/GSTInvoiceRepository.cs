@@ -13,7 +13,6 @@ using QPay.BAL.IRepository.Invoice;
 using QPay.DAL.Repository;
 using QPay.UI.Common;
 using QPay.UI.Invoice;
-using QPay.UI.Models;
 using QPay.UI.Models.Invoice;
 using System;
 using System.Collections.Generic;
@@ -23,6 +22,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using static QPay.UI.Invoice.Invoice;
+using static QPay.UI.Models.Common.Common;
 
 namespace QPay.BAL.Repository.Invoice
 {

@@ -34,7 +34,7 @@ namespace QPay.API.Controller.Customer
         }
 
         [HttpPost("PostAddClientGST")]
-        public async Task<IActionResult> PostAddClientGST([FromBody] ClientGSTRequest Request)
+        public async Task<IActionResult> PostAddClientGST(ClientGSTRequest Request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -39,6 +39,8 @@ namespace QPay.UI.Models.Invoice
             public string? Invoice_Category { get; set; }
             public int? InvoiceType_Id { get; set; }
             public string? Service_Charge_Master { get; set; }
+
+            public string? InvoiceCulture_id { get; set; } = "";
         }
 
 
@@ -106,6 +108,9 @@ namespace QPay.UI.Models.Invoice
             public string CreatedBy { get; set; } = string.Empty;
             public string ActionType { get; set; } = string.Empty;
             public string InvoiceDateType { get; set; } = string.Empty;
+
+            public string RemarksText { get; set; } = string.Empty;
+
         }
 
         public class InvoiceInitiateRequest

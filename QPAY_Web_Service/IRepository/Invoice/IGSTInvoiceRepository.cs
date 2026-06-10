@@ -12,7 +12,7 @@ using static QPay.UI.Models.Invoice.Invoice;
 using static QPay.UI.Invoice.Invoice;
 using Microsoft.AspNetCore.Http;
 using InvoiceResponse = QPay.UI.Models.Invoice.InvoiceResponse;
-using QPay.UI.Models;
+using static QPay.UI.Models.Common.Common;
 
 namespace QPay.BAL.IRepository.Invoice
 {

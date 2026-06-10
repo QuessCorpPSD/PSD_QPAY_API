@@ -27,6 +27,18 @@ namespace QPay.API.Controller.GlobalMaster
             return Ok(payload);
         }
 
+        [HttpGet, Route("GetGSTtype")]
+        public async Task<IActionResult> GetGSTtype()
+        {
+            var ds = await _processRepository.GetGSTtype();
+            if (ds.Tables[0].Rows.Count == 0)
+            {
+                return Ok(new { StatusCode = 400, Message = "No records found." });
+            }
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+            return Ok(payload);
+        }
+
         [HttpGet, Route("ExporttoExcel/{UserId}")]
         public async Task<IActionResult> ExporttoExcel(string UserId)
         {

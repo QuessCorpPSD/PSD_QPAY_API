@@ -15,19 +15,19 @@ namespace QPay.BAL.IRepository.Invoice
     {
         Task<InvoiceBackDatedUI> GetBackDated(int companyId, int payPeriod_Id);
         Task<DataSet> GetPerformaInvoice(int CompanyId, string PayPriod, string createdBy);
-        //Task<InvoiceResponse> PerformaInvoiceSplit(IFormFile file, [FromForm] string CompanyId,
-        //    [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId);
-        //Task<InvoiceResponse> PerformaInvoiceMerge(LotMergeRequest request);
-        //Task<InvoiceResponse> PerformaInvoiceInitiate(DraftInvoiceInitiate request);
-        //Task<InvoiceResponse> PerformaInvoiceSkip(DraftInvoiceInitiate request);
-        //Task<InvoiceResponse> UpdateMapName(IFormFile file, [FromForm] string CompanyId,
-        //    [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId);
-        //Task<InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
-        //   [FromForm] string payperiodId, [FromForm] string CreatedBy);
-        //Task<InvoiceResponse> PerformaInvoiceMergeNew(List<MergeNewRequest> request);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> PerformaInvoiceSplit(IFormFile file, [FromForm] string CompanyId,
+            [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> PerformaInvoiceMerge(LotMergeRequest request);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> PerformaInvoiceInitiate(DraftInvoiceInitiate request);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> PerformaInvoiceSkip(DraftInvoiceInitiate request);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> UpdateMapName(IFormFile file, [FromForm] string CompanyId,
+            [FromForm] string payperiod, [FromForm] string CreatedBy, [FromForm] string payperiodId);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> UploadAttributes(IFormFile file, [FromForm] string CompanyId,
+           [FromForm] string payperiodId, [FromForm] string CreatedBy);
+        Task<UI.Models.Invoice.DraftNew.InvoiceResponse> PerformaInvoiceMergeNew(List<MergeNewRequest> request);
         Task<DataSet> GetSplitTemplate(SplitParams splitParams);
         Task<List<InvoiceInitiateRequest>> GetDraftInformation(int CompanyId, int PayPriod, string createdBy);
-        Task<List<InvoiceInitiateRequest>> PostInvoicePush(int company_id, int Pay_Period_Id, string xml, string CreatedBy, int DraftTypeId, string Action);
+        Task<string> PostInvoicePush(int company_id, int Pay_Period_Id, string xml, string CreatedBy, int DraftTypeId, string Action);
 
     }
 }

@@ -30,6 +30,15 @@ namespace QPay.BAL.Repository.GlobalMaster
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_ManageGSTMaster", parameters, 1500);
         }
 
+        public async Task<DataSet> GetGSTtype()
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Action"] = "GetGstTypes",
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("USP_CommonDropDowns", parameters, 1500);
+        }
+
         public async Task<DataSet> ExporttoExcel(string UserId)
         {
             var parameters = new Dictionary<string, object?>
@@ -51,15 +60,32 @@ namespace QPay.BAL.Repository.GlobalMaster
             parameters.Add("@UserId", createRequest.UserId);
             parameters.Add("@GstMasterId", 0);
             parameters.Add("@EffectiveDate", createRequest.EffectiveDate);
+            parameters.Add("@EntityId", createRequest.EntityId);
+            parameters.Add("@StateId", createRequest.StateId);
             parameters.Add("@GstNumber", createRequest.GstNumber);
+            parameters.Add("@PanNumber", createRequest.PanNumber);
+            parameters.Add("@TanNumber", createRequest.TanNumber);
+
             parameters.Add("@CompanyName", createRequest.CompanyName);
             parameters.Add("@CompanyAddress", createRequest.CompanyAddress);
             parameters.Add("@CreatedBy", createRequest.CreatedBy);
-            parameters.Add("@Gst_Percentage", createRequest.Gst_Percentage);
+            parameters.Add("@CGST_Applicable", createRequest.CGST_Applicable);
+            parameters.Add("@CGST_Percentage", createRequest.CGST_Percentage);
+            parameters.Add("@SGST_Applicable", createRequest.SGST_Applicable);
+            parameters.Add("@SGST_Percentage", createRequest.SGST_Percentage);
+            parameters.Add("@UTGST_Applicable", createRequest.UTGST_Applicable);
+            parameters.Add("@UTGST_Percentage", createRequest.UTGST_Percentage);
+            parameters.Add("@IGST_Applicable", createRequest.IGST_Applicable);
+            parameters.Add("@IGST_Percentage", createRequest.IGST_Percentage);
+            parameters.Add("@CreatedOn", createRequest.CreatedOn);
+            parameters.Add("@GstTypeId", createRequest.GstTypeId);
+            parameters.Add("@Cess_Percentage", createRequest.Cess_Percentage);
+            parameters.Add("@CessEffectiveFromDate", createRequest.CessEffectiveFromDate);
+            parameters.Add("@CessEffectiveToDate", createRequest.CessEffectiveToDate);
             parameters.Add("@EntityId", createRequest.EntityId);
+
             parameters.Add("@Pincode", createRequest.Pincode);
-            parameters.Add("@StateId", "1");
-            parameters.Add("@LocationId", "76");
+            parameters.Add("@LocationId", createRequest.LocationId);
 
 
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameters);
@@ -110,15 +136,32 @@ namespace QPay.BAL.Repository.GlobalMaster
             parameters.Add("@UserId", createRequest.UserId);
             parameters.Add("@GstMasterId", createRequest.GstMasterId);
             parameters.Add("@EffectiveDate", createRequest.EffectiveDate);
+            parameters.Add("@EntityId", createRequest.EntityId);
+            parameters.Add("@StateId", createRequest.StateId);
             parameters.Add("@GstNumber", createRequest.GstNumber);
+            parameters.Add("@PanNumber", createRequest.PanNumber);
+            parameters.Add("@TanNumber", createRequest.TanNumber);
+
             parameters.Add("@CompanyName", createRequest.CompanyName);
             parameters.Add("@CompanyAddress", createRequest.CompanyAddress);
             parameters.Add("@CreatedBy", createRequest.CreatedBy);
-            parameters.Add("@Gst_Percentage", createRequest.Gst_Percentage);
+            parameters.Add("@CGST_Applicable", createRequest.CGST_Applicable);
+            parameters.Add("@CGST_Percentage", createRequest.CGST_Percentage);
+            parameters.Add("@SGST_Applicable", createRequest.SGST_Applicable);
+            parameters.Add("@SGST_Percentage", createRequest.SGST_Percentage);
+            parameters.Add("@UTGST_Applicable", createRequest.UTGST_Applicable);
+            parameters.Add("@UTGST_Percentage", createRequest.UTGST_Percentage);
+            parameters.Add("@IGST_Applicable", createRequest.IGST_Applicable);
+            parameters.Add("@IGST_Percentage", createRequest.IGST_Percentage);
+            parameters.Add("@CreatedOn", createRequest.CreatedOn);
+            parameters.Add("@GstTypeId", createRequest.GstTypeId);
+            parameters.Add("@Cess_Percentage", createRequest.Cess_Percentage);
+            parameters.Add("@CessEffectiveFromDate", createRequest.CessEffectiveFromDate);
+            parameters.Add("@CessEffectiveToDate", createRequest.CessEffectiveToDate);
             parameters.Add("@EntityId", createRequest.EntityId);
+
             parameters.Add("@Pincode", createRequest.Pincode);
-            parameters.Add("@StateId", "1");
-            parameters.Add("@LocationId", "76");
+            parameters.Add("@LocationId", createRequest.LocationId);
 
 
             var res = await _dbRepository.GetItemsAsync(storeProcedure, parameters);

@@ -72,7 +72,7 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@InvoicingStateId", Request.InvoicingStateId);
             parameters.Add("@ClientInvoicingStateId", Request.ClientInvoicingStateId);
             parameters.Add("@CreatedBy", Request.CreatedBy);
-            //parameters.Add("@CreatedOn", Request.CreatedOn);
+            parameters.Add("@CreatedOn", Request.CreatedOn);
             parameters.Add("@Group_Detail_Id", Request.Group_Detail_Id);
             parameters.Add("@PageNo", Request.PageNo);
             parameters.Add("@PageSize", Request.PageSize);

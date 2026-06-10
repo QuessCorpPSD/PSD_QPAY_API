@@ -5,7 +5,6 @@ using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository.GlobalMaster;
 using QPay.UI.GlobalMaster;
-using QPay.UI.Models;
 using QPay.UI.Models.GlobalMaster;
 using QPay.UI.Models.Invoice;
 using System.Data;
