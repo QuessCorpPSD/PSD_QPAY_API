@@ -3,6 +3,7 @@ using QPay.API.Controller.AccountReceivableCont;
 using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
+using QPay.BAL.IRepository.AccountReceivable;
 using QPay.BAL.IRepository.Admin;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
