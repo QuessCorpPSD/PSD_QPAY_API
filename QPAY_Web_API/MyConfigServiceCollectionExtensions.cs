@@ -252,6 +252,8 @@ namespace QPay.API
             services.AddScoped<ICreditNoteMatrixRepository, CreditNoteMatrixRepository>();
             services.AddScoped<IDebitNoteRepository, DebitNoteRepository>();
             services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
+            services.AddScoped<IProInvoiceSummaryRepository, ProInvoiceSummaryRepository>();
+            services.AddScoped<ICreditNoteReportRepository, CreditNoteReportRepository>();
         }
     }
 }
