@@ -9,11 +9,11 @@ namespace QPay.API.Controller.BankNonInvoice
     public class PartialSalaryReleaseStatusController : ControllerBase
     {
         private readonly IPartialSalaryReleaseStatusRepository _partial;
-        public PartialSalaryReleaseStatusController(
-          IPartialSalaryReleaseStatusRepository iclient)
-        {
-            //this._partial = ipartial;
-        }
+        //public PartialSalaryReleaseStatusController(
+        //  IPartialSalaryReleaseStatusRepository iclient)
+        //{
+        //    //this._partial = ipartial;
+        //}
 
 
 
