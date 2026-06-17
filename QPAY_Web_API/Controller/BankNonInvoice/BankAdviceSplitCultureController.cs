@@ -76,8 +76,7 @@ namespace QPay.API.Controller.BankNonInvoice
         }
 
         [HttpPost]
-        [Route("CreateBankCulture")]
-        [HttpPost("CreateBankCulture")]
+        [Route("CreateBankCulture")]        
         public async Task<IActionResult> CreateBankCulture(
     [FromBody] CreateBankCultureRequest request)
         {
