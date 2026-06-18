@@ -14,7 +14,6 @@ using QPay.BAL.IRepository.IAccountReceivable;
 using QPay.BAL.IRepository.IBankNonInvoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Invoice;
-using QPay.BAL.IRepository.MailApprovalProcess;
 using QPay.BAL.IRepository.Process;
 using QPay.BAL.IRepository.Reports;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
@@ -32,7 +31,6 @@ using QPay.BAL.Repository.DebitNote;
 using QPay.BAL.Repository.GlobalMaster;
 using QPay.BAL.Repository.Invoice;
 using QPay.BAL.Repository.Invoice;
-using QPay.BAL.Repository.MailApprovalProcess;
 using QPay.BAL.Repository.Process;
 using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
@@ -254,7 +252,8 @@ namespace QPay.API
             services.AddScoped<ICreditNoteMatrixRepository, CreditNoteMatrixRepository>();
             services.AddScoped<IDebitNoteRepository, DebitNoteRepository>();
             services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
-            services.AddScoped<ICustomerBlockApprovalRepository, CustomerBlockApprovalRepository>();
+            services.AddScoped<IProInvoiceSummaryRepository, ProInvoiceSummaryRepository>();
+            services.AddScoped<ICreditNoteReportRepository, CreditNoteReportRepository>();
         }
     }
 }

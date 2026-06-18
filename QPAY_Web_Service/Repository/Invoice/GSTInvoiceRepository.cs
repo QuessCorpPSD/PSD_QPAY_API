@@ -40,7 +40,7 @@ namespace QPay.BAL.Repository.Invoice
         public async Task<List<GstInvoiceGrid>> GetGSTInvoice(int userId)
         {
 
-            string storeProcedure = "[dbo].[Proc_ManageGstInvoice_newUI]" ?? "";
+            string storeProcedure = "[dbo].[Proc_ManageGstInvoice]" ?? "";
             var parameter = new DynamicParameters();
             parameter.Add("@Action", "Get");
             parameter.Add("@UserId", userId);
