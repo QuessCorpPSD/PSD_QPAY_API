@@ -38,10 +38,10 @@ namespace QPay.API.Controller.Invoice
             return Ok(search);
         }
 
-        [HttpGet, Route("POInvoiceRequest/{companyId}/{payPeriodId}")]
-        public async Task<IActionResult> POInvoiceRequest(int companyId, int payPeriodId)
+        [HttpGet, Route("POInvoiceRequest/{companyId}/{payPeriodId}/{flag}")]
+        public async Task<IActionResult> POInvoiceRequest(int companyId, int payPeriodId, string flag)
         {
-            var search = await this._porepository.POInvoiceRequest(companyId, payPeriodId);
+            var search = await this._porepository.POInvoiceRequest(companyId, payPeriodId, flag);
             if (search.Tables[0].Rows.Count > 0)
             {
                 var _outputResponse = ResponseWrapManager.ResponseWrapper(search, HttpContext);

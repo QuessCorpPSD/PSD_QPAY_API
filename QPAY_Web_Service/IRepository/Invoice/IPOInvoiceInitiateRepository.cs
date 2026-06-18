@@ -15,7 +15,7 @@ namespace QPay.BAL.IRepository.Invoice
     public interface IPOInvoiceInitiateRepository
     {
         Task<List<POInvoiceInitiate>> Search(int companyId, int payPeriodId);
-        Task<DataSet> POInvoiceRequest(int companyId, int payPeriodId);
+        Task<DataSet> POInvoiceRequest(int companyId, int payPeriodId, string flag);
 
         Task<string> POInvoiceInitiate(string xml, int createdBy);
         DataSet POInvoiceInitiateExport(int companyId, int payPeriodId);
