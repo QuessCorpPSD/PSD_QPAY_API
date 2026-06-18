@@ -57,7 +57,7 @@ namespace QPay.BAL.Repository.Invoice
                 ["@Company_Id"] = companyId,
                 ["@Pay_Period_Id"] = payPeriodId,
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_Invoice_Initiation_Automation_New", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_Invoice_Initiation_CostPlus", parameters, 1500);
 
         }
 
