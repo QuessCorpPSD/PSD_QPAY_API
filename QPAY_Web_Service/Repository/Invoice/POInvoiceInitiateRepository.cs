@@ -49,15 +49,15 @@ namespace QPay.BAL.Repository.Invoice
             }
         }
 
-        public async Task<DataSet> POInvoiceRequest(int companyId, int payPeriodId)
+        public async Task<DataSet> POInvoiceRequest(int companyId, int payPeriodId, string flag)
         {
             var parameters = new Dictionary<string, object?>
             {
-                ["@Action"] = "BillableDays",
+                ["@Action"] = flag,
                 ["@Company_Id"] = companyId,
                 ["@Pay_Period_Id"] = payPeriodId,
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_Invoice_Initiation_Automation_New", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Manage_Invoice_Initiation_CostPlus", parameters, 1500);
 
         }
 
