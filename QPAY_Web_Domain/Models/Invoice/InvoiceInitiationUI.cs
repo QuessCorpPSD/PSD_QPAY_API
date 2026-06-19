@@ -149,7 +149,7 @@ namespace QPay.UI.Models.Invoice
         public int? Expense_ID { get; set; }
         public string? Service_Description { get; set; } = "";
         public string? Invoice_Number { get; set; } = "";
-
+        public string? PRO_Invoice_Number { get; set; } = "";
 
     }
     public class InvoiceQCDetailUI {

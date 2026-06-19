@@ -101,6 +101,7 @@ namespace QPay.UI.Invoice
         public string Invoice_Color { get; set; } = "";
 
         public string Remarks { get; set; } = "";
+        public string ReRaiseInvoice { get; set; } = "";
 
     }
 

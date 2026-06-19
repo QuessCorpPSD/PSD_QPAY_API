@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using QPay.UI.Invoice;
 using QPay.UI.Models;
 using QPay.UI.Models.Invoice;
 using System.Data;
+using System.Xml.Linq;
 
 namespace QPay.API.Controller
 {
@@ -96,19 +98,87 @@ namespace QPay.API.Controller
             return Ok(staus);
         }
         [HttpPost, Route("InvoiceInitiate")]
-        public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
-        {
-            string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
-            var result = await _invoiceInitiationRepository.InvoiceInitiate(
-          request.TaxTypeId,
-          xml,
-          "Add",          // or make this request.Mode if dynamic
-          request.CreatedBy
-      );
+      //  public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
+      //  {
+      //      string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(request.invoiceInitiations, "Main");
+      //      var result = await _invoiceInitiationRepository.InvoiceInitiate(
+      //    request.TaxTypeId,
+      //    xml,
+      //    "Add",          // or make this request.Mode if dynamic
+      //    request.CreatedBy
+      //);
 
-            return Ok(result);
+      //      return Ok(result);
+      //  }
+
+public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel request)
+    {
+
+            var withoutProInvoiceNumber = request.invoiceInitiations.Where(x => string.IsNullOrWhiteSpace(x.PRO_Invoice_Number)).ToList();
+            var withProInvoiceNumber = request.invoiceInitiations.Where(x => !string.IsNullOrWhiteSpace(x.PRO_Invoice_Number)).ToList();
+
+                InvoiceInitiationUI proInvoice_status = new InvoiceInitiationUI();
+            InvoiceInitiationUI draftInvoice_status = new InvoiceInitiationUI();
+            if (withProInvoiceNumber.Any())
+        {
+
+                string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(
+               withProInvoiceNumber,
+                "Main"
+            );
+                proInvoice_status = await _invoiceInitiationRepository.ProformaToActualInvoiceInitiate(
+                request.TaxTypeId,
+                xml,
+                "Add",
+                request.CreatedBy
+            );
         }
-        [HttpPost, Route("getRemarksByReqNo")]
+            else if (withoutProInvoiceNumber.Any())
+            {
+
+                string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(
+               withoutProInvoiceNumber,
+                "Main"
+            );
+                draftInvoice_status = await _invoiceInitiationRepository.InvoiceInitiate(
+                request.TaxTypeId,
+                xml,
+                "Add",
+                request.CreatedBy
+            );
+               
+            }
+            if (proInvoice_status != null && draftInvoice_status != null)
+            {
+                {
+                    var prostatus = proInvoice_status.Error_Message;
+                    var draftstatus = draftInvoice_status.Error_Message;
+                    if (prostatus == "GST Invoice Initiated Successfully" && draftstatus == "GST Invoice Initiated Successfully")
+                    {
+                        return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
+                    }
+                    else if (prostatus == "GST Invoice Initiated Successfully")
+                    {
+                        return Ok(new { Error_Message = "ProtoActual invoices initiated successfully, but Draft invoices failed." });
+                    }
+                    else if (draftstatus == "GST Invoice Initiated Successfully")
+                    {
+                        return Ok(new { Error_Message = "Draft invoices initiated successfully, but ProtoActual invoices failed." });
+                    }
+                    else
+                    {
+                        return Ok(new { Error_Message = "Both ProtoActual and Draft invoice initiation failed." });
+                    }
+                }
+            }
+            else
+            {
+                return Ok(new { Error_Message = "No invoices to initiate." });
+            }
+        }
+
+        
+    [HttpPost, Route("getRemarksByReqNo")]
         public async Task<IActionResult> getRemarksByReqNo(RequestModel requestModel)
         {
             var reqno = await this._invoiceInitiationRepository.getRemarksByReqNo(requestModel);

@@ -606,6 +606,45 @@ namespace QPay.BAL.Repository
             }            
         }
 
+        public async Task<InvoiceInitiationUI> ProformaToActualInvoiceInitiate(int? TaxTypeId, string xml, string action, int userId)
+        {
+            InvoiceInitiationUI invoiceInitiationUI = new InvoiceInitiationUI();
+            string storeProcedure = "[dbo].[Proc_ManageGstInvoiceInitiate_Online_Detail]" ?? "";
+            var parameter = new DynamicParameters();
+            parameter.Add("@xmlInput", xml ?? (object)DBNull.Value);
+            parameter.Add("@mode", action ?? (object)DBNull.Value);
+            parameter.Add("@CreatedBy", userId);
+            try
+            {
+                var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+                if (res != null)
+                {
+                    var invoice = JsonConvert.DeserializeObject<List<InvoiceInitiationUI>>(res).FirstOrDefault();
+                    if (invoice.Error_Message == "GST Invoice Initiated Successfully")
+                    {
+                        var param = new DynamicParameters();
+                        param.Add("@UserId", userId);
+                        var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", parameter);
+                    }
+                    return invoice;
+                }
+                else
+                {
+                    invoiceInitiationUI.Error_Message = "Invoice Geneated falied";
+                    return invoiceInitiationUI;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new InvoiceInitiationUI
+                {
+                    Error_Message = "GST Invoice not Initiated"
+                };
+            }
+        }
+        
         public async Task<InvoiceInitiationUI> PostInvoiceQCDetail( string xml, int userId)
         {
             InvoiceInitiationUI invoiceInitiationUI = new InvoiceInitiationUI();
