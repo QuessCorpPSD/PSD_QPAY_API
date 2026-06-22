@@ -148,27 +148,27 @@ public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel req
             );
                
             }
-            if (proInvoice_status != null && draftInvoice_status != null)
+            if (proInvoice_status != null || draftInvoice_status != null)
             {
+                var prostatus = proInvoice_status?.Error_Message;
+                var draftstatus = draftInvoice_status?.Error_Message;
+
+                if (prostatus == "GST Invoice Initiated Successfully" &&
+                    draftstatus == "GST Invoice Initiated Successfully")
                 {
-                    var prostatus = proInvoice_status.Error_Message;
-                    var draftstatus = draftInvoice_status.Error_Message;
-                    if (prostatus == "GST Invoice Initiated Successfully" && draftstatus == "GST Invoice Initiated Successfully")
-                    {
-                        return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
-                    }
-                    else if (prostatus == "GST Invoice Initiated Successfully")
-                    {
-                        return Ok(new { Error_Message = "ProtoActual invoices initiated successfully, but Draft invoices failed." });
-                    }
-                    else if (draftstatus == "GST Invoice Initiated Successfully")
-                    {
-                        return Ok(new { Error_Message = "Draft invoices initiated successfully, but ProtoActual invoices failed." });
-                    }
-                    else
-                    {
-                        return Ok(new { Error_Message = "Both ProtoActual and Draft invoice initiation failed." });
-                    }
+                    return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
+                }
+                else if (prostatus == "GST Invoice Initiated Successfully")
+                {
+                    return Ok(new { Error_Message = "ProtoActual invoices initiated successfully." });
+                }
+                else if (draftstatus == "GST Invoice Initiated Successfully")
+                {
+                    return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
+                }
+                else
+                {
+                    return Ok(new { Error_Message = "Invoice initiation failed." });
                 }
             }
             else
