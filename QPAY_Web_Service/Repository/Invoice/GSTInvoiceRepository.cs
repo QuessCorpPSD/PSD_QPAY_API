@@ -1519,11 +1519,13 @@ namespace QPay.BAL.Repository.Invoice
             {
                 var parameters = new Dictionary<string, object?>
                 {
-                    ["@CompanyId"] = companyCode,
-                    ["@PayperiodId"] = pay_period_Id
+                    ["@Company_Id"] = companyCode,
+                    ["@Pay_Period_Id"] = pay_period_Id,
+                    ["@isInvoice"]=0
                 };
                 string storeProcedure = "";
-                storeProcedure = "sp_SplitPayregister";
+                ///storeProcedure = "sp_SplitPayregister";
+                storeProcedure = "sp_PayRegister_Split_Register";
 
                 var res = this._dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync(storeProcedure, parameters,5000);
                 if (res != null)
