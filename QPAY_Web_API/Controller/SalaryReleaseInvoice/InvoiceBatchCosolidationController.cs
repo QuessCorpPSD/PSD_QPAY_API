@@ -35,6 +35,39 @@ namespace QPay.API.Controller.SalaryReleaseInvoice
             return Ok(res);
         }
 
+        [HttpPost("searchnew")]
+
+        public async Task<IActionResult> Search(HTHBankTransferStatusDto request)
+
+        {
+
+            var ds = await _iapar.SearchHTHBankTransferStatus(request);
+
+
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+
+
+            return Ok(payload);
+
+        }
+
+
+        [HttpPost("exporttoexcel")]
+
+        public async Task<IActionResult> ExportToExcel(HTHBankTransferStatusDto request)
+
+        {
+
+            var ds = await _iapar.ExportToExcelHTHBankTransferStatus(request);
+
+
+            var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
+
+
+            return Ok(payload);
+
+        }
+
 
     }
 }

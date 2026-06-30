@@ -45,5 +45,52 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
     1500
 );
         }
+
+        public Task<DataSet> SearchHTHBankTransferStatus(HTHBankTransferStatusDto request)
+
+        {
+
+            var parameters = new Dictionary<string, object?>
+            {
+
+                ["@FromDate"] = request.FromDate,
+
+                ["@ToDate"] = request.ToDate
+
+            };
+
+
+            var result = _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetHTHBankTransferStatus", parameters, 1500);
+
+
+            if (result == null || result.Tables.Count == 0 || result.Tables[0].Rows.Count == 0)
+
+                result = new DataSet();
+
+
+            return Task.FromResult(result);
+
+        }
+
+        public async Task<DataSet> ExportToExcelHTHBankTransferStatus(HTHBankTransferStatusDto request)
+
+        {
+
+            var parameters = new Dictionary<string, object?>
+            {
+
+                ["@FromDate"] = request.FromDate,
+
+                ["@ToDate"] = request.ToDate
+
+            };
+
+
+            var result = _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetHTHBankTransferStatus", parameters, 1500);
+
+
+            return result;
+
+        }
     }
 }

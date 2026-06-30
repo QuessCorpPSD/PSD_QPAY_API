@@ -8,5 +8,9 @@ namespace QPay.BAL.IRepository.SalaryReleaseInvoice
         Task<DataSet> GetBusinessUnitName();
 
         Task<DataSet> InvoiceBatchConsolidationExport(InvoiceBatchExport payload);
+
+        Task<DataSet> SearchHTHBankTransferStatus(HTHBankTransferStatusDto request);
+
+        Task<DataSet> ExportToExcelHTHBankTransferStatus(HTHBankTransferStatusDto request);
     }
 }

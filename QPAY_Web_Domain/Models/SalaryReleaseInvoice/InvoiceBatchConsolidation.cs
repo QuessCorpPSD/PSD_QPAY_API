@@ -8,4 +8,13 @@
         public string TxtSearch { get; set; }
         public string ReportType { get; set; }
     }
+
+    public class HTHBankTransferStatusDto
+    {
+
+        public DateTime FromDate { get; set; }
+
+        public DateTime ToDate { get; set; }
+
+    }
 }
