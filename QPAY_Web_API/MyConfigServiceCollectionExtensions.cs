@@ -5,6 +5,7 @@ using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.AccountReceivable;
 using QPay.BAL.IRepository.Admin;
+using QPay.BAL.IRepository.BankNonInvoice;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.CreditNoteMatrix;
@@ -253,6 +254,14 @@ namespace QPay.API
             services.AddScoped<ICreditNoteMatrixRepository, CreditNoteMatrixRepository>();
             services.AddScoped<IDebitNoteRepository, DebitNoteRepository>();
             services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
+
+            services.AddScoped<INIBatchGenerationRepository, NIBatchGenerationRepository>();
+            services.AddSingleton<IEmployeeSalaryReleaseRepository, EmployeeSalaryReleaseRepository>();
+            services.AddSingleton<IHoldEmpSalaryRepository, HoldEmpSalaryRepository>();
+            services.AddSingleton<IReleaseholdemployeesalaryRepository, ReleaseholdemployeesalaryRepository>();
+            services.AddSingleton<IUtrDetailsRepository, UtrDetailsRepository>();
+            services.AddSingleton<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
+            services.AddSingleton<Ibankadvisesplitculturerepository, Bankadvisesplitculturerepository>();
         }
     }
 }
