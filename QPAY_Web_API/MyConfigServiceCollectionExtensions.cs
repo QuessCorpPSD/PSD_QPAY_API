@@ -262,6 +262,7 @@ namespace QPay.API
             services.AddSingleton<IUtrDetailsRepository, UtrDetailsRepository>();
             services.AddSingleton<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
             services.AddSingleton<Ibankadvisesplitculturerepository, Bankadvisesplitculturerepository>();
+            services.AddSingleton<ISalaryRequestInvoiceRepository, SalaryRequestInvoiceRepository>();
         }
     }
 }
