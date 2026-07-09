@@ -599,7 +599,7 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
         #endregion netpay summary end
 
         #region Common drop down start
-        public List<CommonDropDown> GetCommonDropDownList(string Flag, string QZoneUserName)
+        public List<CommonDropDownBA> GetCommonDropDownList(string Flag, string QZoneUserName)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", Flag);
@@ -608,10 +608,10 @@ namespace QPay.BAL.Repository.SalaryReleaseInvoice
             var res = this._dbRepository.GetItemsAsync("sp_Get_salary_Related_Template", parameters).Result;
             if (res != "")
             {
-                return JsonConvert.DeserializeObject<List<CommonDropDown>>(res) ?? new List<CommonDropDown>();
+                return JsonConvert.DeserializeObject<List<CommonDropDownBA>>(res) ?? new List<CommonDropDownBA>();
             }
 
-            return new List<CommonDropDown>();
+            return new List<CommonDropDownBA>();
         }
 
         #endregion Common drop down end

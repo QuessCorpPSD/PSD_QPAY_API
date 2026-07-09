@@ -37,7 +37,7 @@ namespace QPay.BAL.Repository.CreditNoteMatrix
                 parameters);
         }
 
-        public async Task<List<ErrorMessage>> Create(CreditNoteMatrixRequest request)
+        public async Task<List<UI.CreditNoteMatrix.ErrorMessage>> Create(CreditNoteMatrixRequest request)
         {
             const string storedProcedure = "[dbo].[PROC_Manage_CreditNote_Matrix]";
 
@@ -100,10 +100,10 @@ namespace QPay.BAL.Repository.CreditNoteMatrix
                 storedProcedure,
                 parameter);
 
-            return JsonConvert.DeserializeObject<List<ErrorMessage>>(res);
+            return JsonConvert.DeserializeObject<List<UI.CreditNoteMatrix.ErrorMessage>>(res);
         }
 
-        public async Task<List<ErrorMessage>> Update(CreditNoteMatrixRequest request)
+        public async Task<List<UI.CreditNoteMatrix.ErrorMessage>> Update(CreditNoteMatrixRequest request)
         {
             const string storedProcedure = "[dbo].[PROC_Manage_CreditNote_Matrix]";
 
@@ -167,10 +167,10 @@ namespace QPay.BAL.Repository.CreditNoteMatrix
                 storedProcedure,
                 parameter);
 
-            return JsonConvert.DeserializeObject<List<ErrorMessage>>(res);
+            return JsonConvert.DeserializeObject<List<UI.CreditNoteMatrix.ErrorMessage>>(res);
         }
 
-        public async Task<List<ErrorMessage>> Delete(CreditNoteMatrixRequest request)
+        public async Task<List<UI.CreditNoteMatrix.ErrorMessage>> Delete(CreditNoteMatrixRequest request)
         {
             const string storedProcedure = "[dbo].[PROC_Manage_CreditNote_Matrix]";
 
@@ -199,7 +199,7 @@ namespace QPay.BAL.Repository.CreditNoteMatrix
                 storedProcedure,
                 parameter);
 
-            return JsonConvert.DeserializeObject<List<ErrorMessage>>(res);
+            return JsonConvert.DeserializeObject<List<UI.CreditNoteMatrix.ErrorMessage>>(res);
         }
 
         public DataSet ExportToExcel()

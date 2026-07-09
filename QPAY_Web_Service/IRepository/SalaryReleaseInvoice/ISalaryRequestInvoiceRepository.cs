@@ -66,7 +66,7 @@ namespace QPay.BAL.IRepository.SalaryReleaseInvoice
         #endregion netpay summary end
 
         #region Common drop down start
-        List<CommonDropDown> GetCommonDropDownList(string Flag, string QZoneUserName);
+        List<CommonDropDownBA> GetCommonDropDownList(string Flag, string QZoneUserName);
 
         #endregion Common drop down end
 

@@ -13,11 +13,11 @@ namespace QPay.BAL.IRepository.CreditNoteMatrix
     {
         DataSet Search(string Action, string XmlFile, int? CreatedBy);
 
-        Task<List<ErrorMessage>> Create(CreditNoteMatrixRequest request);
+        Task<List<UI.CreditNoteMatrix.ErrorMessage>> Create(CreditNoteMatrixRequest request);
 
-        Task<List<ErrorMessage>> Update(CreditNoteMatrixRequest request);
+        Task<List<UI.CreditNoteMatrix.ErrorMessage>> Update(CreditNoteMatrixRequest request);
 
-        Task<List<ErrorMessage>> Delete(CreditNoteMatrixRequest request);
+        Task<List<UI.CreditNoteMatrix.ErrorMessage>> Delete(CreditNoteMatrixRequest request);
 
         DataSet ExportToExcel();
       
