@@ -121,12 +121,13 @@ namespace QPay.BAL.Repository.Customer
 
         }
 
-        public async Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string userId)
+        public async Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string flag, string userId)
         {
             VendorClientAddressResponse clientAddressDetails = new VendorClientAddressResponse();
 
             var parameters = new DynamicParameters();
             parameters.Add("@XML_File", xmlString);
+            parameters.Add("@Flag", flag);
             parameters.Add("@CreatedBy", userId);
 
             var res = await this._dbRepository.GetItemsAsync("Proc_Upload_VendorClientAddress", parameters);

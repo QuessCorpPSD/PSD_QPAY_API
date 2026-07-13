@@ -52,7 +52,7 @@ namespace QPay.API.Controller.Customer
 
         [HttpPost]
         [Route("PostVendorClientGSTUpload")]
-        public async Task<IActionResult> PostVendorClientGSTUpload(IFormFile file, [FromForm] string userId)
+        public async Task<IActionResult> PostVendorClientGSTUpload(IFormFile file, [FromForm] string flag, [FromForm] string userId)
         {
 
             if (file == null || file.Length == 0)
@@ -89,7 +89,7 @@ namespace QPay.API.Controller.Customer
             string xmlInput = xmlWriter.ToString();
 
 
-            var response = await _igst.PostVendorClientGSTUpload(xmlInput, userId);
+            var response = await _igst.PostVendorClientGSTUpload(xmlInput,flag, userId);
 
             return Ok(response);
         }

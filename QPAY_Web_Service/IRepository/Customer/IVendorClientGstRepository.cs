@@ -13,7 +13,7 @@ namespace QPay.BAL.IRepository.Customer
         Task<List<VendorClientGSTGrid>> GetAllVendorClientGSTDetails(int userId);
         Task<string> PostAddVendorClientGST(VendorClientGSTRequest Request);
         Task<string> PostDeleteVendorClientGST(int VendorClientGSTId, int UserId);
-        Task<VendorClientGSTResponse> PostVendorClientGSTUpload(string xmlString, string userId);
+        Task<VendorClientGSTResponse> PostVendorClientGSTUpload(string xmlString, string flag, string userId);
         DataSet VendorClientGSTExport(int userId);
     }
 }
