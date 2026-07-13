@@ -24,6 +24,7 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
 using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
+using QPay.BAL.Repository.Admin;
 using QPay.BAL.Repository.BankNonInvoice;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
@@ -134,7 +135,7 @@ namespace QPay.API
             services.AddScoped<ICreditNoteApproveRepository, CreditNoteApproveRepository>();
             services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
             services.AddScoped<ICreditNoteUpdateRepository, CreditNoteUpdateRepository>();
-            //services.AddScoped<IDraftNewRepository, DraftNewRepository>();
+            services.AddScoped<IDraftNewRepository, DraftNewRepository>();
             services.AddScoped<IGSTInvoiceRepository, GSTInvoiceRepository>();
             services.AddScoped<IInvoiceCultureRepository, InvoiceCultureRepository>();
             services.AddScoped<BAL.IRepository.Invoice.IInvoiceInitiationRepository, BAL.Repository.Invoice.InvoiceInitiationRepository>();
@@ -263,6 +264,12 @@ namespace QPay.API
             services.AddSingleton<IBankNeftCultureInvoiceRepository, BankNeftCultureInvoiceRepository>();
             services.AddSingleton<Ibankadvisesplitculturerepository, Bankadvisesplitculturerepository>();
             services.AddSingleton<ISalaryRequestInvoiceRepository, SalaryRequestInvoiceRepository>();
+            services.AddScoped<IAdminmenuRepository, AdminmenuRepository>();
+            services.AddScoped<IRolesRepository, RolesRepository>();
+            services.AddScoped<ICompanyPermissionRepository, CompanyPermissionRepository>();
+
+
+
         }
     }
 }
