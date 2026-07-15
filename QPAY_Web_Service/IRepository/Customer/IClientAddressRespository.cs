@@ -14,7 +14,7 @@ namespace QPay.BAL.IRepository.Customer
         Task<List<ClientAddress>> GetAllClientAddressDetails(int userId);
         Task<string> PostAddClientAddress(AddressRequest addressRequest);
         Task<string> PostDeleteClientAddress(int ClientAddressId, int UserId);
-        Task<ClientAddressResponse> PostClientAddressUpload(string xmlString, string userId);
+        Task<ClientAddressResponse> PostClientAddressUpload(string xmlString, string flag, string userId);
         DataSet ClientAddressExport(int userId);
     }
 }

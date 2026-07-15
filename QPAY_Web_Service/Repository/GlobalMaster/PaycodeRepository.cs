@@ -23,7 +23,7 @@ namespace QPay.BAL.Repository.GlobalMaster
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<DataSet> GetPayCodeByCompanyId(int companyId,int invoiceCultureId,string type)
+        public async Task<DataSet> GetPayCodeByCompanyId(int companyId, int invoiceCultureId, string type)
         {
 
             //var paramerter=new DynamicParameters();
@@ -37,7 +37,7 @@ namespace QPay.BAL.Repository.GlobalMaster
                 ["@Type"] = type,
             };
 
-         return   _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_CompanyPayCodeByCompanyId", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("SP_CompanyPayCodeByCompanyId", parameters, 1500);
 
             //var res = await this._dbRepository.GetItemsAsync("SP_CompanyPayCodeByCompanyId", paramerter);
             //if(res.Any())
@@ -46,7 +46,7 @@ namespace QPay.BAL.Repository.GlobalMaster
             //}
             //else
             //{
-               //return new List<PayCodeUI>();
+            //return new List<PayCodeUI>();
             //}
         }
 
@@ -59,7 +59,7 @@ namespace QPay.BAL.Repository.GlobalMaster
                 ["@IsTaxable"] = IsTaxable,
                 ["@PayCode_Id"] = PayId
             };
-            return  _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetAllPaycode", parameters); ;
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetAllPaycode", parameters); ;
 
         }
 
@@ -91,6 +91,96 @@ namespace QPay.BAL.Repository.GlobalMaster
 
         }
 
+        public async Task<PTStateExclude> CreateFlexidetails(string mode, string xml, Int32 userid)
+        {
+            PTStateExclude objFlexiRule = new PTStateExclude();
+            var parameter = new DynamicParameters();
+            parameter.Add("@xmlInput", xml);
+            parameter.Add("@mode", mode);
+            parameter.Add("@CreatedBy", userid);
+            try
+            {
+                var res = await _dbRepository.GetItemsAsync<PTStateExclude>("Sp_Create_Update_PtStatexclude", parameter);
+                if (res.Any())
+                {
+                    objFlexiRule = res.FirstOrDefault() ?? new PTStateExclude();
+                }
+            }
+            catch (Exception ex)
+            {
 
+            }
+
+            return objFlexiRule;
+        }
+        public async Task<List<PTStateExclude>> GetSearchdata(int? Company_Id, int? Band_Id,int? Flexi_Rule_Id,string? Mode)
+        {
+            List<PTStateExclude> listsearch = new List<PTStateExclude>();
+            var parameter = new DynamicParameters();
+            parameter.Add("@Company_Id", Company_Id);
+            parameter.Add("@Band_Id", Band_Id);
+            parameter.Add("@Flexi_Rule_Id", Flexi_Rule_Id);
+            parameter.Add("@Mode", Mode);
+            try
+            {
+                var res = await _dbRepository.GetItemsAsync<PTStateExclude>("Search_PtStatexclude", parameter);
+                if (res.Any())
+                {
+                    listsearch = res.ToList() ?? new List<PTStateExclude>();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return listsearch;
+        }
+
+        //public async Task<List<PTStateExclude>> GetEditdata(int? Company_Id, int brand_Id, int? Flexi_Rule_Id, string mode)
+        //{
+        //    List<PTStateExclude> listsearch = new List<PTStateExclude>();
+        //    var parameter = new DynamicParameters();
+        //    parameter.Add("@Company_Id", Flexi_Rule_Id);
+        //    parameter.Add("@Band_Id", brand_Id);
+        //    parameter.Add("@Flexi_Rule_Id", Flexi_Rule_Id);
+        //    parameter.Add("@Mode", mode);
+
+        //    try
+        //    {
+        //        var res = await _dbRepository.GetItemsAsync<PTStateExclude>("Search_PtStatexclude", parameter);
+        //        if (res.Any())
+        //        {
+        //            listsearch = res.ToList() ?? new List<PTStateExclude>();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return listsearch;
+
+        //}
+
+        public async Task<List<CompanyPayCodeDetail>> Companypaycodes(int? company_Id)
+        {
+            List<CompanyPayCodeDetail> listsearch = new List<CompanyPayCodeDetail>();
+            var parameter = new DynamicParameters();
+            parameter.Add("@Company_Id", company_Id);
+            
+            try
+            {
+                var res = await _dbRepository.GetItemsAsync<CompanyPayCodeDetail>("sp_GetAllPtExcludePaycode", parameter);
+                if (res.Any())
+                {
+                    listsearch = res.ToList() ?? new List<CompanyPayCodeDetail>();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return listsearch;
+
+        }
     }
 }
