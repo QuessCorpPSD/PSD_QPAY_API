@@ -12,5 +12,7 @@ namespace QPay.BAL.IRepository.Reports
     {
         Task<DataSet> GetEmployee(int CompanyId, int PayperiodId);
         Task<DataSet> DownloadPayslip(int EmployeeId, string payperiod);
+        Task<DataSet> DownloadITSheet(int EmployeeId, string payperiod);
+
     }
 }

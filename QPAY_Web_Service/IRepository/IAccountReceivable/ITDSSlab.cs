@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static QPay.UI.Models.AccountReceivableModel.TDSSlabModels;
+using static QPay.UI.Models.GlobalMaster.PTClass;
 using static QPay.UI_Domain.Models.AccountReceivable.ClientAdvancePayment;
 
 namespace QPay.BAL.IRepository.IAccountReceivable
@@ -14,12 +15,13 @@ namespace QPay.BAL.IRepository.IAccountReceivable
     public interface ITDSSlab
     {
         Task<DataSet> GetFinancialYear(int? financialYearId);
-        Task<DataSet> Search(int? CompanyId, int? FinancialYearId);
+        Task<DataSet> Search(int? FinancialYearId, string? category);
         Task<DataSet> ExportToExcel(CommonExport2 payload);
         Task<ClientAdvancePaymentResponse> UploadTDSSlab(IFormFile file, string createdBy);
         Task<UploadResponse> UploadLTDSSlab(IFormFile file, int userId);
         Task<List<TdsSlabResult>> TdsSlabCreate(string tdsDetails, string action, int userId);
         Task<List<CompanyNameByCodeResult>> GetCompanyNameByCode(string companyCode);
+        Task<List<CategoryUI>> Category();
     }
 }
     

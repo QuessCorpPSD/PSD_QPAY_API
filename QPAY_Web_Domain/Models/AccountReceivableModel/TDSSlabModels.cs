@@ -32,5 +32,12 @@ namespace QPay.UI.Models.AccountReceivableModel
             public string? Client_Code { get; set; }
             public string? Company_Name { get; set; }
         }
+
+        public class CategoryUI
+        {
+            public string? Category_Id { get; set; }
+            public string? Category_Name { get; set; }
+        }
+
     }
 }

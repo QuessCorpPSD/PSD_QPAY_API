@@ -39,8 +39,10 @@ using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.Tools;
 using QPay.IRepository.iRepository.Masters;
+using QPay.IRepository.iRepository.PayrollInput;
 using QPay.IRepository.Repository.Common;
 using QPay.IRepository.Repository.Masters;
+using QPay.IRepository.Repository.PayrollInput;
 using QPAY_Web_API.Controller;
 
 
@@ -267,6 +269,12 @@ namespace QPay.API
             services.AddScoped<IAdminmenuRepository, AdminmenuRepository>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<ICompanyPermissionRepository, CompanyPermissionRepository>();
+            services.AddScoped<IOnboardingRepository, OnboardingRepository>();
+            services.AddScoped<ITimesheetRepository, TimesheetRepository>();
+            services.AddScoped<IIncrementRepository, IncrementRepository>();
+
+
+
 
 
 

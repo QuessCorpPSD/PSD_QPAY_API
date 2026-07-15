@@ -25,10 +25,10 @@ namespace QPay.API.Controller.AccountReceivable
             return Ok(payload);
         }
         [HttpGet]
-        [Route("Search/{CompanyId}/{FinancialYearId}")]
-        public async Task<IActionResult> Search(int? CompanyId, int? FinancialYearId)
+        [Route("Search/{financialyearid}/{category}")]
+        public async Task<IActionResult> Search(int? financialyearid, string? category)
         {
-            var ds = await _repo.Search(CompanyId, FinancialYearId);
+            var ds = await _repo.Search(financialyearid, category);
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
         }
@@ -73,6 +73,13 @@ namespace QPay.API.Controller.AccountReceivable
         {
             var result = await _repo.GetCompanyNameByCode(companyCode);
             return Ok(result);
+        }
+
+        [HttpGet, Route("Category")]
+        public async Task<IActionResult> Category()
+        {
+            var response = await _repo.Category();
+            return Ok(response);
         }
     }
 }

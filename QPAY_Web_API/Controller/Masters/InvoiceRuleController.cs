@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using QPay.DTo.Models.Common;
 using QPay.DTo.Models.Masters;
 using QPay.IRepository.iRepository.Masters;
+using QPay.UI.Common;
 using System.Data;
 using static QPay.UI.Models.Common.Common;
 

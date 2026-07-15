@@ -66,5 +66,40 @@ namespace QPay.API.Controller.Reports
             }
         }
 
+        [HttpGet]
+        [Route("DownloadITSheet/{EmployeeId}/{payperiod}")]
+        public async Task<PayslipDownloadResponse> DownloadITSheet(int EmployeeId, string payperiod)
+        {
+            PayslipDownloadResponse payslipdownloadDetails = new PayslipDownloadResponse();
+            DataSet ds = await _ipayslipReportRepository.DownloadITSheet(EmployeeId, payperiod);
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                string html = ds.Tables[0].Rows[0]["HTML"].ToString();
+
+                HtmlToPdf converter = new HtmlToPdf();
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(html);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    doc.Save(ms);
+                    doc.Close();
+
+                    byte[] pdfBytes = ms.ToArray();
+                    string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                    payslipdownloadDetails.response = "Success";
+                    payslipdownloadDetails.base64string = base64Pdf;
+                    return payslipdownloadDetails;
+
+                }
+            }
+            else
+            {
+                payslipdownloadDetails.response = "No Data found";
+                return payslipdownloadDetails;
+            }
+        }
+
     }
 }

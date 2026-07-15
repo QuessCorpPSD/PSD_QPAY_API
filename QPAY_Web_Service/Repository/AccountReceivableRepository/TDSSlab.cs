@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
+using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using QPay.BAL.IRepository.IAccountReceivable;
 using QPay.DAL.Repository;
 using System;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static QPay.UI.Models.AccountReceivableModel.TDSSlabModels;
+using static QPay.UI.Models.GlobalMaster.PTClass;
 using static QPay.UI_Domain.Models.AccountReceivable.ClientAdvancePayment;
 
 namespace QPay.BAL.Repository.AccountReceivableRepository
@@ -37,19 +40,15 @@ namespace QPay.BAL.Repository.AccountReceivableRepository
                 1500
             );
         }
-        public async Task<DataSet> Search(int? CompanyId, int? FinancialYearId)
+        public async Task<DataSet> Search(int? FinancialYearId, string? category)
         {
             var parameters = new Dictionary<string, object?>
-            {
-                ["@Company_Id"] = CompanyId,         
-                ["@Finacial_Year_id"] = FinancialYearId 
+            {        
+                ["@FinancialYear_Id"] = FinancialYearId,
+                ["@TDS_Category"] = category
             };
 
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync(
-                "USP_Bank_Invoice_GetAllClientTdsMasterDetails",
-                parameters,
-                1500
-            );
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetAllTDSSlab", parameters, 1500);
         }
         public async Task<DataSet> ExportToExcel(CommonExport2 payload)
         {
@@ -364,6 +363,20 @@ namespace QPay.BAL.Repository.AccountReceivableRepository
             }
 
             return result;
+        }
+
+        public async Task<List<CategoryUI>> Category()
+        {
+            var parameters = new DynamicParameters();
+
+            var res = await _dbRepository.GetItemsAsync("Sp_GetAllTDSCategory", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<CategoryUI>>(res) ?? new List<CategoryUI>();
+            }
+
+            return new List<CategoryUI>();
         }
     }
 }

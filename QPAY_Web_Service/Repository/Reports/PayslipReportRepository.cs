@@ -44,5 +44,16 @@ namespace QPay.BAL.Repository.Reports
 
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_Create_PaySlip", parameters, 1500);
         }
+
+        public async Task<DataSet> DownloadITSheet(int EmployeeId, string payperiod)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@EmployeeId"] = EmployeeId,
+                ["@PayPeriodMonth"] = payperiod
+            };
+
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("proc_Create_ITSheet", parameters, 1500);
+        }
     }
 }
