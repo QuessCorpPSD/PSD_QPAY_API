@@ -54,7 +54,7 @@ namespace QPay.API.Controller.Customer
 
         [HttpPost]
         [Route("PostVendorClientAddressUpload")]
-        public async Task<IActionResult> PostVendorClientAddressUpload(IFormFile file, [FromForm] string userId)
+        public async Task<IActionResult> PostVendorClientAddressUpload(IFormFile file, [FromForm] string flag, [FromForm] string userId)
         {
 
             if (file == null || file.Length == 0)
@@ -91,7 +91,7 @@ namespace QPay.API.Controller.Customer
             string xmlInput = xmlWriter.ToString();
 
 
-            var response = await _iaddress.PostVendorClientAddressUpload(xmlInput, userId);
+            var response = await _iaddress.PostVendorClientAddressUpload(xmlInput, flag, userId);
 
             return Ok(response);
         }

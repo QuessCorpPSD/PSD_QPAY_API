@@ -13,7 +13,7 @@ namespace QPay.BAL.IRepository.Customer
         Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(int userId);
         Task<string> PostAddVendorClientAddress(VendorAddressRequest addressRequest);
         Task<string> PostDeleteVendorClientAddress(int ClientAddressId, int UserId);
-        Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string userId);
+        Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string flag, string userId);
         DataSet VendorClientAddressExport(int userId);
     }
 }
