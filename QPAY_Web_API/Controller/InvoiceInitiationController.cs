@@ -148,33 +148,18 @@ public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel req
             );
                
             }
-            if (proInvoice_status != null || draftInvoice_status != null)
-            {
-                var prostatus = proInvoice_status?.Error_Message;
-                var draftstatus = draftInvoice_status?.Error_Message;
+            List<string> messages = new List<string>();
 
-                if (prostatus == "GST Invoice Initiated Successfully" &&
-                    draftstatus == "GST Invoice Initiated Successfully")
-                {
-                    return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
-                }
-                else if (prostatus == "GST Invoice Initiated Successfully")
-                {
-                    return Ok(new { Error_Message = "ProtoActual invoices initiated successfully." });
-                }
-                else if (draftstatus == "GST Invoice Initiated Successfully")
-                {
-                    return Ok(new { Error_Message = "GST Invoice Initiated Successfully." });
-                }
-                else
-                {
-                    return Ok(new { Error_Message = "Invoice initiation failed." });
-                }
-            }
-            else
+            if (proInvoice_status != null && !string.IsNullOrWhiteSpace(proInvoice_status.Error_Message))
+                messages.Add(proInvoice_status.Error_Message);
+
+            if (draftInvoice_status != null && !string.IsNullOrWhiteSpace(draftInvoice_status.Error_Message))
+                messages.Add(draftInvoice_status.Error_Message);
+
+            return Ok(new
             {
-                return Ok(new { Error_Message = "No invoices to initiate." });
-            }
+                Error_Message = string.Join(Environment.NewLine, messages)
+            });
         }
 
         

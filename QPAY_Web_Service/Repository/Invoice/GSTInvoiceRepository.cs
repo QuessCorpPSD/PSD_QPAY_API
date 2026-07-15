@@ -538,6 +538,10 @@ namespace QPay.BAL.Repository.Invoice
                     if (result.Status?.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase) == true)
                     {
                         response.CreditnoteInvoices.InvoiceIds.Add(result.Invoice_Id);
+                        if (result.Error_Message?.Equals("IRN Initiated for 24 hours cancellation", StringComparison.OrdinalIgnoreCase) == true)
+                        {
+                            response.Invoices.InvoiceIds.Add(result.Invoice_Id);
+                        }
                     }
                 }
 

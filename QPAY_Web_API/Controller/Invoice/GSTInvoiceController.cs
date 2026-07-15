@@ -984,6 +984,36 @@ namespace QPay.API.Controller.Invoice
                         ds.Message += " | Credit Note IRN API failed";
                     }
                 }
+                if (ds?.Invoices?.InvoiceIds != null && ds.Invoices.InvoiceIds.Any())
+                {
+                    string userId = request.userId ?? "0";
+
+                    var apiRequest = new IRNModelRequest
+                    {
+                        invoiceIds = ds.Invoices.InvoiceIds,
+                        Mode = "GetIrnCancellationData",
+                        userId = userId
+                    };
+
+                    string json = JsonConvert.SerializeObject(apiRequest);
+
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    string apiUrl = _configuration["IrnCancelApiLink"];
+                    _logger.LogError("24hrs Invoice Cancellation for IRN-B2B Request before API Call " + content);
+
+                    var response = await _httpClient.PostAsync(apiUrl, content);
+                    _logger.LogError("24hrs Invoice Cancellation for IRN-B2B Request after API Call " + response);
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("24hrs Invoice Cancellation IRN API failed: " + result);
+
+                        ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
+                        ds.Message += " | 24hrs Invoice Cancellation IRN API failed";
+                    }
+                }
 
                 var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
 
