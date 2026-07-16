@@ -48,7 +48,7 @@ namespace QPay.UI.Invoice
 
     public class InvoiceListFor24hrsCancellation
     {
-        public List<int> InvoiceIds { get; set; } = new();
+        public List<string> InvoiceIds { get; set; } = new();
     }
     public class InvoiceCancelResponse
     {
