@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using ClosedXML.Excel;
+using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using QPay.API.Models;
@@ -10,6 +11,7 @@ using QPay.UI.Dashboard;
 using QPay.UI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -225,6 +227,47 @@ namespace QPay.BAL.Repository
                 }
             }
             return new List<BreakTimeDetailsUI>();
+        }
+        public async Task<FileResponse> InputReconAndYettoCome(string flag)
+        {
+            FileResponse fileResponse = new FileResponse();
+            const string storeprocedure = "SP_InputLotDetails_ReconStatus";
+            var parameter = new DynamicParameters();
+            parameter.Add("@Flag", flag);
+            var res = await _dbRepository.GetItemsAsync(storeprocedure, parameter);
+            if (res.Any())
+            {
+                var data = JsonConvert.DeserializeObject<DataTable>(res) ?? new DataTable();
+                if (data.Rows.Count > 0)
+                {
+                    using var workbook = new XLWorkbook();
+                    {
+                        var sheetName = flag == "R" ? "Recon" : "YetToCome";
+                        var ws = workbook.AddWorksheet(data, sheetName);
+                        ws.Table(0).ShowAutoFilter = false;
+                        ws.Table(0).Theme = XLTableTheme.None;
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            var bytes = Convert.ToBase64String(stream.ToArray());
+                            //  FileResponse fileResponse = new FileResponse();
+                            fileResponse.FileName = sheetName;
+                            fileResponse.File = bytes;
+
+                        }
+                    }
+                }
+                else
+                {
+                    fileResponse.File = "N";
+                }
+            }
+            else
+            {
+                fileResponse.File = "N";
+            }
+
+            return fileResponse;
         }
         public async Task<List<DashboardDetailUI>> GetPendingLotAsync()
         {

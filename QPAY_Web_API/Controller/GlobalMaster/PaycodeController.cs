@@ -134,6 +134,49 @@ namespace QPay.API.Controller.GlobalMaster
             //.ToList();
             return Ok(PayCodeMapping);
         }
+        [HttpPost,Route("CreateFlexidetails")]
+        public async Task<IActionResult> CreateFlexidetails(FlexiModelRequest flexiRequestModel)
+        {
+            List<PTStateExclude> pTStateExcludes=new List<PTStateExclude>();
+            foreach (var item in flexiRequestModel.selectedpaycode)
+            {
+                PTStateExclude pTStateExclude = new PTStateExclude();
+                pTStateExclude.PTState_Ex_ID = flexiRequestModel.FlexiId;
+                pTStateExclude.State_Id = flexiRequestModel.stateId;
+                pTStateExclude.Paycode_Id =Convert.ToInt32(item.value);
+                pTStateExclude.Paycode_Code = item.text;
+                pTStateExcludes.Add(pTStateExclude);
+            }
+           
+            PTStateExcludeDetailsResponse pTStateExcludeDetailsResponses=new PTStateExcludeDetailsResponse();
+          
+            pTStateExcludeDetailsResponses.PTStateExcludeDetails= pTStateExcludes;
+            string xml = BAL.IRepository.XmlHelper.SerializeObjectToXml(pTStateExcludeDetailsResponses, "Main");
+            var response =await this._IRepository.CreateFlexidetails(flexiRequestModel.mode, xml, Convert.ToInt32(flexiRequestModel.CreatedBy));
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("SearchFlexirule")]
+        public async Task<IActionResult> SearchFlexirule(SearchRequestModel searchRequestModel)
+        {
+            var response = await this._IRepository.GetSearchdata(searchRequestModel.Company_Id, searchRequestModel.Band_Id, searchRequestModel.Flexi_Rule_Id, "Search");
+            return Ok(response);
+        }
+        [HttpGet,Route("GetPayCodeByCompanyId/{companyId}")]
+        public async Task<IActionResult> GetPayCodeByCompanyId(int companyId)
+        {
+            var res = await this._IRepository.Companypaycodes(companyId);
+            return Ok(res);
+        }
+
+
+
+        //[HttpGet,Route("GetEditdata/{Company_Id}/{Band_Id}")]
+        //public async Task<IActionResult> GetEditdata(int? Company_Id,int? Band_Id)
+        //{
+        //    var res = await _IRepository.GetEditdata(Company_Id, Band_Id);
+        //}
 
 
     }

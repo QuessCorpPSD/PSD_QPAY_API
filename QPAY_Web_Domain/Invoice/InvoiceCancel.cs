@@ -45,12 +45,18 @@ namespace QPay.UI.Invoice
     {
         public List<int> InvoiceIds { get; set; } = new();
     }
+
+    public class InvoiceListFor24hrsCancellation
+    {
+        public List<string> InvoiceIds { get; set; } = new();
+    }
     public class InvoiceCancelResponse
     {
         public string Status { get; set; }  // SUCCESS / FAILED
         public string Message { get; set; }
         public string InvoiceId { get; set; }
         public CreditnoteInvoiceList CreditnoteInvoices { get; set; } = new();
+        public InvoiceListFor24hrsCancellation Invoices { get; set; } = new();
         public List<InvoiceCancel> ApiPayloads { get; set; } = new();
         public List<InvoiceCancelResult> InvoiceResults { get; set; } = new();
         public List<(string InvoiceId, int PayloadIndex)> InvoiceMap { get; set; } = new();

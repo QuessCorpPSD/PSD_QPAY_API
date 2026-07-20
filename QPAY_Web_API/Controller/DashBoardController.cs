@@ -58,6 +58,14 @@ namespace QPay.API.Controller
 
             return Ok(completed);
         }
+        [HttpGet]
+        [Route("ReconNotYettoCome/{flag}")]
+        public async Task<IActionResult> ReconNotYettoCome(string flag)
+        {
+            var files = await this._adminDashboardRepository.InputReconAndYettoCome(flag);
+            return Ok(files);
+        }
+        
 
         [HttpGet("PendingLot")]
         public async Task<ActionResult<List<PendingLotsUI>>> GetPendingLot()
