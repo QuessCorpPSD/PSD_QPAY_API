@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository.Customer;
 using QPay.DAL.Repository;
@@ -21,15 +22,27 @@ namespace QPay.BAL.Repository.Customer
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<ClientGSTGrid>> GetAllClientGSTDetails(int userId)
+        public async Task<List<ClientGSTGrid>> GetAllClientGSTDetails(ClientGSTSearch searchparams)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
-            parameters.Add("@UserId ", userId);
-            parameters.Add("@PageNo", 1);
-            parameters.Add("@PageSize", 999999);
-
-
+            parameters.Add("@ClientGstId", searchparams.ClientGstId);
+            parameters.Add("@Company_Code", searchparams.Company_Code);
+            parameters.Add("@Group_Name", searchparams.Group_Name);
+            parameters.Add("@State_Name", searchparams.State_Name);
+            parameters.Add("@ClientInvoicingState_Name", searchparams.ClientInvoicingState_Name);
+            parameters.Add("@InvoicingState_Name", searchparams.InvoicingState_Name);
+            parameters.Add("@GstTypeName", searchparams.GstTypeName);
+            parameters.Add("@GstNumber", searchparams.GstNumber);
+            parameters.Add("@PanNumber", searchparams.PanNumber);
+            parameters.Add("@TanNumber", searchparams.TanNumber);
+            parameters.Add("@UserName", searchparams.UserName);
+            parameters.Add("@SapCustomerCode", searchparams.SapCustomerCode);
+            parameters.Add("@InvoiceCategory", searchparams.InvoiceCategory);
+            parameters.Add("@PageNo", searchparams.PageNo);
+            parameters.Add("@PageSize", searchparams.PageSize);
+            parameters.Add("@TotalCount", searchparams.TotalCount);
+            parameters.Add("@UserId", searchparams.UserId);
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientGst", parameters);
 
             if (!string.IsNullOrEmpty(res))

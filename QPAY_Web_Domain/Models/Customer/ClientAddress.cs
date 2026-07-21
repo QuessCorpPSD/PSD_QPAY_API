@@ -1,4 +1,5 @@
-﻿using QPay.UI.Common;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using QPay.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -54,6 +55,37 @@ namespace QPay.UI.Models.Customer
         public int? BillingLocationId { get; set; }
         public int? ShippingLocationId { get; set; }
     }
+
+    public class ClientAddressSearch
+    {
+        public int? ClientAddressId {get; set;}
+        public string? Company_Code { get; set; } = "";
+        public string? State_Name {get; set;} = "";
+        public string? Map_Name {get; set;} = "";
+        public string? SAC_Code {get; set;} = "";
+        public string? BillingClientName {get; set;} = "";
+        public string? BillingAddress {get; set;} = "";
+        public string? BillingStateName {get; set;} = "";
+        public string? ShippingClientName {get; set;} = "";
+        public string? ShippingAddress {get; set;} = "";
+        public string? IsShippingAddressSameAsBilling {get; set;} = "";
+        public string? SEZ_Applicable {get; set;} = "";
+        public string? LUT_Number {get; set;} = "";
+        public string? VendorCode {get; set;} = "";
+        public string? GstNumber {get; set;} = "";
+        public string? City_Name {get; set;} = "";
+        public string? ShippingCity_Name {get; set;} = "";
+        public string? BillingPinCode {get; set;} = "";
+        public string? ShippingPinCode {get; set;} = "";
+        public string? SapBillTo {get; set;} = "";
+        public string? SapShipTo {get; set;} = "";
+        public int? AddressCode { get; set; }
+        public int? PageNo { get; set; }
+        public int? PageSize { get; set; }
+        public int? TotalCount {get; set;}
+        public string? UserId { get; set; } = "";
+    }
+    
 
     public class AddressRequest
     {
