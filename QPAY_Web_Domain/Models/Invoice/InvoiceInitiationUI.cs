@@ -38,6 +38,8 @@ namespace QPay.UI.Models.Invoice
         public int? GEN_iID { get; set; }
         public string? GEN_vDescription { get; set; } = string.Empty;
         public decimal? ServiceChargeAmount { get; set; }
+        public decimal? Sourcing_Fee { get; set; }
+        public decimal? Sourcing_Fee_Amount { get; set; }
         public int? Invoice_Category_Id { get; set; }
         public decimal? INCTC { get; set; }
         public decimal? INSCG { get; set; }
@@ -83,6 +85,8 @@ namespace QPay.UI.Models.Invoice
         public decimal? Service_Charge { get; set; }
         public string? Service_Charge_Master { get; set; } = "";
         public string? Service_Charge_Type { get; set; } = "";
+        public decimal? Sourcing_Fee { get; set; }
+        public decimal? Sourcing_Fee_Amount { get; set; }
         public int? InvoiceType_Id { get; set; }
         public decimal? Net_CTC { get; set; }
         public int? InvoiceCulture_id { get; set; }
@@ -324,8 +328,8 @@ namespace QPay.UI.Models.Invoice
             public string? Output_Date { get; set; }
             public string? Service_Charge { get; set; }
             public string? Service_Charge_Amount { get; set; }
-            public string? Sourcing_Fee { get; set; }
-            public string? Sourcing_Fee_Amount { get; set; }
+            public  decimal? Sourcing_Fee { get; set; }
+            public decimal? Sourcing_Fee_Amount { get; set; }
             public string? No_Of_Employees { get; set; }
             public string? Absorption_Fee { get; set; }
             public string? Absorption_Amt { get; set; }
