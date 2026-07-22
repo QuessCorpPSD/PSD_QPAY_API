@@ -15,4 +15,12 @@
         public string Status { get; set; } = "";
         public string Error_Message { get; set; } = "";
     }
+    public class ClearTaxRequest
+    {
+        public string InvoiceId { get; set; }
+        public int userId { get; set; }
+        public string Mode { get; set; }
+
+
+    }
 }

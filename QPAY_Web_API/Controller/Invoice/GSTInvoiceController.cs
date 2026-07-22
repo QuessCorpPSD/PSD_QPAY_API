@@ -11,6 +11,7 @@ using QPay.DAL.Repository;
 using QPay.UI.Common;
 using QPay.UI.Invoice;
 using QPay.UI.Models;
+using QPay.UI.Models.Invoice;
 using QRCoder;
 using SelectPdf;
 using System.Data;
@@ -954,6 +955,8 @@ namespace QPay.API.Controller.Invoice
                 var ds = await _gstinvoiceRepository.BulkApproveInvoice(request);
                 _logger.LogError("Credit Note for IRN-B2B Request ");
                 // Process Credit Note IRN only for approved invoices
+                //InvoiceCancelResponse ds = new InvoiceCancelResponse();
+               // ds.Invoices.InvoiceIds = new List<string> { "1887642" };
                 if (ds?.CreditnoteInvoices?.InvoiceIds != null && ds.CreditnoteInvoices.InvoiceIds.Any())
                 {
                     string userId = request.userId ?? "0";
@@ -984,6 +987,43 @@ namespace QPay.API.Controller.Invoice
                         ds.Message += " | Credit Note IRN API failed";
                     }
                 }
+                if (ds?.Invoices?.InvoiceIds != null && ds.Invoices.InvoiceIds.Any())
+                {
+                    int userId = int.TryParse(request.userId, out var parsedUserId)
+         ? parsedUserId
+         : 154;
+                    string apiUrl = _configuration["CancelRequestURL"];
+
+                    foreach (var invoiceId in ds.Invoices.InvoiceIds)
+                    {
+                        var apiRequest = new ClearTaxRequest
+                        {
+                            InvoiceId = invoiceId.ToString(), // Pass one invoice at a time
+                            Mode = "GetIrnCancellationData",
+                            userId = userId
+                        };
+
+                        string json = JsonConvert.SerializeObject(apiRequest);
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                        _logger.LogError($"24hrs Invoice Cancellation IRN-B2B Request for InvoiceId: {invoiceId} Before API Call: {json}");
+
+                        var response = await _httpClient.PostAsync(apiUrl, content);
+
+                        _logger.LogError($"24hrs Invoice Cancellation IRN-B2B Response for InvoiceId: {invoiceId}: {response.StatusCode}");
+
+                        var result = await response.Content.ReadAsStringAsync();
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            _logger.LogError($"24hrs Invoice Cancellation IRN API failed for InvoiceId: {invoiceId}. Response: {result}");
+
+                            ds.Status = ds.Status == "SUCCESS" ? "PARTIAL_SUCCESS" : ds.Status;
+                            ds.Message += $" | IRN API failed for InvoiceId: {invoiceId}";
+                        }
+                    }
+                }
+
 
                 var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
 
