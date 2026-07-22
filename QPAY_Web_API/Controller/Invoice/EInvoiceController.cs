@@ -42,10 +42,10 @@ namespace QPay.API.Controller.Invoice
         }
 
         [HttpGet]
-        [Route("GetAllInvoiceDetails/{companyId}/{payPeriodId}")]
-        public async Task<IActionResult> GetAllInvoiceDetails(int companyId, int payPeriodId)
+        [Route("GetAllInvoiceDetails/{companyId}/{payPeriodId}/{userId}")]
+        public async Task<IActionResult> GetAllInvoiceDetails(int companyId, int payPeriodId,int userId)
         {
-            var ds = await _ieinvoice.GetAllInvoiceDetails(companyId, payPeriodId);
+            var ds = await _ieinvoice.GetAllInvoiceDetails(companyId, payPeriodId, userId);
 
             var payload = ResponseWrapManager.ResponseWrapper(ds, HttpContext);
             return Ok(payload);
