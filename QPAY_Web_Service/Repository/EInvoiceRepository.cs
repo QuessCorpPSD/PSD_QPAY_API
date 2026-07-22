@@ -29,14 +29,14 @@ namespace QPay.BAL.Repository
             _dbRepository = dbRepository;
             _configuration = configuration;
         }
-        public async Task<DataSet> GetAllInvoiceDetails(int companyId, int payPeriodId)
+        public async Task<DataSet> GetAllInvoiceDetails(int companyId, int payPeriodId,int userId)
         {
             var parameters = new Dictionary<string, object?>
             {
                 ["@Action"] = "Get",
                 ["@Company_Id"] = companyId,
                 ["@Pay_Period_Id"] = payPeriodId,
-                //["@UserId"] = userId,
+                ["@UserId"] = userId,
             };
 
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_ManageEInvoice_NewUI", parameters, 1500);

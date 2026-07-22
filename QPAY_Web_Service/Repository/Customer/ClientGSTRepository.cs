@@ -140,7 +140,7 @@ namespace QPay.BAL.Repository.Customer
                     var message = resultList?.FirstOrDefault()?.Error_Message ?? string.Empty;
 
                     if (!string.IsNullOrWhiteSpace(message) &&
-                        message.Contains("Rows Uploaded Successfully."))
+                        message.Contains("Row(s) Uploaded Successfully."))
                     {
                         clientGSTDetails.response = message;
                     }
