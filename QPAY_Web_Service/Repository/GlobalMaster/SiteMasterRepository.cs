@@ -175,6 +175,7 @@ namespace QPay.BAL.Repository.GlobalMaster
                     new XElement("GroupMaster",
                         new XElement("Company_Id", emp.Company_Id),
                         new XElement("Group_Detail_Id", emp.Group_Detail_Id),
+                        new XElement("Group_Id", emp.Group_Id),
                         new XElement("Group_Name", emp.Group_Name),
                         new XElement("Client_Id", emp.Client_Id),
                         new XElement("CostCenter_Id", emp.CostCenter_Id),
@@ -236,7 +237,9 @@ namespace QPay.BAL.Repository.GlobalMaster
                         new XElement("FurloughLeaveApplicability", emp.FurloughLeaveApplicability),
                         new XElement("FurloughBillingApplicability", emp.FurloughBillingApplicability),
                         new XElement("Po_Salary", emp.Po_Salary),
-                        new XElement("Po_OtherIncome", emp.Po_OtherIncome)
+                        new XElement("Po_OtherIncome", emp.Po_OtherIncome),
+                        new XElement("Discount_Type", emp.Discount_Type),
+                        new XElement("Discount_Value", emp.Discount_Value)
                         )
                 ),
 

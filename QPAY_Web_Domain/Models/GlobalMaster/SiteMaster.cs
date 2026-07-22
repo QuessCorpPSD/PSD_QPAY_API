@@ -91,6 +91,8 @@ namespace QPay.UI.Models.GlobalMaster
         public int? FurloughBillingApplicability { get; set; }
         public int? Po_Salary { get; set; }
         public int? Po_OtherIncome { get; set; }
+        public string? Discount_Type { get; set; }
+        public float? Discount_Value { get; set; }
     }
 
     public class SiteInchargeUI
