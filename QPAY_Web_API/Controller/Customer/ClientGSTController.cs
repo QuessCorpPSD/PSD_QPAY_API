@@ -25,7 +25,7 @@ namespace QPay.API.Controller.Customer
             this._configuration = configuration;
         }
 
-        [HttpGet, Route("GetAllClientGSTDetails")]
+        [HttpPost, Route("GetAllClientGSTDetails")]
         public async Task<IActionResult> GetAllClientGSTDetails(ClientGSTSearch searchparams)
         {
             var response = await _igst.GetAllClientGSTDetails(searchparams);

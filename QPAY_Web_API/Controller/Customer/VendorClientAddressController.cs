@@ -25,7 +25,7 @@ namespace QPay.API.Controller.Customer
             this._configuration = configuration;
         }
 
-        [HttpGet, Route("GetAllVendorClientAddressDetails")]
+        [HttpPost, Route("GetAllVendorClientAddressDetails")]
         public async Task<IActionResult> GetAllVendorClientAddressDetails(VendorClientAddressSearch vendorsearchparams)
         {
             var response = await _iaddress.GetAllVendorClientAddressDetails(vendorsearchparams);
