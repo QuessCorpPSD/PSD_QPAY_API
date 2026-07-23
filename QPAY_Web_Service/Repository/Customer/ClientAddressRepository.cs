@@ -48,8 +48,6 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@PageSize", searchparams.PageSize);
             parameters.Add("@TotalCount", searchparams.TotalCount);
             parameters.Add("@UserId", searchparams.UserId);
-            parameters.Add("@PageNo", searchparams.PageNo);
-            parameters.Add("@PageSize", searchparams.PageSize);
 
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientAddress", parameters);
 

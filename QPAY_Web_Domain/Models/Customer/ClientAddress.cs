@@ -54,6 +54,7 @@ namespace QPay.UI.Models.Customer
         public string? AddressCode { get; set; }
         public int? BillingLocationId { get; set; }
         public int? ShippingLocationId { get; set; }
+        public int? TotalCount { get; set; }
     }
 
     public class ClientAddressSearch

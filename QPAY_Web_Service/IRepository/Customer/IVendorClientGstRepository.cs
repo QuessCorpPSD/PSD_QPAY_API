@@ -10,7 +10,7 @@ namespace QPay.BAL.IRepository.Customer
 {
     public interface IVendorClientGstRepository
     {
-        Task<List<VendorClientGSTGrid>> GetAllVendorClientGSTDetails(int userId);
+        Task<List<VendorClientGSTGrid>> GetAllVendorClientGSTDetails(VendorClientGSTSearch vendorSearchParams);
         Task<string> PostAddVendorClientGST(VendorClientGSTRequest Request);
         Task<string> PostDeleteVendorClientGST(int VendorClientGSTId, int UserId);
         Task<VendorClientGSTResponse> PostVendorClientGSTUpload(string xmlString, string flag, string userId);

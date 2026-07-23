@@ -22,15 +22,36 @@ namespace QPay.BAL.Repository.Customer
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(int userId)
+        public async Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(VendorClientAddressSearch vendorsearchparams)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
-            parameters.Add("@UserId ", userId);
-            parameters.Add("@PageNo", 1);
-            parameters.Add("@PageSize", 999999);
-
-
+            parameters.Add("@VendorClientAddressId", vendorsearchparams.VendorClientAddressId);
+            parameters.Add("@Company_Code", vendorsearchparams.Company_Code);
+            parameters.Add("@State_Name", vendorsearchparams.State_Name);
+            parameters.Add("@Map_Name", vendorsearchparams.Map_Name);
+            parameters.Add("@SAC_Code", vendorsearchparams.SAC_Code);
+            parameters.Add("@BillingClientName", vendorsearchparams.BillingClientName);
+            parameters.Add("@BillingAddress", vendorsearchparams.BillingAddress);
+            parameters.Add("@BillingStateName", vendorsearchparams.BillingStateName);
+            parameters.Add("@ShippingClientName", vendorsearchparams.ShippingClientName);
+            parameters.Add("@ShippingAddress", vendorsearchparams.ShippingAddress);
+            parameters.Add("@IsShippingAddressSameAsBilling", vendorsearchparams.IsShippingAddressSameAsBilling);
+            parameters.Add("@SEZ_Applicable", vendorsearchparams.SEZ_Applicable);
+            parameters.Add("@LUT_Number", vendorsearchparams.LUT_Number);
+            parameters.Add("@VendorCode", vendorsearchparams.VendorCode);
+            parameters.Add("@GstNumber", vendorsearchparams.GstNumber);
+            parameters.Add("@City_Name", vendorsearchparams.City_Name);
+            parameters.Add("@ShippingCity_Name", vendorsearchparams.ShippingCity_Name);
+            parameters.Add("@BillingPinCode", vendorsearchparams.BillingPinCode);
+            parameters.Add("@ShippingPinCode", vendorsearchparams.ShippingPinCode);
+            parameters.Add("@SapBillTo", vendorsearchparams.SapBillTo);
+            parameters.Add("@SapShipTo", vendorsearchparams.SapShipTo);
+            parameters.Add("@AddressCode", vendorsearchparams.AddressCode);
+            parameters.Add("@PageNo", vendorsearchparams.PageNo);
+            parameters.Add("@PageSize", vendorsearchparams.PageSize);
+            parameters.Add("@TotalCount", vendorsearchparams.TotalCount);
+            parameters.Add("@UserId", vendorsearchparams.UserId);
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientAddress", parameters);
 
             if (!string.IsNullOrEmpty(res))
