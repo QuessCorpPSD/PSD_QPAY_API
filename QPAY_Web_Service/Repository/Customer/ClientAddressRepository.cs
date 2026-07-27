@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Http.Internal;
 using Newtonsoft.Json;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 using QPay.BAL.IRepository.Customer;
 using QPay.DAL.Repository;
 using QPay.UI.Customer;
@@ -16,14 +18,36 @@ namespace QPay.BAL.Repository.Customer
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<ClientAddress>> GetAllClientAddressDetails(int userId)
+        public async Task<List<ClientAddress>> GetAllClientAddressDetails(ClientAddressSearch searchparams)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
-            parameters.Add("@UserId ", userId);
-            parameters.Add("@PageNo", 1);
-            parameters.Add("@PageSize", 999999);
-
+            parameters.Add("@ClientAddressId", searchparams.ClientAddressId);
+            parameters.Add("@Company_Code", searchparams.Company_Code);
+            parameters.Add("@State_Name", searchparams.State_Name);
+            parameters.Add("@Map_Name", searchparams.Map_Name);
+            parameters.Add("@SAC_Code", searchparams.SAC_Code);
+            parameters.Add("@BillingClientName", searchparams.BillingClientName);
+            parameters.Add("@BillingAddress", searchparams.BillingAddress);
+            parameters.Add("@BillingStateName", searchparams.BillingStateName);
+            parameters.Add("@ShippingClientName", searchparams.ShippingClientName);
+            parameters.Add("@ShippingAddress", searchparams.ShippingAddress);
+            parameters.Add("@IsShippingAddressSameAsBilling", searchparams.IsShippingAddressSameAsBilling);
+            parameters.Add("@SEZ_Applicable", searchparams.SEZ_Applicable);
+            parameters.Add("@LUT_Number", searchparams.LUT_Number);
+            parameters.Add("@VendorCode", searchparams.VendorCode);
+            parameters.Add("@GstNumber", searchparams.GstNumber);
+            parameters.Add("@City_Name", searchparams.City_Name);
+            parameters.Add("@ShippingCity_Name", searchparams.ShippingCity_Name);
+            parameters.Add("@BillingPinCode", searchparams.BillingPinCode);
+            parameters.Add("@ShippingPinCode", searchparams.ShippingPinCode);
+            parameters.Add("@SapBillTo", searchparams.SapBillTo);
+            parameters.Add("@SapShipTo", searchparams.SapShipTo);
+            parameters.Add("@AddressCode", searchparams.AddressCode);
+            parameters.Add("@PageNo", searchparams.PageNo);
+            parameters.Add("@PageSize", searchparams.PageSize);
+            parameters.Add("@TotalCount", searchparams.TotalCount);
+            parameters.Add("@UserId", searchparams.UserId);
 
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageClientAddress", parameters);
 

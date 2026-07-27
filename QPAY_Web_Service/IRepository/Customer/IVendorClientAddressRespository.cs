@@ -10,7 +10,7 @@ namespace QPay.BAL.IRepository.Customer
 {
     public interface IVendorClientAddressRespository
     {
-        Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(int userId);
+        Task<List<VendorClientAddress>> GetAllVendorClientAddressDetails(VendorClientAddressSearch vendorsearchparams);
         Task<string> PostAddVendorClientAddress(VendorAddressRequest addressRequest);
         Task<string> PostDeleteVendorClientAddress(int ClientAddressId, int UserId);
         Task<VendorClientAddressResponse> PostVendorClientAddressUpload(string xmlString, string flag, string userId);
