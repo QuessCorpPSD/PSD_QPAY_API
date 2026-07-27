@@ -325,5 +325,20 @@ namespace QPay.IRepository.Repository.Common
 
         }
 
+        public async Task<List<CompanyPicker>> GetallCSNCompanyCodes(int userId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@USER_ID", userId);
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_Get_AllCSNCompanyCodebyUserId", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<CompanyPicker>>(res) ?? new List<CompanyPicker>();
+            }
+
+            return new List<CompanyPicker>();
+        }
+
     }
 }

@@ -37,12 +37,11 @@ namespace QPay.BAL.Repository.ARKnockOff
 
         }
 
-        public DataSet ARReportExport(string? Company_Code, string? Pay_Period)
+        public DataSet ARReportExport(string FromDate)
         {
             var parameters = new Dictionary<string, object?>
             {
-                ["@Company_Code"] = Company_Code,
-                ["@Pay_Period"] = Pay_Period
+                ["@FromDate"] = FromDate,
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetAllARInvoiceDetails_Export", parameters, 1500);
         }

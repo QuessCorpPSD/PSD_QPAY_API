@@ -33,12 +33,12 @@ namespace QPay.API.Controller.ARKnockOff
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("ARReportExport")]
-        public IActionResult ARReportExport(string? Company_Code, string? Pay_Period)
+        [HttpGet]
+        [Route("ARReportExport/{FromDate}")]
+        public IActionResult ARReportExport(string FromDate )
         {
 
-            DataSet ds = _IRepository.ARReportExport(Company_Code, Pay_Period);
+            DataSet ds = _IRepository.ARReportExport(FromDate);
             if (ds.Tables.Count > 0)
             {
                 using var workbook = new XLWorkbook();

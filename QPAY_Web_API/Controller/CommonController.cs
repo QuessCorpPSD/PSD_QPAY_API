@@ -201,6 +201,14 @@ namespace QPay.API.Controller
 
         }
 
+        [HttpGet, Route("GetAllCSNCompanyCode/{userId}")]
+        public async Task<IActionResult> GetAllCSNCompanyCode(string userId)
+        {
+            var response = await _adminDashboardRepository.GetAllCSNCompanyCode(userId);
+
+            return Ok(response);
+        }
+
 
     }
 }
