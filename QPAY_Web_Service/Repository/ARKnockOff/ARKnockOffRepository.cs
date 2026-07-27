@@ -3,6 +3,7 @@ using QPay.BAL.IRepository.ARKnockOff;
 using QPay.DAL.Repository;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,16 @@ namespace QPay.BAL.Repository.ARKnockOff
 
             return "No data found";
 
+        }
+
+        public DataSet ARReportExport(string? Company_Code, string? Pay_Period)
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@Company_Code"] = Company_Code,
+                ["@Pay_Period"] = Pay_Period
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetAllARInvoiceDetails_Export", parameters, 1500);
         }
     }
 }

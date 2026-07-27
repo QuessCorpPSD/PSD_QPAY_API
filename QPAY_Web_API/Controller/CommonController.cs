@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.Common;
+using System.Threading.Tasks;
 
 namespace QPay.API.Controller
 {
@@ -190,6 +191,14 @@ namespace QPay.API.Controller
         {
             var state = await this._icompanyCode.GetCommonPayperiod();
             return Ok(state);
+        }
+
+        [HttpGet, Route("PoSearchByCompanyId/{companyId}")]
+        public async Task<IActionResult> PoSearchByCompanyId(int companyId)
+        {
+            var res = await _icompanyCode.POSearch(companyId);
+            return Ok(res);
+
         }
 
 

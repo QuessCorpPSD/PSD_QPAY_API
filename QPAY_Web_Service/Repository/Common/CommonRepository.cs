@@ -1,7 +1,4 @@
 ﻿using Dapper;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Office.Word;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using QPay.BAL.IRepository.Common;
 using QPay.DAL.Repository;
@@ -299,6 +296,33 @@ namespace QPay.IRepository.Repository.Common
                 return JsonConvert.DeserializeObject<List<Frequency>>(res) ?? new List<Frequency>();
             }
             return new List<Frequency>();
+        }
+
+        public async Task<List<POUI>> POSearch(int companyId)
+        {
+            string storedProcedure = "USP_PONUMBER_Search";
+            var parameter = new DynamicParameters();
+            parameter.Add("@CompanyID", companyId);
+            var res = await _dbRepository.GetItemsAsync(storedProcedure, parameter);
+
+
+            if (string.IsNullOrWhiteSpace(res))
+            {
+                return new List<POUI>(); // return empty object if no result
+            }
+
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<POUI>>(res);
+                return list?.ToList() ?? new List<POUI>();
+            }
+            catch (JsonException ex)
+            {
+                // log the error if you have logging available
+                // _logger.LogError(ex, "Failed to deserialize POQuantityUI response");
+                return new List<POUI>();
+            }
+
         }
 
     }
