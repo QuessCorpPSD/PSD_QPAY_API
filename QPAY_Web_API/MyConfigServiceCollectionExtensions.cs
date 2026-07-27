@@ -4,6 +4,7 @@ using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.AccountReceivable;
+using QPay.BAL.IRepository.ARKnockOff;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
 using QPay.BAL.IRepository.CreditNoteMatrix;
@@ -22,6 +23,7 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
 using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
+using QPay.BAL.Repository.ARKnockOff;
 using QPay.BAL.Repository.BankNonInvoice;
 using QPay.BAL.Repository.Billing;
 using QPay.BAL.Repository.Common;
@@ -38,7 +40,9 @@ using QPay.BAL.Repository.Tools;
 using QPay.IRepository.iRepository.Masters;
 using QPay.IRepository.Repository.Common;
 using QPay.IRepository.Repository.Masters;
-using QPAY_Web_API.Controller;
+using QPay.BAL.Repository.ARKnockOff;
+using QPay.BAL.IRepository.ARKnockOff;
+
 
 
 namespace QPay.API
@@ -254,6 +258,9 @@ namespace QPay.API
             services.AddScoped<IInvoiceRuleRepository, InvoiceRuleRepository>();
             services.AddScoped<IProInvoiceSummaryRepository, ProInvoiceSummaryRepository>();
             services.AddScoped<ICreditNoteReportRepository, CreditNoteReportRepository>();
+            services.AddScoped<IARKnockOffRepository, ARKnockOffRepository>();
+            services.AddScoped<ISkillMappingRepository, SkillMappingRepository>();
+
         }
     }
 }

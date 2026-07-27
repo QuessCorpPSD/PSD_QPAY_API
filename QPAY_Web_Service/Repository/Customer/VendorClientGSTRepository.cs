@@ -25,7 +25,7 @@ namespace QPay.BAL.Repository.Customer
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
-            parameters.Add("@ClientGstId", vendorSearchParams.VendorClientGstId);
+            parameters.Add("@VendorClientGstId", vendorSearchParams.VendorClientGstId);
             parameters.Add("@Company_Code", vendorSearchParams.Company_Code);
             parameters.Add("@Group_Name", vendorSearchParams.Group_Name);
             parameters.Add("@State_Name", vendorSearchParams.State_Name);
