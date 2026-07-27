@@ -42,8 +42,8 @@ namespace QPay.API.Controller.Customer
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("CreateUpdateSkillMapping/{companyId}/{siteId}/{userId}")]
+        [HttpGet]
+        [Route("DeleteSkillMapping/{companyId}/{siteId}/{userId}")]
         public async Task<IActionResult> DeleteSkillMapping(int companyId, int siteId, int userId)
         {
             var response = await _IRepository.DeleteSkillMapping(companyId, siteId, userId);
