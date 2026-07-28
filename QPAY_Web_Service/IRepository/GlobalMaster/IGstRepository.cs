@@ -7,6 +7,8 @@ namespace QPay.BAL.IRepository.GlobalMaster
     public interface IGstRepository
     {
         Task<DataSet> SearchDetails(string UserId);
+        Task<DataSet> GetGSTtype();
+
         Task<DataSet> ExporttoExcel(string UserId);
         Task<GstMastersResponse> Create(GstRequest createRequest);
         Task<GlobalMastersResponse> Edit(GstRequest createRequest);

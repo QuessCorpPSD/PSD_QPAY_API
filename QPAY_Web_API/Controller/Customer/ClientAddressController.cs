@@ -24,10 +24,10 @@ namespace QPay.API.Controller.Customer
             this._configuration = configuration;
         }
 
-        [HttpGet, Route("GetAllClientAddressDetails/{userId}")]
-        public async Task<IActionResult> GetAllClientAddressDetails(int userId)
+        [HttpPost, Route("GetAllClientAddressDetails")]
+        public async Task<IActionResult> GetAllClientAddressDetails(ClientAddressSearch searchparams)
         {
-            var response = await _iaddress.GetAllClientAddressDetails(userId);
+            var response = await _iaddress.GetAllClientAddressDetails(searchparams);
 
             return Ok(response);
         }

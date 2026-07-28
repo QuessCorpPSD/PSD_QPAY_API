@@ -10,7 +10,7 @@ namespace QPay.BAL.IRepository.Customer
 {
     public interface IClientGSTRepository
     {
-        Task<List<ClientGSTGrid>> GetAllClientGSTDetails(int userId);
+        Task<List<ClientGSTGrid>> GetAllClientGSTDetails(ClientGSTSearch searchparams);
         Task<string> PostAddClientGST(ClientGSTRequest Request);
         Task<string> PostDeleteClientGST(int ClientGSTId, int UserId);
         Task<ClientGSTResponse> PostClientGSTUpload(string xmlString, string flag, string userId);
