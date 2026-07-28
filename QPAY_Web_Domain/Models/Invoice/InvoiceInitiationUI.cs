@@ -181,6 +181,8 @@ namespace QPay.UI.Models.Invoice
         public string? ReqNo { get; set; }
         public string? Data_From { get; set; }
         public string? Invoice_Type { get; set; }
+
+        public string? InvoiceCultureType { get; set; }
     }
 
     public class InvoiceDetailModel
