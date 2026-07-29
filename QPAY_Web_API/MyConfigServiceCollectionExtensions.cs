@@ -44,6 +44,8 @@ using QPay.IRepository.Repository.Common;
 using QPay.IRepository.Repository.Masters;
 using QPay.BAL.Repository.ARKnockOff;
 using QPay.BAL.IRepository.ARKnockOff;
+using QPay.BAL.IRepository.Admin;
+using QPay.BAL.Repository.Admin;
 
 
 
@@ -264,6 +266,7 @@ namespace QPay.API
             services.AddScoped<ISkillMappingRepository, SkillMappingRepository>();
 
             services.AddScoped<ICustomerBlockApprovalRepository, CustomerBlockApprovalRepository>();
+            services.AddScoped<ICategoryChange, CategoryChangeRepo>();
         }
     }
 }
