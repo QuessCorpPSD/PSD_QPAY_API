@@ -402,7 +402,8 @@ namespace QPay.UI.Models.Invoice
             public string? VMSFEE { get; set; }
             public string? CALCRG { get; set; }
             public string? CALRT { get; set; }
-        
+            public string Req_No { get; set; } = "";
+          public string Id { get; set; } = "";
 
     }
 
