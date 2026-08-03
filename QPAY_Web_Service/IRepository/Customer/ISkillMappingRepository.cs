@@ -12,6 +12,6 @@ namespace QPay.BAL.IRepository.Customer
     {
         Task<DataSet> Search(int? companyId, int? siteId);
         Task<string> CreateUpdateSkillMapping(SkillMappingRequest request);
-        Task<string> DeleteSkillMapping(int companyId, int siteId, int userId);
+        Task<string> DeleteSkillMapping(int companyId, int siteId,string skillCategory, int userId);
     }
 }

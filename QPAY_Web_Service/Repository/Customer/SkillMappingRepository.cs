@@ -60,12 +60,13 @@ namespace QPay.BAL.Repository.Customer
             }
         }
 
-        public async Task<string> DeleteSkillMapping(int companyId, int siteId, int userId)
+        public async Task<string> DeleteSkillMapping(int companyId, int siteId, string skillCategory, int userId)
         {
             string storeProcedure = "Proc_Delete_SkillMapping";
             var parameters = new DynamicParameters();
             parameters.Add("@Company_Id", companyId);
             parameters.Add("@SiteId", siteId);
+            parameters.Add("@SkillCategory", skillCategory);
             parameters.Add("@CreatedBy", userId);
             var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 

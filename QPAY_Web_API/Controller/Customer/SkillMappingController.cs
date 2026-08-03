@@ -43,10 +43,10 @@ namespace QPay.API.Controller.Customer
         }
 
         [HttpGet]
-        [Route("DeleteSkillMapping/{companyId}/{siteId}/{userId}")]
-        public async Task<IActionResult> DeleteSkillMapping(int companyId, int siteId, int userId)
+        [Route("DeleteSkillMapping/{companyId}/{siteId}/{skillCategory}/{userId}")]
+        public async Task<IActionResult> DeleteSkillMapping(int companyId, int siteId, string skillCategory, int userId)
         {
-            var response = await _IRepository.DeleteSkillMapping(companyId, siteId, userId);
+            var response = await _IRepository.DeleteSkillMapping(companyId, siteId, skillCategory, userId);
             return Ok(response);
         }
 
