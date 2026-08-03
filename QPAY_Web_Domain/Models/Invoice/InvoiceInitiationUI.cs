@@ -155,6 +155,8 @@ namespace QPay.UI.Models.Invoice
         public string? Invoice_Number { get; set; } = "";
         public string? PRO_Invoice_Number { get; set; } = "";
 
+        public string? Id{ get; set; } = "";
+
     }
     public class InvoiceQCDetailUI {
         public string ReqNo { get; set; } = "";
