@@ -95,4 +95,10 @@ namespace QPay.UI.Common
         public int? Financial_Year_Id {get; set;}
         public string? Pay_Period {get; set;}
     }
+
+    public class POUI
+    {
+        public int POID { get; set; }
+        public string PONUMBER { get; set; } = string.Empty;
+    }
 }

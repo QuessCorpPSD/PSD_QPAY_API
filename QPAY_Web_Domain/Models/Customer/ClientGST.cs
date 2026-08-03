@@ -44,6 +44,28 @@ namespace QPay.UI.Models.Customer
         public string? StateCode { get; set; }
     }
 
+    public class ClientGSTSearch
+    {
+        public int? ClientGstId { get; set; }
+        public string? Company_Code { get; set; } = "";
+        public string? Group_Name { get; set; } = "";
+        public string? State_Name { get; set; } = "";
+        public string? ClientInvoicingState_Name { get; set; } = "";
+        public string? InvoicingState_Name { get; set; } = "";
+        public string? GstTypeName { get; set; } = "";
+        public string? GstNumber { get; set; } = "";
+        public string? PanNumber { get; set; } = "";
+        public string? TanNumber { get; set; } = "";
+        public string? UserName { get; set; } = "";
+        public string? SapCustomerCode { get; set; } = "";
+        public string? InvoiceCategory { get; set; } = "";
+        public int? PageNo { get; set; }
+        public int? PageSize { get; set; }
+        public int? TotalCount { get; set; }
+        public string? UserId { get; set; } = "";
+    }
+
+
     public class ClientGSTRequest
     {
         public string? Action { get; set; }

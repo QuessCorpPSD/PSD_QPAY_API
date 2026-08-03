@@ -21,14 +21,27 @@ namespace QPay.BAL.Repository.Customer
         {
             this._dbRepository = dbRepository;
         }
-        public async Task<List<VendorClientGSTGrid>> GetAllVendorClientGSTDetails(int userId)
+        public async Task<List<VendorClientGSTGrid>> GetAllVendorClientGSTDetails(VendorClientGSTSearch vendorSearchParams)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Action", "Get");
-            parameters.Add("@UserId ", userId);
-            parameters.Add("@PageNo", 1);
-            parameters.Add("@PageSize", 999999);
-
+            parameters.Add("@VendorClientGstId", vendorSearchParams.VendorClientGstId);
+            parameters.Add("@Company_Code", vendorSearchParams.Company_Code);
+            parameters.Add("@Group_Name", vendorSearchParams.Group_Name);
+            parameters.Add("@State_Name", vendorSearchParams.State_Name);
+            parameters.Add("@ClientInvoicingState_Name", vendorSearchParams.ClientInvoicingState_Name);
+            parameters.Add("@InvoicingState_Name", vendorSearchParams.InvoicingState_Name);
+            parameters.Add("@GstTypeName", vendorSearchParams.GstTypeName);
+            parameters.Add("@GstNumber", vendorSearchParams.GstNumber);
+            parameters.Add("@PanNumber", vendorSearchParams.PanNumber);
+            parameters.Add("@TanNumber", vendorSearchParams.TanNumber);
+            parameters.Add("@UserName", vendorSearchParams.UserName);
+            parameters.Add("@SapCustomerCode", vendorSearchParams.SapCustomerCode);
+            parameters.Add("@InvoiceCategory", vendorSearchParams.InvoiceCategory);
+            parameters.Add("@PageNo", vendorSearchParams.PageNo);
+            parameters.Add("@PageSize", vendorSearchParams.PageSize);
+            parameters.Add("@TotalCount", vendorSearchParams.TotalCount);
+            parameters.Add("@UserId", vendorSearchParams.UserId);
 
             var res = await this._dbRepository.GetItemsAsync("Proc_ManageVendorClientGst", parameters);
 
