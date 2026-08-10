@@ -237,6 +237,7 @@ namespace QPay.API
             services.AddScoped<ITDSSlab, TDSSlab>();
             services.AddScoped<IReIssueApprove, ReIssueApprove>();
             services.AddScoped<IReissueProcessRepository, ReissueProcessRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
         }
     }
