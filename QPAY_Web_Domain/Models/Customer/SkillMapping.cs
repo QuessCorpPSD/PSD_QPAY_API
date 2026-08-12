@@ -12,6 +12,7 @@ namespace QPay.UI.Models.Customer
 
     public class SkillMappingRequest
     {
+        public int? Manual_Invoice_Id { get; set; }
         public int? Company_Id {get; set;}
         public string? Company_code {get; set;} = "";
         public int? SiteId {get; set;}

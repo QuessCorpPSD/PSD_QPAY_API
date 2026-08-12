@@ -38,6 +38,7 @@ namespace QPay.BAL.Repository.Customer
         {
             string storeProcedure = "Proc_CreateUpdate_SkillMapping";
             var parameters = new DynamicParameters();
+            parameters.Add("@Manual_Invoice_Id", request.Manual_Invoice_Id ?? 0);
             parameters.Add("@Company_Id", request.Company_Id);
             parameters.Add("@Company_code", request.Company_code);
             parameters.Add("@SiteId", request.SiteId);
