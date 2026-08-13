@@ -52,7 +52,7 @@ namespace QPay.BAL.Repository.Invoice
         {
             var parameters = new Dictionary<string, object>
             {
-                ["@Action"] = "Add",
+                ["@Action"] = model.mode,
                 ["@UserId"] = createdBy,
                 ["@Id"] = model.parentDetail.POCulture_id,
                 ["@CompanyId"] = model.parentDetail.Company_Id,
