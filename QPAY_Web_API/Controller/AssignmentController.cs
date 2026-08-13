@@ -59,9 +59,22 @@ namespace QPay.API.Controller
             //Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             //Response.Headers["Pragma"] = "no-cache";
             //Response.Headers["Expires"] = "0";Q
-            this._assignment.AutoAllocationLots(userId);
-            var lots = this._assignment.GetAssignmentLotByDate(userId, filter);
-            return Ok(lots);
+
+           var allotstatus= this._assignment.AutoAllocationLots(userId);
+            if(allotstatus.StatusCode==200)
+            {
+                var lots = this._assignment.GetAssignmentLotByDate(userId, filter);
+                lots.StatusCode = Convert.ToInt32(allotstatus.StatusCode);
+                return Ok(lots);
+            }
+            else
+            {
+                AssignmentLots assignment = new AssignmentLots();
+                assignment.StatusCode =Convert.ToInt32(allotstatus.StatusCode);
+                assignment.Error_Message = allotstatus.Messages;
+                return Ok(assignment);
+            }
+           
 
         }
 

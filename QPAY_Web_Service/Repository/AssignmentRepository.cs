@@ -318,7 +318,7 @@ namespace QPay.BAL.Repository
         {
             AutoAllottmentUI allottmentUI = new AutoAllottmentUI();
             // string storeProcedure = string.Format("SP_Auto_Allotment_Lot_process");
-            const string storeProcedure = "SP_Auto_Allotment_Lot_process_Revised";
+            const string storeProcedure = "SP_Auto_Allotment_Lot_process_Revised_New";
             var parameters = new DynamicParameters();
             parameters.Add("@userId", userId);
            
