@@ -554,9 +554,10 @@ namespace QPay.BAL.Repository
                 int i = 1;
                 using var workbook = new XLWorkbook();
                 {
+                    string sheetName = "";
                     foreach (DataTable payregister_dt in res.Tables)
                     {
-                        string sheetName = "";
+                       
                         if (payregister_dt.Columns.Count == 1)
                         {
                             sheetName = payregister_dt.Rows[0][0].ToString();
@@ -565,12 +566,12 @@ namespace QPay.BAL.Repository
                         {
                             if (payregister_dt.Rows.Count > 0)
                             {
-                                var ws = workbook.AddWorksheet(payregister_dt, sheetName);
+                                var ws = workbook.AddWorksheet(payregister_dt, sheetName + "-"  + i.ToString());
                                 ws.Table(0).ShowAutoFilter = false;
                                 ws.Table(0).Theme = XLTableTheme.None;
                             }
                         }
-
+                        i++;
 
                     }
                     using (MemoryStream stream = new MemoryStream())
@@ -579,7 +580,7 @@ namespace QPay.BAL.Repository
                         stream.Seek(0, SeekOrigin.Begin);
                         var bytes = Convert.ToBase64String(stream.ToArray());
                         //  FileResponse fileResponse = new FileResponse();
-                        fileResponse.FileName = "SlitRegister.xlsx";
+                        fileResponse.FileName = "SplitRegister_"+System.DateTime.Now.ToString("ddMMyyyyhhmmss")+".xlsx";
                         fileResponse.File = bytes;
 
                     }

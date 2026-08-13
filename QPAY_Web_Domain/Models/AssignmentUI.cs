@@ -9,6 +9,9 @@ namespace QPay.UI.Models
 
     public class AssignmentLots
     {
+
+        public int StatusCode {  get; set; }
+        public string Error_Message {  get; set; }
         public List<AssignmentUI> PendingLots { get; set; }
         public List<AssignmentUI> TodayLots { get; set; }
     }
