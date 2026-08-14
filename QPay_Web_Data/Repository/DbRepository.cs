@@ -1690,6 +1690,25 @@ namespace QPay.DAL.Repository
             return ds;
         }
 
+        public DataSet POCultureExport(int companyId,int userId)
+        {
+            var ds = new DataSet();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("Proc_ManagePOInvoiceCulture_New", connection);
+
+            command.CommandTimeout = 0;
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.AddWithValue("@Action", "Export");
+            command.Parameters.AddWithValue("@UserId", userId);
+            command.Parameters.AddWithValue("@CompanyId", companyId);
+
+            using var adapter = new SqlDataAdapter(command);
+            adapter.Fill(ds);
+
+            return ds;
+        }
         public async Task<List<object>> QueryMultipleAsync(string sql, Type[] resultTypes, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
             using var connection = new SqlConnection(_connectionString);
