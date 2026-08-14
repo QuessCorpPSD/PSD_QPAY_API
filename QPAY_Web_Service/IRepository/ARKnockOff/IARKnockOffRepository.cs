@@ -11,6 +11,7 @@ namespace QPay.BAL.IRepository.ARKnockOff
     public interface IARKnockOffRepository
     {
         Task<string> SaveARDetails(string xml);
+        Task<DataSet> GetARInvoiceDetails();
         DataSet ARReportExport(string FromDate);
     }
 }

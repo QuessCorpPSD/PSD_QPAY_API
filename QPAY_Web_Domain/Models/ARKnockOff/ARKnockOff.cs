@@ -20,13 +20,19 @@ namespace QPay.UI.Models.ARKnockOff
         public string? Remitter { get; set; } = "";
         public string? Benificiary { get; set; } = "";
         public decimal Total_Remitted_Amount { get; set; }
+        public string? Sender_Mail { get; set; } = "";
+        public string? Mail_Date { get; set; } = "";
+        public string? Mail_Subject { get; set; } = "";
+        public string? Error_Message { get; set; } = "";
+        public string? FileName { get; set; } = "";
         public List<ARInvoiceDetail> ARInvoiceDetails { get; set; } = new List<ARInvoiceDetail>();
-
     }
     public class ARInvoiceDetail
     {
         public string? Invoice_Number { get; set; } = "";
         public string? Amount { get; set; } = "";
+        public string? TDS_Percent { get; set; } = "";
+        public string? TDS_Amount { get; set; } = "";
     }
 }
 

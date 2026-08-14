@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository.ARKnockOff;
 using QPay.DTo.Models.Masters;
@@ -73,6 +75,22 @@ namespace QPay.API.Controller.ARKnockOff
                 return Ok(response);
             }
 
+        }
+
+        [HttpGet, Route("GetARInvoiceDetails")]
+        public async Task<IActionResult> GetARInvoiceDetails()
+        {
+            var search = await this._IRepository.GetARInvoiceDetails();
+            if (search.Tables[0].Rows.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(search, Formatting.Indented);
+                //var _outputResponse = ResponseWrapManager.ResponseWrapper(search, HttpContext);
+                return Ok(json);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
         }
 
     }

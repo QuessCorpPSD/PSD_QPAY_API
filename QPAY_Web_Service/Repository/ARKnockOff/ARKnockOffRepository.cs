@@ -45,5 +45,14 @@ namespace QPay.BAL.Repository.ARKnockOff
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetAllARInvoiceDetails_Export", parameters, 1500);
         }
+
+        public async Task<DataSet> GetARInvoiceDetails()
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetAllARInvoiceDetails", parameters, 1500);
+
+        }
     }
 }
