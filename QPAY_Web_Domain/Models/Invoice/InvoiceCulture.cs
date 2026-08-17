@@ -49,6 +49,8 @@ namespace QPay.UI.Models.Invoice
             public int? Invoice_Category_Id { get; set; }
             public int? State_Id { get; set; }
             public int? Spilt_Type_Id { get; set; }
+            public string? PayrollType { get; set; }
+            
         }
 
         public class TypeOfInvoiceForInvoiceStructure
@@ -103,6 +105,8 @@ namespace QPay.UI.Models.Invoice
             public string Invoice_Category_Name { get; set; } = "";
             public int? State_Id { get; set; }
             public string State_Name { get; set; } = "";
+            public string PayrollType { get; set; } = "";
+            
         }
 
 
