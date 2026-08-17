@@ -4,6 +4,8 @@ using QPay.API.Extensions;
 using QPay.API.Models;
 using QPay.BAL.IRepository;
 using QPay.BAL.IRepository.AccountReceivable;
+using QPay.BAL.IRepository.Admin;
+using QPay.BAL.IRepository.ARKnockOff;
 using QPay.BAL.IRepository.ARKnockOff;
 using QPay.BAL.IRepository.Billing;
 using QPay.BAL.IRepository.Common;
@@ -17,6 +19,7 @@ using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.Invoice;
 using QPay.BAL.IRepository.MailApprovalProcess;
 using QPay.BAL.IRepository.Process;
+using QPay.BAL.IRepository.PurchaseOrder;
 using QPay.BAL.IRepository.Reports;
 using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.IRepository.Tools;
@@ -24,6 +27,8 @@ using QPay.BAL.Repository;
 using QPay.BAL.Repository.AccountReceivable;
 using QPay.BAL.Repository.AccountReceivableRepository;
 using QPay.BAL.Repository.AccountReceivableSer;
+using QPay.BAL.Repository.Admin;
+using QPay.BAL.Repository.ARKnockOff;
 using QPay.BAL.Repository.ARKnockOff;
 using QPay.BAL.Repository.BankNonInvoice;
 using QPay.BAL.Repository.Billing;
@@ -36,16 +41,13 @@ using QPay.BAL.Repository.Invoice;
 using QPay.BAL.Repository.Invoice;
 using QPay.BAL.Repository.MailApprovalProcess;
 using QPay.BAL.Repository.Process;
+using QPay.BAL.Repository.PurchaseOrder;
 using QPay.BAL.Repository.Reports;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.Tools;
 using QPay.IRepository.iRepository.Masters;
 using QPay.IRepository.Repository.Common;
 using QPay.IRepository.Repository.Masters;
-using QPay.BAL.Repository.ARKnockOff;
-using QPay.BAL.IRepository.ARKnockOff;
-using QPay.BAL.IRepository.Admin;
-using QPay.BAL.Repository.Admin;
 
 
 
@@ -269,6 +271,7 @@ namespace QPay.API
             services.AddScoped<ICategoryChange, CategoryChangeRepo>();
             services.AddScoped<IPOCultureRepository, POCultureRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         }
     }
 }
