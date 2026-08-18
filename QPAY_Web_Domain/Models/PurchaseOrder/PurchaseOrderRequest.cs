@@ -114,7 +114,7 @@ namespace QPay.UI.Models.PurchaseOrder
         //Rudra
 
         public int IsCompanyGroupId { get; set; }
-      //  public virtual ICollection<PurchaseOrderDetailViewModel> PurchaseOrderDetailViewModel { get; set; }
+        //public virtual ICollection<PurchaseOrderDetailViewModel> PurchaseOrderDetailViewModel { get; set; }
     }
     [DataContract]
     public class BaseModel

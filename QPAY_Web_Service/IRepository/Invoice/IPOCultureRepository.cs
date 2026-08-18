@@ -14,7 +14,7 @@ namespace QPay.BAL.IRepository.Invoice
     {
 
         Task<List<PoCulture>> GetAllPOCulture(int companyId, int userId);
-         Task<List<PurchaseOrder>> GetAllPONumbers(int companyId, int userId);
+         Task<List<PurchaseOrderModel>> GetAllPONumbers(int companyId, int userId);
 
         Task<DataSet> Create(POCultureRequest model, int createdBy);
 

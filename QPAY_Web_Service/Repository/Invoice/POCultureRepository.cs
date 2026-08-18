@@ -98,7 +98,7 @@ namespace QPay.BAL.Repository.Invoice
 
         }
 
-        public async Task<List<PurchaseOrder>> GetAllPONumbers(int companyId, int UserId)
+        public async Task<List<PurchaseOrderModel>> GetAllPONumbers(int companyId, int UserId)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -111,11 +111,11 @@ namespace QPay.BAL.Repository.Invoice
 
             if (!string.IsNullOrEmpty(res))
             {
-                return JsonConvert.DeserializeObject<List<PurchaseOrder>>(res)
-                       ?? new List<PurchaseOrder>();
+                return JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(res)
+                       ?? new List<PurchaseOrderModel>();
             }
 
-            return new List<PurchaseOrder>();
+            return new List<PurchaseOrderModel>();
         }
     }
 }
