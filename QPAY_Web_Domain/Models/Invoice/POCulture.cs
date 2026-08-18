@@ -40,7 +40,7 @@ namespace QPay.UI.Models.Invoice
             public int? InvoicingStateId { get; set; }
             public string? Error_Message { get; set; }
         }
-        public class PurchaseOrder
+        public class PurchaseOrderModel
         {
             public int Purchase_Order_Id { get; set; }
 
