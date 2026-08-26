@@ -6,6 +6,7 @@ using QPay.DAL.Repository;
 using QPay.UI.GlobalMaster;
 using QPay.UI.Invoice;
 using QPay.UI.Models.Invoice;
+using QPay.UI.Models.PurchaseOrder;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -160,6 +161,43 @@ namespace QPay.BAL.Repository.Invoice
                 throw new Exception("No data found for the given Parameters.");
             }
 
+        }
+
+        public async Task<List<TypeOfInvoiceForInvoiceStructure>> GetAllPayCodeFromCompanyCodeByCompanyId(int companyId,int InvoiceCultureid)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["@CompanyId"] = companyId,
+                ["@InvoiceCultureid"] = InvoiceCultureid
+            };
+
+            var res = await this._dbRepository.GetItemsAsync(
+                "Proc_TOIAssocByCompanyIdForInvoiceCulture_newUI",
+                parameters
+            );
+
+            var result = new List<TypeOfInvoiceForInvoiceStructure>();
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                var data = JsonConvert.DeserializeObject<List<dynamic>>(res);
+
+                if (data != null)
+                {
+                    foreach (var item in data)
+                    {
+                        var paycode = new TypeOfInvoiceForInvoiceStructure
+                        {
+                            Paycode_Id = Convert.ToInt32(item.Paycode_Id),
+                            Paycode_Code = Convert.ToString(item.Paycode_Code)
+                        };
+
+                        result.Add(paycode);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

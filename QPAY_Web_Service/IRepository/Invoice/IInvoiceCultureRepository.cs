@@ -1,4 +1,5 @@
-﻿using QPay.UI.Invoice;
+﻿using Microsoft.AspNetCore.Mvc;
+using QPay.UI.Invoice;
 using QPay.UI_Domain.Models.PurchaseOrder;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace QPay.BAL.IRepository.Invoice
         Task<List<InvoiceStructure>> GetAllInvoiceCulture(int companyId,int spiltTypeId);
         Task<string> PostInvoiceCulture(string xmlString, string userId);
         DataSet InvoiceCultureExport(int companyId);
+        Task<List<TypeOfInvoiceForInvoiceStructure>> GetAllPayCodeFromCompanyCodeByCompanyId(int companyId , int InvoiceCultureid);
 
     }
 }
