@@ -261,7 +261,17 @@ namespace QPay.API.Controller.Invoice
 
         }
 
+        [HttpGet]
+        [Route("ViewInvoiceCulture/{companyId}/{InvoiceCultureid}")]
+        public async Task<IActionResult> GetAllPayCodeFromCompanyCodeByCompanyId(int companyId ,int InvoiceCultureid)
+        {
+            var response = await _InvoiceCulture
+                .GetAllPayCodeFromCompanyCodeByCompanyId(companyId, InvoiceCultureid);
 
-       
+            return Ok(response);
+        }
+
+
+
     }
 }
