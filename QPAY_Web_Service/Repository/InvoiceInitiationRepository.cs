@@ -1178,6 +1178,7 @@ namespace QPay.BAL.Repository
             parameters.Add("@PageSize", "10");
             parameters.Add("@Map_Name", provisionalrequest.Map_Name);
             parameters.Add("@Pay_Period", provisionalrequest.PayPeriod);
+            parameters.Add("@InvoiceCultureId", provisionalrequest.InvoiceCulture_id);
 
             var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
             return res;

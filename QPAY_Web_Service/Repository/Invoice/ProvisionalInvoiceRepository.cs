@@ -247,8 +247,8 @@ namespace QPay.BAL.Repository.Invoice
                 ["@PageNo"] = "1",
                 ["@PageSize"] = "10",
                 ["@Map_Name"] = provisionalrequest.Map_Name,
-                ["@Pay_Period"] = provisionalrequest.PayPeriod
-
+                ["@Pay_Period"] = provisionalrequest.PayPeriod,
+                ["@InvoiceCultureId"] = provisionalrequest.InvoiceCulture_Id
             };
             
             DataSet ds = _dbRepository.ExecuteStoredProcedureToDataSetAsync(storeProcedure, parameters, 1500);
