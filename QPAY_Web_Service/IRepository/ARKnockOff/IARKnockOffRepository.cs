@@ -12,6 +12,7 @@ namespace QPay.BAL.IRepository.ARKnockOff
     {
         Task<string> SaveARDetails(string xml);
         Task<DataSet> GetARInvoiceDetails();
+        Task<DataSet> GetIgnoreSubjectLine();
         DataSet ARReportExport(string FromDate);
     }
 }

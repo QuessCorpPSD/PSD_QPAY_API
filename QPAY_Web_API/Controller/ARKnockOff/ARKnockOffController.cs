@@ -92,6 +92,21 @@ namespace QPay.API.Controller.ARKnockOff
                 return Ok(new { StatusCode = "400", Message = "No records found" });
             }
         }
+        [HttpGet, Route("GetIgnoreSubjectLine")]
+        public async Task<IActionResult> GetIgnoreSubjectLine()
+        {
+            var search = await this._IRepository.GetIgnoreSubjectLine();
+            if (search.Tables[0].Rows.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(search, Formatting.Indented);
+                //var _outputResponse = ResponseWrapManager.ResponseWrapper(search, HttpContext);
+                return Ok(json);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
 
     }
 
