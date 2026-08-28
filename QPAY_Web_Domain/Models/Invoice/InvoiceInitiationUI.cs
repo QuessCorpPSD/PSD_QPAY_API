@@ -68,6 +68,13 @@ namespace QPay.UI.Models.Invoice
 
         public string? Narration { get; set; } = string.Empty;
     }
+
+    public class InitiationReqDetail
+    {
+        public int? StatusCode {  get; set; }
+        public string? Messages {  get; set; }
+       public List<InitiationRequestUI>? DraftInvoiceInitation {  get; set; }
+    }
     public class InitiationRequestUI
     {
         public int? Serial_No {  get; set; }

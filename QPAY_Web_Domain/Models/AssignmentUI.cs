@@ -14,6 +14,7 @@ namespace QPay.UI.Models
         public string Error_Message {  get; set; }
         public List<AssignmentUI> PendingLots { get; set; }
         public List<AssignmentUI> TodayLots { get; set; }
+
     }
    public class AssignmentUI
     {

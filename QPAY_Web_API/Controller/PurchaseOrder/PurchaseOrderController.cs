@@ -37,7 +37,7 @@ namespace QPay.API.Controller.PurchaseOrder
                     TotalCount = reader.Field<int>("TotalCount"),
                     SLNo = reader.Field<int>("SLNo"),
 
-                    Purchase_Order_Id = reader.Field<int>(
+                    Purchase_Order_Id = reader.Field<Int32>(
                         Column_Constants.Column_Name_Purchase_Order_Id),
 
                     Company_Id = reader.Field<int?>(
