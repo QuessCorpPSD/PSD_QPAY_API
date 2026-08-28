@@ -12,5 +12,6 @@ namespace QPay.UI.Common
         public int? City_Id { get; set; }
 
         public string City_Name { get; set; } = "";
+        public string Pin_Code { get; set; } = "";
     }
 }
