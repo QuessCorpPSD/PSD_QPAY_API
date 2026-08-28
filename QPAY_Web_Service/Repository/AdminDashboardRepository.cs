@@ -228,6 +228,32 @@ namespace QPay.BAL.Repository
             }
             return new List<BreakTimeDetailsUI>();
         }
+        public async Task<AdminDashboardUI> GetInvoiceDashboard(string InvoiceType)
+        {
+            AdminDashboardUI dashboardUI = new AdminDashboardUI();
+
+            string storeProcedure = string.Format("SP_Invoice_Dashboard_With_invoiceType");
+
+            var parameter = new DynamicParameters();
+            parameter.Add("@InvoiceType", InvoiceType);
+
+            var res = await this._dbRepository.GetItemsAsync(
+                storeProcedure,
+                parameter
+            );
+
+            if (res != "")
+            {
+                dashboardUI =
+                    JsonConvert.DeserializeObject<List<AdminDashboardUI>>(res)
+                    .FirstOrDefault()
+                    ?? new AdminDashboardUI();
+
+                return dashboardUI;
+            }
+
+            return dashboardUI;
+        }
         public async Task<FileResponse> InputReconAndYettoCome(string flag)
         {
             FileResponse fileResponse = new FileResponse();

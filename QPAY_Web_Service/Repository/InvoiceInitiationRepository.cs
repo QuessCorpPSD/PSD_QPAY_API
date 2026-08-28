@@ -108,11 +108,33 @@ namespace QPay.BAL.Repository
         {
             InitiationReqDetail initiationDetail = new InitiationReqDetail();
             ///Allottment
-            var param = new DynamicParameters();
-            param.Add("@UserId", invoiceDetailModel.userId);
-            var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
-            var allotStatus = JsonConvert.DeserializeObject<List<InitiationReqDetail>>(allot).FirstOrDefault();
-            if (allotStatus.StatusCode==200)
+            ///
+            if (invoiceDetailModel.ActionType == "S")
+            {
+                var param = new DynamicParameters();
+                param.Add("@UserId", invoiceDetailModel.userId);
+                var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
+                var allotStatus = JsonConvert.DeserializeObject<List<InitiationReqDetail>>(allot).FirstOrDefault();
+                if (allotStatus.StatusCode == 200)
+                {
+                    string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot_test]" ?? "";
+                    var parameter = new DynamicParameters();
+                    parameter.Add("@InvoiceType", invoiceDetailModel.InvoiceType ?? (object)DBNull.Value);
+                    parameter.Add("@ActionType", invoiceDetailModel.ActionType ?? (object)DBNull.Value);
+                    parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);
+                    var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
+                    var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
+                    initiationDetail.StatusCode = allotStatus.StatusCode;
+                    initiationDetail.Messages = allotStatus.Messages;
+                    initiationDetail.DraftInvoiceInitation = list.ToList();
+                }
+                else
+                {
+                    initiationDetail.StatusCode = allotStatus.StatusCode;
+                    initiationDetail.Messages = allotStatus.Messages;
+                }
+            }
+            else
             {
                 string storeProcedure = "[dbo].[SP_Invoice_Initiation_search_Allot_test]" ?? "";
                 var parameter = new DynamicParameters();
@@ -121,14 +143,9 @@ namespace QPay.BAL.Repository
                 parameter.Add("@UserId", invoiceDetailModel.userId ?? (object)DBNull.Value);
                 var res = await _dbRepository.GetItemsAsync(storeProcedure, parameter);
                 var list = JsonConvert.DeserializeObject<List<InitiationRequestUI>>(res);
-                initiationDetail.StatusCode = allotStatus.StatusCode;
-                initiationDetail.Messages = allotStatus.Messages;
+                initiationDetail.StatusCode = 200;
+                initiationDetail.Messages = "Searched";
                 initiationDetail.DraftInvoiceInitation = list.ToList();
-            }
-            else
-            {
-                initiationDetail.StatusCode = allotStatus.StatusCode;
-                initiationDetail.Messages= allotStatus.Messages;
             }
             
 
@@ -1095,7 +1112,7 @@ namespace QPay.BAL.Repository
                     var invoice = JsonConvert.DeserializeObject<List<InvoiceInitiationUI>>(res).FirstOrDefault();
                     var param = new DynamicParameters();
                     param.Add("@UserId", userId);
-                    var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", parameter);
+                    var allot = await _dbRepository.GetItemsAsync("SP_AutoAllocation_Invoice", param);
                     return invoice;
                 }
                 else

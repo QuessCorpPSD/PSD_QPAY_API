@@ -104,5 +104,12 @@ namespace QPay.API.Controller
             var status = await this._dashboardRepository.SaveInvoiceAllotEdit(reqNo, userId);
             return Ok(status);
         }
+        [HttpGet, Route("InvoiceDashboard/{InvoiceType}")]
+        public async Task<IActionResult> InvoiceDashboard(string InvoiceType)
+        {
+            var status = await this._adminDashboardRepository.GetInvoiceDashboard(InvoiceType);
+
+            return Ok(status);
+        }
     }
 }

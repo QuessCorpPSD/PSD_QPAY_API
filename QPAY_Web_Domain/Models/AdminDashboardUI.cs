@@ -16,5 +16,17 @@ namespace QPay.UI.Models
         public int NotAllotted { get; set; }
         public int yettocome { get; set; }
         public int Processing {  get; set; }
+
+        public int? InvoiceTotal { get; set; }
+        public int? InvoiceInprogress { get; set; }
+        public int? InvoiceCompleted { get; set; }
+        public int? InvoicePending { get; set; }
+        public int? InvoiceYetToCome { get; set; }
+
+        public int? TotalInvoiceAmount { get; set; }
+        public int? CompletedInvoiceAmount { get; set; }
+        public int? PendingInvoiceAmount { get; set; }
+        public int? yettoComeInvoiceAmount { get; set; }
+
     }
 }
