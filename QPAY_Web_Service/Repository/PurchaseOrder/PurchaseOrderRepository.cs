@@ -22,7 +22,7 @@ namespace QPay.BAL.Repository.PurchaseOrder
         {
             var parameters = new Dictionary<string, object?>
             {
-                ["@Action"] = "GET",
+                ["@Action"] = purchaseOrderRequest.Action,
                 ["@CompanyId"] = purchaseOrderRequest.Company_Id,
                 ["@Purchase_Request_No"] = purchaseOrderRequest.Purchase_Request_No,
                 ["@Purchase_Order_Id"] = purchaseOrderRequest.Purchase_Order_Id,

@@ -31,5 +31,6 @@ namespace QPay.BAL.IRepository
         Task<List<UserUI>> GetTeamLeaderByMangerId(int UserId);
         Task<List<UserUI>> GetEmployeeByTeamLeaderId(int UserId);
         Task<FileResponse> InputReconAndYettoCome(string flag);
+        Task<AdminDashboardUI> GetInvoiceDashboard(string InvoiceType);
     }
 }

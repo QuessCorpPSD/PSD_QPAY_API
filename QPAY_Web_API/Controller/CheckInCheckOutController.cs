@@ -25,8 +25,7 @@ namespace QPay.API.Controller
         public IActionResult CheckIn(int userId, string Type)
         {
             var res = this._checkInCheckOutRepository.CheckIn(userId, Type);
-
-            this._assignmentRepository.AutoAllocationLots(userId);
+            this._assignmentRepository.AutoAllocationLots(userId);           
             return Ok(res);
         }
         [HttpPost, Route("SendFeedBackMail")]

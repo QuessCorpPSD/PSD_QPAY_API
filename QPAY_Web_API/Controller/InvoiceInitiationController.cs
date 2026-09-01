@@ -119,6 +119,7 @@ public async Task<IActionResult> InvoiceInitiate(InvoiceInitiateRequestModel req
 
                 InvoiceInitiationUI proInvoice_status = new InvoiceInitiationUI();
             InvoiceInitiationUI draftInvoice_status = new InvoiceInitiationUI();
+
             if (withProInvoiceNumber.Any())
         {
 

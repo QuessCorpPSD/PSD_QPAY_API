@@ -10,7 +10,7 @@
     public class EmployeeBreakBulkModelRequest
     {
         public int userId { get; set; } = 0;
-        public List<EmployeeBreakModelRequest>? employeeBreakRequest {  get; set; } 
+        public EmployeeBreakModelRequest? employeeBreakRequest {  get; set; } 
     }
 
     public class EmployeeBreakModelRequest

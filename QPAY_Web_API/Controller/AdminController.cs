@@ -105,32 +105,32 @@ namespace QPay.API.Controller
                 EndTime = TimeOnly.Parse(employeeBreakRequest.EndTime),
                 Description = employeeBreakRequest.description,
                 BreakId = employeeBreakRequest.breakId,
-                UserBreakId = employeeBreakRequest?.breakTypeId ?? 0
+                UserBreakId = employeeBreakRequest?.userBreakId ?? 0
             };
             var res = await this._adminDashboardRepository.EmployeeBreakAddUpdate(employeeBreakUI);
             return Ok(res);
         }
         [HttpPost, Route("BulkEmployeeBreakAdd")]
-        public async Task<IActionResult> BulkEmployeeBreakAdd(EmployeeBreakBulkModelRequest employeeBulkBreakRequest)
+        public async Task<IActionResult> BulkEmployeeBreakAdd(EmployeeBreakModelRequest employeeBulkBreakRequest)
         {
 
-                     var employees = employeeBulkBreakRequest?.employeeBreakRequest?
-                    .Select(x => new EmployeeBreakUI
-                    {
-                        UserId = employeeBulkBreakRequest.userId,
-                        Remarks = x.Remarks,
-                        StartTime = TimeOnly.Parse(x.StartTime),
-                        EndTime = TimeOnly.Parse(x.EndTime),    
-                        Description = x.description,
-                        BreakId = x.breakId,
-                        UserBreakId = x?.userBreakId ?? 0
-                    })
-                    .ToList();
-            var res = await this._adminDashboardRepository.EmployeeBulkBreakAddUpdate(employees, employeeBulkBreakRequest.userId);
-            EmployeeBreakUI employeeBreakUI = new EmployeeBreakUI()
-            {
+            //         var employees = employeeBulkBreakRequest?.employeeBreakRequest?
+            //        .Select(x => new EmployeeBreakUI
+            //        {
+            //            UserId = employeeBulkBreakRequest.userId,
+            //            Remarks = x.Remarks,
+            //            StartTime = TimeOnly.Parse(x.StartTime),
+            //            EndTime = TimeOnly.Parse(x.EndTime),    
+            //            Description = x.description,
+            //            BreakId = x.breakId,
+            //            UserBreakId = x?.userBreakId ?? 0
+            //        })
+            //        .ToList();
+            //var res = await this._adminDashboardRepository.EmployeeBulkBreakAddUpdate(employees, employeeBulkBreakRequest.userId);
+            //EmployeeBreakUI employeeBreakUI = new EmployeeBreakUI()
+            //{
                
-            };
+            //};
             //return Ok(res);
             return Ok("");
         }
