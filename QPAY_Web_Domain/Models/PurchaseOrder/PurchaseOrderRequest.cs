@@ -151,19 +151,59 @@ namespace QPay.UI.Models.PurchaseOrder
     }
     public class PurchaseOrderRequest
     {
-        public string? Action { get; set; } = "";
-        public int? Company_Id { get; set; }
-        public string? Purchase_Request_No { get; set; }
-        public string? Purchase_Order_Id {  get; set; }
-        public DateTime? PODateFrom {  get; set; }
-        public DateTime? PODateTo {  get; set; }
-        public int? PageNo {  get; set; }
-        public int? PageSize { get; set; }
-        public string? SortField { get; set; }
-        public string? SortDirection {  get; set; }
-        public int? TotalCount {  get; set; }
-    }
+        public string? Action { get; set; }
 
+        public int Purchase_Order_Id { get; set; }
+
+        public int Company_Id { get; set; }
+
+        public DateTime? PO_Date { get; set; }
+
+        public int PO_Based_On { get; set; }
+
+        public string? Purchase_Request_No { get; set; }
+
+        public decimal? PO_Amount { get; set; }
+
+        public DateTime? PO_Valid_From { get; set; }
+
+        public DateTime? PO_Valid_To { get; set; }
+
+        public string? Remarks { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public int? CreatedBy { get; set; }
+
+        public int? ModifiedBy { get; set; }
+
+        // Existing search properties
+        public DateTime? PODateFrom { get; set; }
+
+        public DateTime? PODateTo { get; set; }
+
+        public int PageNo { get; set; }
+
+        public int PageSize { get; set; }
+
+        public string? SortField { get; set; }
+
+        public string? SortDirection { get; set; }
+
+        public int TotalCount { get; set; }
+
+      
+    }
+    public class PurchaseOrderResponse
+    {
+        public bool Success { get; set; }
+
+        public string? Error_Message { get; set; }
+
+        public string? Message { get; set; }
+
+        public object? Data { get; set; }
+    }
     public class Column_Constants
     {
         #region Columns_Constants

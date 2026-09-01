@@ -100,6 +100,26 @@ namespace QPay.API.Controller.PurchaseOrder
         }
 
 
+[HttpPost("CreateUpdateDelete")]
+public IActionResult CreateUpdateDelete([FromBody] PurchaseOrderRequest request)
+        {
+            try
+            {
+                var response = _purchaseOrderRepository.CreateUpdateDelete(request);
 
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new PurchaseOrderResponse
+                {
+                    Success = false,
+                    Error_Message = ex.Message
+                });
+            }
+        }
+
+
+      
     }
 }
