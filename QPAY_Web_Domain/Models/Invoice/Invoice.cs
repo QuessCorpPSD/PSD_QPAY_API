@@ -137,6 +137,7 @@ namespace QPay.UI.Models.Invoice
             public string Isactive { get; set; } = string.Empty;
             public string Employee_code { get; set; } = string.Empty;
             public string InvoiceCulture_Id { get; set; } = string.Empty;
+            public string Po_Number { get; set; } = string.Empty;
 
         }
 

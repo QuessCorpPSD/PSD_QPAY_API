@@ -11,5 +11,6 @@ namespace QPay.BAL.IRepository.PurchaseOrder
     public interface IPurchaseOrderRepository
     {
         DataSet POSearch(PurchaseOrderRequest purchaseOrderRequest);
+        PurchaseOrderResponse CreateUpdateDelete(PurchaseOrderRequest purchaseOrderRequest);
     }
 }
