@@ -89,7 +89,7 @@ namespace QPay.UI.Models.Invoice
         public string? Company_Code { get; set; } = "";
         public string? Pay_Period { get; set; } = "";
         public int? Employee_Head_Count { get; set; }
-        public decimal? Service_Charge { get; set; }
+        public string? Service_Charge { get; set; }
         public string? Service_Charge_Master { get; set; } = "";
         public string? Service_Charge_Type { get; set; } = "";
         public decimal? Sourcing_Fee { get; set; }
