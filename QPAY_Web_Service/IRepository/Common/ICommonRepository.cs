@@ -31,6 +31,8 @@ namespace QPay.BAL.IRepository.Common
         Task<List<Frequency>> GetCommonPayperiod();
         Task<List<POUI>> POSearch(int companyId);
         Task<List<CompanyPicker>> GetAllCSNCompanyCode(string userId);
+        Task<List<DesignationDD>> GetAllDesignationByCompanyId(int companyId);
+        Task<List<BillingType>> GetAllBillingTypes();
 
     }
 }
