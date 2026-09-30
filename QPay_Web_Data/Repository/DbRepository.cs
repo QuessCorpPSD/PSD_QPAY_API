@@ -1874,7 +1874,7 @@ namespace QPay.DAL.Repository
                 {
 
                     dbConnection.Open();
-                    var result = await dbConnection.QueryAsync(storeProcedureName, param, null, commandTimeout: 1000, CommandType.StoredProcedure);
+                    var result = await dbConnection.QueryAsync(storeProcedureName, param, null, commandTimeout: 1800, CommandType.StoredProcedure);
                     var obj = JsonConvert.SerializeObject(result);
                     return obj;
                 }

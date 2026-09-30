@@ -31,6 +31,14 @@ namespace QPay.API.Controller.GlobalMaster
             return Ok(response);
         }
 
+        [HttpGet, Route("PFType")]
+        public async Task<IActionResult> PFType()
+        {
+            var response = await _IRepository.PFType();
+            return Ok(response);
+        }
+
+
         [HttpGet, Route("PFSearch/{CapType}")]
         public async Task<IActionResult> PFSearch(string CapType)
         {

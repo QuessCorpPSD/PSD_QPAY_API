@@ -12,6 +12,7 @@ namespace QPay.BAL.IRepository.GlobalMaster
     {
         Task<List<PFPayCodesUI>> PFPayCodes();
         Task<List<PFCapTypeUI>> PFCapType();
+        Task<List<PFTypeUI>> PFType();
         Task<DataSet> PFSearch(string CapType);
         Task<DataSet> PFExporttoExcel(string CapType);
         Task<PFResponse> CreateUpdatePF(PFRequest request);
