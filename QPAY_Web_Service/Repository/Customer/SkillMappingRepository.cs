@@ -49,7 +49,14 @@ namespace QPay.BAL.Repository.Customer
             parameters.Add("@PO_Number", request.PO_Number);
             parameters.Add("@mode", request.Action);
             parameters.Add("@CreatedBy", request.UserId);
-            var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
+            parameters.Add("@OTRate", request.OTRate);
+            parameters.Add("@DesignationId", request.DesignationId);
+            parameters.Add("@DesignationName", request.DesignationName);
+            parameters.Add("@MaterialCodeId", request.MaterialCodeId);
+            parameters.Add("@MaterialCodeName", request.MaterialCodeName);
+            parameters.Add("@BillingTypeId", request.BillingTypeId);
+            parameters.Add("@BillingTypeName", request.BillingTypeName);
+        var res = await this._dbRepository.GetItemsAsync(storeProcedure, parameters);
 
             if (!string.IsNullOrWhiteSpace(res))
             { 

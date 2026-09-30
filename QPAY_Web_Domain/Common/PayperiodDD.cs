@@ -101,4 +101,20 @@ namespace QPay.UI.Common
         public int POID { get; set; }
         public string PONUMBER { get; set; } = string.Empty;
     }
+    public class DesignationDD
+    {
+        public int Designation_Id { get; set; }
+        public string Designation_Name { get; set; } = "";
+        public string Designation_Code { get; set; } = "";
+        public string? Standard_Designation { get; set; } = "";
+        public decimal? Amount { get; set; }
+        public string? Skill_Category { get; set; } = "";
+        public int? NpDays { get; set; }
+    }
+
+    public class BillingType
+    {
+        public int ROWID { get; set; }
+        public string CODE { get; set; } = "";
+    }
 }

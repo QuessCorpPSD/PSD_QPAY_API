@@ -340,5 +340,34 @@ namespace QPay.IRepository.Repository.Common
             return new List<CompanyPicker>();
         }
 
+        public async Task<List<DesignationDD>> GetAllDesignationByCompanyId(int companyId)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Companycode", companyId);
+
+            var res = await this._dbRepository.GetItemsAsync("sp_GetDesignationDetails", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<DesignationDD>>(res) ?? new List<DesignationDD>();
+            }
+
+            return new List<DesignationDD>();
+        }
+
+        public async Task<List<BillingType>> GetAllBillingTypes()
+        {
+            var parameters = new DynamicParameters();
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetAllBillingTypes", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<BillingType>>(res) ?? new List<BillingType>();
+            }
+
+            return new List<BillingType>();
+        }
+
     }
 }

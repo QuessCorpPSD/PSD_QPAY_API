@@ -209,6 +209,23 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetAllDesignationByCompanyId/{companyId}")]
+        public async Task<IActionResult> GetAllDesignationByCompanyId(int companyId)
+        {
+            var response = await _icompanyCode.GetAllDesignationByCompanyId(companyId);
+
+            return Ok(response);
+        }
+
+        [HttpGet, Route("GetAllBillingTypes")]
+        public async Task<IActionResult> GetAllBillingTypes()
+        {
+            var response = await _icompanyCode.GetAllBillingTypes();
+
+            return Ok(response);
+        }
+
+
 
     }
 }
