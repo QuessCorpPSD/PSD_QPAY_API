@@ -100,5 +100,36 @@ namespace QPay.BAL.Repository.MailApprovalProcess
         }
 
         #endregion CustomerBlockApproval end
+
+
+        public async Task<DataSet> SourcingApproveReject(SourcingApprove payload)
+        {
+            const string storedProcedure = "USP_SOURCING_SKIP_APPROVAL_BLOCK";
+
+            string xml = null;
+            if (payload.ApproveList != null && payload.ApproveList.Count > 0)
+            {
+                xml = ConvertWithDynamicRoot(payload.ApproveList, "NewDataSet", "Table");
+            }
+
+            var parameters = new Dictionary<string, object?>
+            {
+                ["@ACTION"] = payload.ACTION,
+                ["@UserId"] = payload.UserId,
+                ["@LOT_NUMBER"] = payload.LOT_NUMBER,
+                ["@PAY_PERIOD_ID"] = payload.PAY_PERIOD_ID,
+                ["@IsApproved"] = payload.IsApproved,
+                ["@xmlInput"] = xml
+            };
+
+            var ds =  _dbRepository.ExecuteStoredProcedureToDataSetAsync(
+                storedProcedure, parameters, 1500);
+
+            return ds;
+        }
+
     }
+
+
+
 }

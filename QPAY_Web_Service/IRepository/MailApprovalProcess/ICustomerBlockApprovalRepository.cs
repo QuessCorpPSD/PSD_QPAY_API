@@ -16,6 +16,14 @@ namespace QPay.BAL.IRepository.MailApprovalProcess
 
         Task<List<ErrorMessage>> ClientApproveReject(ClientApprove payload);
 
+
         #endregion CustomerBlockApproval end
+
+        #region CustomerBlockApproval start
+
+        Task<DataSet> SourcingApproveReject(SourcingApprove payload);
+        #endregion CustomerBlockApproval end
+
+
     }
 }
