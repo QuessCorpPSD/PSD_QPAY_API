@@ -30,6 +30,12 @@ namespace QPay.UI.Models.GlobalMaster
             public string? Cap_Type_Name { get; set; }
         }
 
+        public class PFTypeUI
+        {
+            public string? PFType_Id { get; set; }
+            public string? PFType_Name { get; set; }
+        }
+
         public class PFRequest
         {
             public string? mode { get; set; }
@@ -51,6 +57,7 @@ namespace QPay.UI.Models.GlobalMaster
             public int PayCode_Id { get; set; }
             public int IsCapType { get; set; }
             public string? Criteria { get; set; }
+            public string? PFType_Id { get; set; }
         }
 
         public class PFDetail

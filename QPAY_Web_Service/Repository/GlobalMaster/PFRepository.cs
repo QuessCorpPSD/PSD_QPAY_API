@@ -59,6 +59,18 @@ namespace QPay.BAL.Repository.GlobalMaster
 
             return new List<PFCapTypeUI>();
         }
+        public async Task<List<PFTypeUI>> PFType()
+        {
+            var parameters = new DynamicParameters();
+
+            var res = await _dbRepository.GetItemsAsync("SP_GetPFType", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<PFTypeUI>>(res) ?? new List<PFTypeUI>();
+            }
+            return new List<PFTypeUI>();
+        }
 
         public async Task<DataSet> PFSearch(string CapType)
         {
