@@ -11,7 +11,8 @@ namespace QPay.UI.Models.MailApprovalProcess
         public string Id { get; set; }
         public string Company_code { get; set; }
         public string Remarks { get; set; }
-    }    
+    }
+   
 
     public class ClientApprove
     {
@@ -21,7 +22,20 @@ namespace QPay.UI.Models.MailApprovalProcess
     }
     public class ErrorMessage
     {
-       
         public string Message { get; set; }
+    }
+    public class SourceBlock
+    {
+        public string EMPLOYEE_CODE { get; set; }
+        public string Remarks { get; set; }
+    }
+    public class SourcingApprove
+    {
+        public int ACTION { get; set; }
+        public int IsApproved { get; set; }
+        public string UserId { get; set; }
+        public int PAY_PERIOD_ID { get; set; }
+        public int LOT_NUMBER { get; set; }
+        public List<SourceBlock> ApproveList { get; set; }
     }
 }

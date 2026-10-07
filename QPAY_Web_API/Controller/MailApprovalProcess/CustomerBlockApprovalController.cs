@@ -6,6 +6,7 @@ using QPay.BAL.IRepository.SalaryReleaseInvoice;
 using QPay.BAL.Repository.SalaryReleaseInvoice;
 using QPay.UI.Models.MailApprovalProcess;
 using QPay.UI.Models.SalaryReleaseInvoice;
+using System.Data;
 
 namespace QPay.API.Controller.MailApprovalProcess
 {
@@ -42,5 +43,33 @@ namespace QPay.API.Controller.MailApprovalProcess
         }
 
         #endregion CustomerBlockApproval end
+
+        #region SourcingBlockApproval start
+
+        [HttpPost, Route("SourcingApproveReject")]
+        public async Task<IActionResult> SourcingApproveReject([FromBody] SourcingApprove payload)
+        {
+            var ds = await _CustomerBlockApprovalRepository.SourcingApproveReject(payload);
+
+            if (ds == null || ds.Tables.Count == 0)
+                return Ok(new List<object>());
+
+            var rows = new List<Dictionary<string, object>>();
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in ds.Tables[0].Columns)
+                {
+                    dict[col.ColumnName] = row[col] == DBNull.Value ? null : row[col];
+                }
+                rows.Add(dict);
+            }
+
+            return Ok(rows);
+        }
+        #endregion SourcingBlockApproval end
+
+
     }
 }
