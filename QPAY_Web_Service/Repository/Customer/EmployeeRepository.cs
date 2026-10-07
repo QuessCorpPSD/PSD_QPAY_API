@@ -359,5 +359,15 @@ namespace QPay.BAL.Repository.Customer
             return new List<LegalEntityUI>();
         }
 
+        public async Task<DataSet> GetAllEmployeeHimadriHHR(int? pageNo, int? pageSize)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["@PageNo"] = pageNo,
+                ["@PageSize"] = pageSize,
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_HemadriEmployeeDetails", parameters);
+        }
+
     }
 }

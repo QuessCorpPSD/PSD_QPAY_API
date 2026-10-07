@@ -42,6 +42,7 @@ namespace QPay.BAL.IRepository.Customer
 
         Task<DataSet> SearchSalary(int employeeId);
         Task<List<LegalEntityUI>> GetLegalEntity();
+        Task<DataSet> GetAllEmployeeHimadriHHR(int? pageNo, int? pageSize);
 
     }
 }
