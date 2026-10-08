@@ -27,6 +27,8 @@ namespace QPay.BAL.IRepository.Customer
 
         Task<DataSet> GetInvoiceFormat();
         Task<DataSet> GetReimbInvoiceFormat();
+        Task<DataSet> getallcity();
+
         Task<DataSet> GetPortalPayslipFormat();
 
     }

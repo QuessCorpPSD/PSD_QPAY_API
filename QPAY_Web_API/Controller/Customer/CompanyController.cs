@@ -41,7 +41,7 @@ namespace QPay.API.Controller.Customer
         [Route("View/{CompanyId}")]
         public async Task<IActionResult> View(int? CompanyId)
         {
-            string xml = string.Empty;           
+            string xml = string.Empty;
             //Edit
             var response = await _IRepository.View("Edit", CompanyId, xml);
             if (response.Tables[0].Rows.Count > 0)
@@ -179,6 +179,23 @@ namespace QPay.API.Controller.Customer
         }
 
         [HttpGet]
+        [Route("getallcity")]
+        public async Task<IActionResult> getallcity()
+        {
+
+            var response = await _IRepository.getallcity();
+            if (response != null)
+            {
+                var _outputResponse = ResponseWrapManager.ResponseWrapper(response, HttpContext);
+                return Ok(_outputResponse);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
+
+        [HttpGet]
         [Route("GetPortalPayslipFormat")]
         public async Task<IActionResult> GetPortalPayslipFormat()
         {
@@ -227,7 +244,7 @@ namespace QPay.API.Controller.Customer
             var response = await _IRepository.Update(request);
             if (response.Tables[0].Rows.Count > 0)
             {
-                
+
                 string message = response.Tables[0].Rows[0]["Message"].ToString();
                 if (!(message.Contains("Successfully")))
                 {

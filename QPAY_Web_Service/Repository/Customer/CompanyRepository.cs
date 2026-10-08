@@ -25,6 +25,8 @@ namespace QPay.BAL.Repository.Customer
                 ["@mode"] = action,
                 ["@value1"] = companyId,
                 ["@value2"] = xml,
+                ["@pageNo"] = 1,
+                ["@pageSize"] = 1000
             };
             return _dbRepository.ExecuteStoredProcedureToDataTableAsync("sp_GetCompanyDetailsData", parameters);
 
@@ -113,6 +115,14 @@ namespace QPay.BAL.Repository.Customer
             };
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("GetAllInvoiceFormat", parameters);
         }
+        public async Task<DataSet> getallcity()
+        {
+            var parameters = new Dictionary<string, object>
+            {
+
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("sp_GetAllCity", parameters);
+        }
 
         public async Task<DataSet> GetPortalPayslipFormat()
         {
@@ -173,9 +183,10 @@ namespace QPay.BAL.Repository.Customer
                     Salary_SMS = request.companyrequest.Salary_SMS,
                     Dues_Based_On = request.companyrequest.Dues_Based_On,
                     Is_Insurance_Applicable = request.companyrequest.Is_Insurance_Applicable,
+                    Invoice_Format = request.companyrequest.Invoice_Format,
                     ReimbInvoiceFormat_Id = request.companyrequest.ReimbInvoiceFormat_Id,
                     Segment_Id = request.companyrequest.Segment_Id,
-                    SubSegment_Id = request.companyrequest.SubSegment_Id,
+                    SubSegment_Id = string.IsNullOrWhiteSpace(request.companyrequest.SubSegment_Id) ? "0" : request.companyrequest.SubSegment_Id,
                     Payslip_Format = request.companyrequest.Payslip_Format,
                     Mode_Of_Payment = request.companyrequest.Mode_Of_Payment,
                     TAT = request.companyrequest.TAT,
@@ -215,21 +226,21 @@ namespace QPay.BAL.Repository.Customer
                     IsHeaderFooter = request.companyrequest.IsHeaderFooter,
                     Sap_Customer_Code = request.companyrequest.Sap_Customer_Code,
                     Profit_Center_Code = request.companyrequest.Profit_Center_Code,
-                    Inedge_charges = request.companyrequest.Inedge_charges,
-                    Inedge_charges_Criteria_Type = request.companyrequest.Inedge_charges_Criteria_Type,
-                    CompanyGroupCode = request.companyrequest.CompanyGroupCode,
-                    OnBoarding_Category = request.companyrequest.OnBoarding_Category,
-                    InEdge_Category = request.companyrequest.InEdge_Category,
-                    Is_PO_Wise_Batch = request.companyrequest.Is_PO_Wise_Batch,
+                    Inedge_charges = string.IsNullOrWhiteSpace(request.companyrequest.Inedge_charges) ? "0" : request.companyrequest.Inedge_charges,
+                    Inedge_charges_Criteria_Type = string.IsNullOrWhiteSpace(request.companyrequest.Inedge_charges_Criteria_Type) ? "1" : request.companyrequest.Inedge_charges_Criteria_Type,
+                    CompanyGroupCode = string.IsNullOrWhiteSpace(request.companyrequest.CompanyGroupCode) ? "0" : request.companyrequest.CompanyGroupCode,
+                    OnBoarding_Category = string.IsNullOrWhiteSpace(request.companyrequest.OnBoarding_Category) ? "0" : request.companyrequest.OnBoarding_Category,
+                    InEdge_Category = string.IsNullOrWhiteSpace(request.companyrequest.InEdge_Category) ? "0" : request.companyrequest.InEdge_Category,
+                    Is_PO_Wise_Batch = string.IsNullOrWhiteSpace(request.companyrequest.Is_PO_Wise_Batch) ? "0" : request.companyrequest.Is_PO_Wise_Batch,
                     IsBonusPayThroughFF = request.companyrequest.IsBonusPayThroughFF,
                     IsExtraWorkingDaysServiceFee = request.companyrequest.IsExtraWorkingDaysServiceFee,
                     AttendanceInputWithLeave = request.companyrequest.AttendanceInputWithLeave,
                     Management_MIS = request.companyrequest.Management_MIS,
                     PfCode_Id = request.companyrequest.PfCode_Id,
-                    IsDecimal = request.companyrequest.IsDecimal,
-                    IsProforma = request.companyrequest.IsProforma,
+                    IsDecimal = string.IsNullOrWhiteSpace(request.companyrequest.IsDecimal) ? "0" : request.companyrequest.IsDecimal,
+                    IsProforma = string.IsNullOrWhiteSpace(request.companyrequest.IsProforma) ? "0" : request.companyrequest.IsProforma,
                     CompanyType = request.companyrequest.CompanyType,
-                    Manual_NewJoinee = request.companyrequest.Manual_NewJoinee,
+                    Manual_NewJoinee = string.IsNullOrWhiteSpace(request.companyrequest.Manual_NewJoinee) ? "0" : request.companyrequest.Manual_NewJoinee,
                     Invoice_Submission_Date = request.companyrequest.Invoice_Submission_Date,
                     Collection_Date = request.companyrequest.Collection_Date,
                     PE_User_ID = request.companyrequest.PE_User_ID,
@@ -245,16 +256,16 @@ namespace QPay.BAL.Repository.Customer
                     Client_Escalation_Manager_Email_Id = request.companyrequest.Client_Escalation_Manager_Email_Id,
                     Client_Escalation_Manager_Mobile_No = request.companyrequest.Client_Escalation_Manager_Mobile_No,
                     Portal_Payslip_Format = request.companyrequest.Portal_Payslip_Format,
-                    IsNewJoinee = request.companyrequest.IsNewJoinee,
+                    IsNewJoinee = string.IsNullOrWhiteSpace(request.companyrequest.IsNewJoinee) ? "0" : request.companyrequest.IsNewJoinee,
                     ReimbPaymentId = request.companyrequest.ReimbPaymentId,
                     PayrollWithDecimalId = request.companyrequest.PayrollWithDecimalId,
                     PfCategoryId = request.companyrequest.PfCategoryId,
                     IsSignature = request.companyrequest.IsSignature,
                     ServiceFeeWithDecimalId = request.companyrequest.ServiceFeeWithDecimalId,
-                    Qdemy_charges = request.companyrequest.Qdemy_charges,
+                    Qdemy_charges = string.IsNullOrWhiteSpace(request.companyrequest.Qdemy_charges) ? "0" : request.companyrequest.Qdemy_charges,
                     IsCurrencyConversion = request.companyrequest.IsCurrencyConversion,
-                    TechSubscriptionCharges = request.companyrequest.TechSubscriptionCharges,
-                    Tech_Subscription_Charges_Criteria_Type = request.companyrequest.Tech_Subscription_Charges_Criteria_Type,
+                    TechSubscriptionCharges = string.IsNullOrWhiteSpace(request.companyrequest.TechSubscriptionCharges) ? "0" : request.companyrequest.TechSubscriptionCharges,
+                    Tech_Subscription_Charges_Criteria_Type = string.IsNullOrWhiteSpace(request.companyrequest.Tech_Subscription_Charges_Criteria_Type) ? "1" : request.companyrequest.Tech_Subscription_Charges_Criteria_Type,
                     DigitalPlatformConsent = request.companyrequest.DigitalPlatformConsent,
                     DGPSF = request.companyrequest.DGPSF,
                     Vertical_Id = request.companyrequest.Vertical_Id,
@@ -281,27 +292,21 @@ namespace QPay.BAL.Repository.Customer
                     Branch = request.companyrequest.Branch,
                     BranchCode = request.companyrequest.BranchCode,
                     BankCode = request.companyrequest.BankCode,
-                    BankAdviceId = request.companyrequest.BankAdviceId,
-
-                    OT_WEEKEND_TYPE=request.companyrequest.OT_WEEKEND_TYPE,
-                    OT_WEEKEND_VLAUE= request.companyrequest.OT_WEEKEND_VLAUE,
-                    OT_WEEKEND_FORMULA= request.companyrequest.OT_WEEKEND_FORMULA,
-
+                    BankAdviceId = string.IsNullOrWhiteSpace(request.companyrequest.BankAdviceId) ? "0" : request.companyrequest.BankAdviceId,
+                    OT_WEEKEND_TYPE = request.companyrequest.OT_WEEKEND_TYPE,
+                    OT_WEEKEND_VLAUE = request.companyrequest.OT_WEEKEND_VLAUE,
+                    OT_WEEKEND_FORMULA = request.companyrequest.OT_WEEKEND_FORMULA,
                     OT_WEEK_DAY_TYPE = request.companyrequest.OT_WEEK_DAY_TYPE,
                     OT_WEEK_DAY_VLAUE = request.companyrequest.OT_WEEK_DAY_VLAUE,
                     OT_WEEK_DAY_FORMULA = request.companyrequest.OT_WEEK_DAY_FORMULA,
-
                     OT_NIGHT_SHIFT_TYPE = request.companyrequest.OT_NIGHT_SHIFT_TYPE,
                     OT_NIGHT_SHIFT_VLAUE = request.companyrequest.OT_NIGHT_SHIFT_VLAUE,
                     OT_NIGHT_SHIFT_FORMULA = request.companyrequest.OT_NIGHT_SHIFT_FORMULA,
-
                     OT_HOLIDAY_TYPE = request.companyrequest.OT_HOLIDAY_TYPE,
                     OT_HOLIDAY_VLAUE = request.companyrequest.OT_HOLIDAY_VLAUE,
                     OT_HOLIDAY_FORMULA = request.companyrequest.OT_HOLIDAY_FORMULA,
-
                     Adhoc_Service_Fee = request.companyrequest.Adhoc_Service_Fee,
                     Adhoc_Service_Formula = request.companyrequest.Adhoc_Service_Formula,
-
                     Portal_Type = request.companyrequest.Portal_Type
                 }
             };
@@ -354,9 +359,10 @@ namespace QPay.BAL.Repository.Customer
                     Salary_SMS = request.companyrequest.Salary_SMS,
                     Dues_Based_On = request.companyrequest.Dues_Based_On,
                     Is_Insurance_Applicable = request.companyrequest.Is_Insurance_Applicable,
+                    Invoice_Format = request.companyrequest.Invoice_Format,
                     ReimbInvoiceFormat_Id = request.companyrequest.ReimbInvoiceFormat_Id,
                     Segment_Id = request.companyrequest.Segment_Id,
-                    SubSegment_Id = request.companyrequest.SubSegment_Id,
+                    SubSegment_Id = string.IsNullOrWhiteSpace(request.companyrequest.SubSegment_Id) ? "0" : request.companyrequest.SubSegment_Id,
                     Payslip_Format = request.companyrequest.Payslip_Format,
                     Mode_Of_Payment = request.companyrequest.Mode_Of_Payment,
                     TAT = request.companyrequest.TAT,
@@ -396,21 +402,21 @@ namespace QPay.BAL.Repository.Customer
                     IsHeaderFooter = request.companyrequest.IsHeaderFooter,
                     Sap_Customer_Code = request.companyrequest.Sap_Customer_Code,
                     Profit_Center_Code = request.companyrequest.Profit_Center_Code,
-                    Inedge_charges = request.companyrequest.Inedge_charges,
-                    Inedge_charges_Criteria_Type = request.companyrequest.Inedge_charges_Criteria_Type,
-                    CompanyGroupCode = request.companyrequest.CompanyGroupCode,
-                    OnBoarding_Category = request.companyrequest.OnBoarding_Category,
-                    InEdge_Category = request.companyrequest.InEdge_Category,
-                    Is_PO_Wise_Batch = request.companyrequest.Is_PO_Wise_Batch,
+                    Inedge_charges = string.IsNullOrWhiteSpace(request.companyrequest.Inedge_charges) ? "0" : request.companyrequest.Inedge_charges,
+                    Inedge_charges_Criteria_Type = string.IsNullOrWhiteSpace(request.companyrequest.Inedge_charges_Criteria_Type) ? "1" : request.companyrequest.Inedge_charges_Criteria_Type,
+                    CompanyGroupCode = string.IsNullOrWhiteSpace(request.companyrequest.CompanyGroupCode) ? "0" : request.companyrequest.CompanyGroupCode,
+                    OnBoarding_Category = string.IsNullOrWhiteSpace(request.companyrequest.OnBoarding_Category) ? "0" : request.companyrequest.OnBoarding_Category,
+                    InEdge_Category = string.IsNullOrWhiteSpace(request.companyrequest.InEdge_Category) ? "0" : request.companyrequest.InEdge_Category,
+                    Is_PO_Wise_Batch = string.IsNullOrWhiteSpace(request.companyrequest.Is_PO_Wise_Batch) ? "0" : request.companyrequest.Is_PO_Wise_Batch,
                     IsBonusPayThroughFF = request.companyrequest.IsBonusPayThroughFF,
                     IsExtraWorkingDaysServiceFee = request.companyrequest.IsExtraWorkingDaysServiceFee,
                     AttendanceInputWithLeave = request.companyrequest.AttendanceInputWithLeave,
                     Management_MIS = request.companyrequest.Management_MIS,
                     PfCode_Id = request.companyrequest.PfCode_Id,
-                    IsDecimal = request.companyrequest.IsDecimal,
-                    IsProforma = request.companyrequest.IsProforma,
+                    IsDecimal = string.IsNullOrWhiteSpace(request.companyrequest.IsDecimal) ? "0" : request.companyrequest.IsDecimal,
+                    IsProforma = string.IsNullOrWhiteSpace(request.companyrequest.IsProforma) ? "0" : request.companyrequest.IsProforma,
                     CompanyType = request.companyrequest.CompanyType,
-                    Manual_NewJoinee = request.companyrequest.Manual_NewJoinee,
+                    Manual_NewJoinee = string.IsNullOrWhiteSpace(request.companyrequest.Manual_NewJoinee) ? "0" : request.companyrequest.Manual_NewJoinee,
                     Invoice_Submission_Date = request.companyrequest.Invoice_Submission_Date,
                     Collection_Date = request.companyrequest.Collection_Date,
                     PE_User_ID = request.companyrequest.PE_User_ID,
@@ -426,16 +432,16 @@ namespace QPay.BAL.Repository.Customer
                     Client_Escalation_Manager_Email_Id = request.companyrequest.Client_Escalation_Manager_Email_Id,
                     Client_Escalation_Manager_Mobile_No = request.companyrequest.Client_Escalation_Manager_Mobile_No,
                     Portal_Payslip_Format = request.companyrequest.Portal_Payslip_Format,
-                    IsNewJoinee = request.companyrequest.IsNewJoinee,
+                    IsNewJoinee = string.IsNullOrWhiteSpace(request.companyrequest.IsNewJoinee) ? "0" : request.companyrequest.IsNewJoinee,
                     ReimbPaymentId = request.companyrequest.ReimbPaymentId,
                     PayrollWithDecimalId = request.companyrequest.PayrollWithDecimalId,
                     PfCategoryId = request.companyrequest.PfCategoryId,
                     IsSignature = request.companyrequest.IsSignature,
                     ServiceFeeWithDecimalId = request.companyrequest.ServiceFeeWithDecimalId,
-                    Qdemy_charges = request.companyrequest.Qdemy_charges,
+                    Qdemy_charges = string.IsNullOrWhiteSpace(request.companyrequest.Qdemy_charges) ? "0" : request.companyrequest.Qdemy_charges,
                     IsCurrencyConversion = request.companyrequest.IsCurrencyConversion,
-                    TechSubscriptionCharges = request.companyrequest.TechSubscriptionCharges,
-                    Tech_Subscription_Charges_Criteria_Type = request.companyrequest.Tech_Subscription_Charges_Criteria_Type,
+                    TechSubscriptionCharges = string.IsNullOrWhiteSpace(request.companyrequest.TechSubscriptionCharges) ? "0" : request.companyrequest.TechSubscriptionCharges,
+                    Tech_Subscription_Charges_Criteria_Type = string.IsNullOrWhiteSpace(request.companyrequest.Tech_Subscription_Charges_Criteria_Type) ? "1" : request.companyrequest.Tech_Subscription_Charges_Criteria_Type,
                     DigitalPlatformConsent = request.companyrequest.DigitalPlatformConsent,
                     DGPSF = request.companyrequest.DGPSF,
                     Vertical_Id = request.companyrequest.Vertical_Id,
@@ -462,27 +468,21 @@ namespace QPay.BAL.Repository.Customer
                     Branch = request.companyrequest.Branch,
                     BranchCode = request.companyrequest.BranchCode,
                     BankCode = request.companyrequest.BankCode,
-                    BankAdviceId = request.companyrequest.BankAdviceId,
-
+                    BankAdviceId = string.IsNullOrWhiteSpace(request.companyrequest.BankAdviceId) ? "0" : request.companyrequest.BankAdviceId,
                     OT_WEEKEND_TYPE = request.companyrequest.OT_WEEKEND_TYPE,
                     OT_WEEKEND_VLAUE = request.companyrequest.OT_WEEKEND_VLAUE,
                     OT_WEEKEND_FORMULA = request.companyrequest.OT_WEEKEND_FORMULA,
-
                     OT_WEEK_DAY_TYPE = request.companyrequest.OT_WEEK_DAY_TYPE,
                     OT_WEEK_DAY_VLAUE = request.companyrequest.OT_WEEK_DAY_VLAUE,
                     OT_WEEK_DAY_FORMULA = request.companyrequest.OT_WEEK_DAY_FORMULA,
-
                     OT_NIGHT_SHIFT_TYPE = request.companyrequest.OT_NIGHT_SHIFT_TYPE,
                     OT_NIGHT_SHIFT_VLAUE = request.companyrequest.OT_NIGHT_SHIFT_VLAUE,
                     OT_NIGHT_SHIFT_FORMULA = request.companyrequest.OT_NIGHT_SHIFT_FORMULA,
-
                     OT_HOLIDAY_TYPE = request.companyrequest.OT_HOLIDAY_TYPE,
                     OT_HOLIDAY_VLAUE = request.companyrequest.OT_HOLIDAY_VLAUE,
                     OT_HOLIDAY_FORMULA = request.companyrequest.OT_HOLIDAY_FORMULA,
-
                     Adhoc_Service_Fee = request.companyrequest.Adhoc_Service_Fee,
                     Adhoc_Service_Formula = request.companyrequest.Adhoc_Service_Formula,
-
                     Portal_Type = request.companyrequest.Portal_Type
 
                 }
