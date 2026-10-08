@@ -36,6 +36,8 @@ namespace QPay.UI.Models.MailApprovalProcess
         public string UserId { get; set; }
         public int PAY_PERIOD_ID { get; set; }
         public int LOT_NUMBER { get; set; }
+        public int IsNonBillable { get; set; }
+
         public List<SourceBlock> ApproveList { get; set; }
     }
 }

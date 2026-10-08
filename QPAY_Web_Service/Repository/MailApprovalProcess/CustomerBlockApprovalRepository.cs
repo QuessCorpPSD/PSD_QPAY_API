@@ -119,6 +119,7 @@ namespace QPay.BAL.Repository.MailApprovalProcess
                 ["@LOT_NUMBER"] = payload.LOT_NUMBER,
                 ["@PAY_PERIOD_ID"] = payload.PAY_PERIOD_ID,
                 ["@IsApproved"] = payload.IsApproved,
+                ["@IsNonBillable"] = payload.IsNonBillable,
                 ["@xmlInput"] = xml
             };
 
