@@ -44,6 +44,20 @@ namespace QPay.DTo.Models.Masters
         public string typE_OF_BILLING_ID { get; set; } = string.Empty;
         public string typE_OF_BILLING_NAME { get; set; } = string.Empty;
         public string payroll_weekends_billable { get; set; } = string.Empty;
+        public string OTCAP { get; set; } = string.Empty;
+        public string GratuityCAP { get; set; } = string.Empty;
+        public string RebatesCAP { get; set; } = string.Empty;
+        public string ServiceFeeCAP { get; set; } = string.Empty;
+        public string ReimbursementCAP { get; set; } = string.Empty;
+        public string DiscountsCAP { get; set; } = string.Empty;
+        public string WEEKENDSCAP { get; set; } = string.Empty;
+        public string HOLIDAYSCAP { get; set; } = string.Empty;
+        public string COMP_OFFCAP { get; set; } = string.Empty;
+        public string MATERNITYCAP { get; set; } = string.Empty;
+        public string LEAVE_RULECAP { get; set; } = string.Empty;
+        public string LeaveEncashment { get; set; } = string.Empty;
+        public string LeaveEncashmentCAP { get; set; } = string.Empty;
+
 
     }
 
@@ -78,6 +92,20 @@ namespace QPay.DTo.Models.Masters
         public string payroll_weekends_billable { get; set; } = "";
         public string type_of_billing { get; set; } = "";
         public string type_of_billing_name { get; set; } = "";
+        public string OTCAP { get; set; } = string.Empty;
+        public string GratuityCAP { get; set; } = string.Empty;
+        public string RebatesCAP { get; set; } = string.Empty;
+        public string ServiceFeeCAP { get; set; } = string.Empty;
+        public string ReimbursementCAP { get; set; } = string.Empty;
+        public string DiscountsCAP { get; set; } = string.Empty;
+        public string WEEKENDSCAP { get; set; } = string.Empty;
+        public string HOLIDAYSCAP { get; set; } = string.Empty;
+        public string COMP_OFFCAP { get; set; } = string.Empty;
+        public string MATERNITYCAP { get; set; } = string.Empty;
+        public string LEAVE_RULECAP { get; set; } = string.Empty;
+        public string LeaveEncashment { get; set; } = string.Empty;
+        public string LeaveEncashmentCAP { get; set; } = string.Empty;
+
     }
 
     public class InvoiceRuleUpdate
@@ -112,6 +140,20 @@ namespace QPay.DTo.Models.Masters
         public string payroll_weekends_billable { get; set; } = "";
         public string type_of_billing { get; set; } = "";
         public string type_of_billing_name { get; set; } = "";
+        public string OTCAP { get; set; } = string.Empty;
+        public string GratuityCAP { get; set; } = string.Empty;
+        public string RebatesCAP { get; set; } = string.Empty;
+        public string ServiceFeeCAP { get; set; } = string.Empty;
+        public string ReimbursementCAP { get; set; } = string.Empty;
+        public string DiscountsCAP { get; set; } = string.Empty;
+        public string WEEKENDSCAP { get; set; } = string.Empty;
+        public string HOLIDAYSCAP { get; set; } = string.Empty;
+        public string COMP_OFFCAP { get; set; } = string.Empty;
+        public string MATERNITYCAP { get; set; } = string.Empty;
+        public string LEAVE_RULECAP { get; set; } = string.Empty;
+        public string LeaveEncashment { get; set; } = string.Empty;
+        public string LeaveEncashmentCAP { get; set; } = string.Empty;
+
     }
 
     public class InvoiceRuleTemplate
@@ -146,6 +188,10 @@ namespace QPay.DTo.Models.Masters
         public string typE_OF_BILLING_ID { get; set; } = string.Empty;
         public string typE_OF_BILLING_NAME { get; set; } = string.Empty;
         public string payroll_weekends_billable { get; set; } = string.Empty;
+        public string OTCAP { get; set; } = string.Empty;
+        public string GratuityCAP { get; set; } = string.Empty;
+        public string RebatesCAP { get; set; } = string.Empty;
+
 
     }
 }

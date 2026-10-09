@@ -67,6 +67,19 @@ namespace QPay.IRepository.Repository.Masters
             parameters.Add("@payroll_weekends_billable", invoiceRuleAdd.payroll_weekends_billable);
             parameters.Add("@type_of_billing", invoiceRuleAdd.type_of_billing);
             parameters.Add("@type_of_billing_name", invoiceRuleAdd.type_of_billing_name);
+            parameters.Add("@OTCAP", invoiceRuleAdd.OTCAP);
+            parameters.Add("@GratuityCAP", invoiceRuleAdd.GratuityCAP);
+            parameters.Add("@RebatesCAP", invoiceRuleAdd.RebatesCAP);
+            parameters.Add("@ServiceFeeCAP", invoiceRuleAdd.ServiceFeeCAP);
+            parameters.Add("@ReimbursementCAP", invoiceRuleAdd.ReimbursementCAP);
+            parameters.Add("@DiscountsCAP", invoiceRuleAdd.DiscountsCAP);
+            parameters.Add("@WEEKENDSCAP", invoiceRuleAdd.WEEKENDSCAP);
+            parameters.Add("@HOLIDAYSCAP", invoiceRuleAdd.HOLIDAYSCAP);
+            parameters.Add("@COMP_OFFCAP", invoiceRuleAdd.COMP_OFFCAP);
+            parameters.Add("@MATERNITYCAP", invoiceRuleAdd.MATERNITYCAP);
+            parameters.Add("@LEAVE_RULECAP", invoiceRuleAdd.LEAVE_RULECAP);
+            parameters.Add("@LeaveEncashment", invoiceRuleAdd.LeaveEncashment);
+            parameters.Add("@LeaveEncashmentCAP", invoiceRuleAdd.LeaveEncashmentCAP);
 
             var res = await this._dbRepository.GetItemsAsync("Get_tb_ClientWiseInvoicingRules_Insert_new", parameters);
 

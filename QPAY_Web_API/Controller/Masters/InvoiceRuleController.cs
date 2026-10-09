@@ -49,8 +49,8 @@ namespace QPay.API.Controllers.Masters
             return Ok(response);
         }
 
-        [HttpPost("PostDeleteInvoiceRule")]
-        public async Task<IActionResult> PostDeleteInvoiceRule([FromBody] int invoicingRulesID)
+        [HttpGet("PostDeleteInvoiceRule/{invoicingRulesID}")]
+        public async Task<IActionResult> PostDeleteInvoiceRule(int invoicingRulesID)
         {
 
             var response = await _invoiceRule.PostDeleteInvoiceRule(invoicingRulesID);
