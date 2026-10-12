@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace QPay.UI.Models.ARKnockOff
 {
@@ -34,5 +35,21 @@ namespace QPay.UI.Models.ARKnockOff
         public string? TDS_Percent { get; set; } = "";
         public string? TDS_Amount { get; set; } = "";
     }
+    public class IgnoreTextUI
+    {
+        public string? UTR_No_keywords { get; set; } = "";
+        public string? Benificiary_keywords { get; set; } = "";
+        public string? Total_Remitted_Amount_keywords { get; set; } = "";
+        public string? Invoice_Number_keywords { get; set; } = "";
+        public string? Amount_keywords { get; set; } = "";
+        public string? TDS_Amount_keywords { get; set; } = "";
+        public string? TDS_Percent_keywords { get; set; } = "";
+        public int? id { get; set; }
+        [XmlIgnore]
+        public string? mode { get; set; }
+        [XmlIgnore]
+        public int userId { get; set; }
+    }
+
 }
 

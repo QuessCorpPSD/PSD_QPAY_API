@@ -14,5 +14,7 @@ namespace QPay.BAL.IRepository.ARKnockOff
         Task<DataSet> GetARInvoiceDetails();
         Task<DataSet> GetIgnoreSubjectLine();
         DataSet ARReportExport(string FromDate);
+        Task<DataSet> GetAllIgnoreSubjectLine();
+        Task<string> CreateUpdateDelete_IgnoreSubjectLine(string xml, string mode, int userId);
     }
 }

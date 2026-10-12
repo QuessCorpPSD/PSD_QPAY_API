@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QPay.BAL.Repository.ARKnockOff
 {
-    public class ARKnockOffRepository:IARKnockOffRepository
+    public class ARKnockOffRepository : IARKnockOffRepository
     {
         private readonly DbRepository _dbRepository;
 
@@ -63,5 +63,31 @@ namespace QPay.BAL.Repository.ARKnockOff
             return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetIgnoreSubjectLine", parameters, 1500);
 
         }
-    }
+
+        public async Task<DataSet> GetAllIgnoreSubjectLine()
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetARKnockOff_Ignoretext", parameters, 1500);
+
+        }
+        public async Task<string> CreateUpdateDelete_IgnoreSubjectLine(string xml, string mode, int userId)
+        {
+         var parameters = new DynamicParameters();
+            parameters.Add("@xmlInput", xml);
+            parameters.Add("@mode", mode);
+            parameters.Add("@CreatedBy", userId);
+
+            var res = await this._dbRepository.GetItemsAsync("sp_CreateUpdate_IgnoreSubjectLine", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
+
+            return "No data found";
+        }
+
+}
 }
