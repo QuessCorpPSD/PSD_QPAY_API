@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using QPay.API.Extensions;
 using QPay.BAL.IRepository.Customer;
 using QPay.UI.Customer;
@@ -590,6 +591,21 @@ namespace QPay.API.Controller.Customer
             var response = await _IRepository.GetLegalEntity();
 
             return Ok(response);
+        }
+
+        [HttpGet, Route("GetAllEmployeeHimadriHHR/{pageNo}/{pageSize}")]
+        public async Task<IActionResult> GetAllEmployeeHimadriHHR(int? pageNo, int? pageSize)
+        {
+            var ds = await _IRepository.GetAllEmployeeHimadriHHR(pageNo, pageSize);
+            if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+            {
+                return Ok(new { StatusCode = 201, Message = "No Data Found", Data = Array.Empty<object>()
+                });
+            }
+
+            var json = JsonConvert.SerializeObject(ds.Tables[0]);
+            return Ok(json);
+            //return Content(json, "application/json");
         }
 
 
