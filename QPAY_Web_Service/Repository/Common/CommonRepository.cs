@@ -369,5 +369,19 @@ namespace QPay.IRepository.Repository.Common
             return new List<BillingType>();
         }
 
+        public async Task<List<InputTypes>> GetAllInputTypes()
+        {
+            var parameters = new DynamicParameters();
+
+            var res = await this._dbRepository.GetItemsAsync("Proc_GetInputTypes", parameters);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                return JsonConvert.DeserializeObject<List<InputTypes>>(res) ?? new List<InputTypes>();
+            }
+
+            return new List<InputTypes>();
+        }
+
     }
 }

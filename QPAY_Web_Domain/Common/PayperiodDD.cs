@@ -117,4 +117,11 @@ namespace QPay.UI.Common
         public int ROWID { get; set; }
         public string CODE { get; set; } = "";
     }
+    
+    public class InputTypes
+    {
+        public int InputId { get; set; }
+        public string InputType { get; set; } ="";
+
+    }
 }

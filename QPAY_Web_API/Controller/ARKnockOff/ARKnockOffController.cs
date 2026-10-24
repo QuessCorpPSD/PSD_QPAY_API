@@ -132,7 +132,21 @@ namespace QPay.API.Controller.ARKnockOff
             var response = await _IRepository.CreateUpdateDelete_IgnoreSubjectLine(xml, request.mode, request.userId);
             return Ok(response);
         }
-
+        [HttpGet, Route("GetAllIgnoreSubjectLineAPI")]
+        public async Task<IActionResult> GetAllIgnoreSubjectLineAPI()
+        {
+            var search = await this._IRepository.GetAllIgnoreSubjectLineAPI();
+            if (search.Tables[0].Rows.Count > 0)
+            {
+                string json = JsonConvert.SerializeObject(search, Formatting.Indented);
+                //var _outputResponse = ResponseWrapManager.ResponseWrapper(search, HttpContext);
+                return Ok(json);
+            }
+            else
+            {
+                return Ok(new { StatusCode = "400", Message = "No records found" });
+            }
+        }
     }
 
 }
