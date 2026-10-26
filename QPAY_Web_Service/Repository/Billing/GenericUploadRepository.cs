@@ -61,7 +61,7 @@ namespace QPay.BAL.Repository.Billing
             {
                 ["@UploadType"] = uploadType,
             };
-            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetGenericUpload_Template", parameters, 1500);
+            return _dbRepository.ExecuteStoredProcedureToDataSetSecondaryAsync("Proc_GetGenericUpload_Template", parameters, 1500);
         }
 
         public async Task<InvoiceResponse> PostGenericUpload(string xmlString, string userId, string uploadType)
