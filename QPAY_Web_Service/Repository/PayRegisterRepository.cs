@@ -1194,7 +1194,7 @@ namespace QPay.BAL.Repository
 
 
             string storeProcedure = "sp_PayRegister_Recon_lotWise";
-            var res = this._dbRepository.GetItemsAsync(storeProcedure, parameters).Result;
+            var res = this._dbRepository.GetItemsSecondaryAsync(storeProcedure, parameters).Result;
             if (res != null)
             {
                 try
