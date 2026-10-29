@@ -272,6 +272,8 @@ namespace QPay.API
             services.AddScoped<IPOCultureRepository, POCultureRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+            services.AddScoped<IInputReportConsolidatedRepository, InputReportConsolidatedService>();
+
         }
     }
 }

@@ -388,7 +388,7 @@ namespace QPay.BAL.Repository
                     parameter.Add("@RequestNo", intiationExportRequest.ReqNo ?? (object)DBNull.Value);
                     parameter.Add("@Invoice_Type", intiationExportRequest.Invoice_Type ?? (object)DBNull.Value);
 
-                    var res = await _dbRepository.GetItemsAsync("[dbo].[sp_PayRegister_Lot_RequestWise]", parameter);
+                    var res = await _dbRepository.GetItemsSecondaryAsync("[dbo].[sp_PayRegister_Lot_RequestWise]", parameter);
                     DataTable payregister_dt = (DataTable)JsonConvert.DeserializeObject<DataTable>(res);
 
                     try
@@ -1142,7 +1142,7 @@ namespace QPay.BAL.Repository
             try
             {
                 // Get the JSON result from the repository
-                var res = await _dbRepository.GetItemsAsync("Proc_GetAllInvoiceInitiateDetails2ExportToExcel", parameter);
+                var res = await _dbRepository.GetItemsSecondaryAsync("Proc_GetAllInvoiceInitiateDetails2ExportToExcel", parameter);
 
                 if (!string.IsNullOrEmpty(res))
                 {

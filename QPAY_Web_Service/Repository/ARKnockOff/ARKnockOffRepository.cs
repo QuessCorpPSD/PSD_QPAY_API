@@ -88,6 +88,14 @@ namespace QPay.BAL.Repository.ARKnockOff
 
             return "No data found";
         }
+        public async Task<DataSet> GetAllIgnoreSubjectLineAPI()
+        {
+            var parameters = new Dictionary<string, object?>
+            {
+            };
+            return _dbRepository.ExecuteStoredProcedureToDataSetAsync("Proc_GetARKnockOff_Ignoretext_API", parameters, 1500);
 
-}
+        }
+
+    }
 }

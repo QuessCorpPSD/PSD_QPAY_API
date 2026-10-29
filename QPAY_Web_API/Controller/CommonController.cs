@@ -225,6 +225,13 @@ namespace QPay.API.Controller
             return Ok(response);
         }
 
+        [HttpGet, Route("GetAllInputTypes")]
+        public async Task<IActionResult> GetAllInputTypes()
+        {
+            var response = await _icompanyCode.GetAllInputTypes();
+
+            return Ok(response);
+        }
 
 
     }

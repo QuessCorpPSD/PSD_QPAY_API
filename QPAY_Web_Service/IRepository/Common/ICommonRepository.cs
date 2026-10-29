@@ -33,6 +33,8 @@ namespace QPay.BAL.IRepository.Common
         Task<List<CompanyPicker>> GetAllCSNCompanyCode(string userId);
         Task<List<DesignationDD>> GetAllDesignationByCompanyId(int companyId);
         Task<List<BillingType>> GetAllBillingTypes();
+        Task<List<InputTypes>> GetAllInputTypes();
+
 
     }
 }
