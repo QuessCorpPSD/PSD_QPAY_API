@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace QPay.UI.Models
 {
@@ -58,9 +59,21 @@ namespace QPay.UI.Models
         public string? refreshtoken { get; set; }
         public int otp { get; set; }
         public int expirytime { get; set; }
+        public bool? Is_MFA_Enabled { get; set; }
+
+        public string OTPStatus { get; set; }
+        public bool Otp_required{ get; set; } = false;
+        public MailTokenContent mailToken { get; set; }
 
         //public string Contact_Number { get; set; }
         // public string MacAddress { get; set; }
+    }
+    public class MailTokenContent
+    {
+        public string AccessToken { get; set; }
+        public string Apikey { get; set; }
+        public int expiresIn { get; set; }
+
     }
 
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false, ElementName = "UserResponse")]

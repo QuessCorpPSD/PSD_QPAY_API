@@ -18,6 +18,13 @@
 
         public string? ActionType { get; set; } = string.Empty;
     }
+    public class TokenResponse
+    {
+        public string accessToken { get; set; }
+        public string apiKey { get; set; }
+        public int expiresIn { get; set; }
+        public int? apiKeyExpiresIn { get; set; }
+    }
     public class TokenRequest
     {
         public int? User_Id { get; set; }

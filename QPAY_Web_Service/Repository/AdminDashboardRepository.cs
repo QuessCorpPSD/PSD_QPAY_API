@@ -35,7 +35,7 @@ namespace QPay.BAL.Repository
 
             string storeProcedure = string.Format("SP_PSD_Admin_DashBoard");            
           
-            var res =await this._dbRepository.GetItemsAsync(storeProcedure, null);
+            var res =await this._dbRepository.GetItemsSecondaryAsync(storeProcedure, null);
             if (res != "")
             {
                 dashboardUI = JsonConvert.DeserializeObject<List<AdminDashboardUI>>(res).FirstOrDefault() ?? new AdminDashboardUI();

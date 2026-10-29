@@ -668,7 +668,9 @@ namespace QPay.DAL.Repository
                   }
                 }
 
-                // Example method to insert a new record
+        
+
+        // Example method to insert a new record
         public async Task<DbOperationResult> InsertItemAsync<T>(T model, string procedureName)
         {
            

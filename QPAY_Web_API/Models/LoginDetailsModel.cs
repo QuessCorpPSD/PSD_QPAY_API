@@ -10,4 +10,9 @@
         public string Cname { get; set; } = "";
 
     }
+    public class MailValidationRequest
+    {
+        public string userId {  get; set; }
+        public string otp {  get; set; }
+    }
 }
